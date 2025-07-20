@@ -9,6 +9,10 @@ public abstract class User {
     private String password;
     boolean isActive;
 
+    public User() {
+        this.userId = idCount++;
+    }
+
     public User(String firstName, String lastName, String username, String password, boolean isActive) {
         this.userId = idCount++; // assign and then increment
         this.firstName = firstName;

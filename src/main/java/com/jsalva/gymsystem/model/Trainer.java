@@ -3,6 +3,10 @@ package com.jsalva.gymsystem.model;
 public class Trainer extends User{
     TrainingType specialization;
 
+    public Trainer() {
+        super();
+    }
+
     public Trainer(String firstName, String lastName, String username, String password, boolean isActive, TrainingType specialization) {
         super(firstName, lastName, username, password, isActive);
         this.specialization = specialization;
