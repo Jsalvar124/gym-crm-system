@@ -89,4 +89,5 @@ public abstract class User {
                 ", isActive=" + isActive +
                 '}';
     }
+
 }

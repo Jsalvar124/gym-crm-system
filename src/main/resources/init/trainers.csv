@@ -1,0 +1,6 @@
+firstName,lastName,username,password,isActive,specialization
+John,Smith,john.smith,abc1234567,true,CROSSFIT
+Maria,Garcia,maria.garcia,xyz9876543,true,ZUMBA
+Robert,Johnson,robert.johnson,def2468135,false,FUNCTIONAL
+Lisa,Williams,lisa.williams,ghi1357924,true,BOXING
+David,Brown,david.brown,jkl8642097,true,PILATES
