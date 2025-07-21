@@ -1,8 +1,6 @@
 package com.jsalva.gymsystem.storage;
 
 import com.jsalva.gymsystem.model.Trainee;
-import com.jsalva.gymsystem.model.Trainer;
-import com.jsalva.gymsystem.model.TrainingType;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,7 +17,7 @@ public class TraineeStorage {
     @Value("${storage.trainees.file}")
     private String traineesFilePath;
 
-    private Map<Long, Object> trainees = new HashMap<>();
+    private final Map<Long, Object> trainees = new HashMap<>();
 
     public Map<Long, Object> getTrainees() {
         return trainees;
@@ -32,7 +30,7 @@ public class TraineeStorage {
     }
 
     private void loadTraineesFromCSV() {
-        System.out.println("loadTrainersFromCSV called!");
+        System.out.println("loadTraineesFromCSV() called!");
         try (InputStream is = getClass().getClassLoader().getResourceAsStream(traineesFilePath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line = reader.readLine(); // Skip header

@@ -19,7 +19,7 @@ public class TrainerStorage {
     private String trainersFilePath;
 
 
-    private Map<Long, Object> trainers = new HashMap<>();
+    private final Map<Long, Object> trainers = new HashMap<>();
 
     @PostConstruct
     public void initializeTrainerData() {
@@ -29,10 +29,6 @@ public class TrainerStorage {
 
     public Map<Long, Object> getTrainers() {
         return trainers;
-    }
-
-    public void setTrainers(Map<Long, Object> trainers) {
-        this.trainers = trainers;
     }
 
     private void loadTrainersFromCSV() {

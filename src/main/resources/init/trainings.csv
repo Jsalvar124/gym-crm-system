@@ -1,0 +1,21 @@
+trainerId,traineeId,trainingName,trainingType,trainingDate,duration
+1,6,CrossFit Morning Blast,CROSSFIT,2025-07-01,45
+1,7,High Intensity CrossFit,CROSSFIT,2025-07-03,60
+1,8,CrossFit Core Burn,CROSSFIT,2025-07-05,40
+2,9,Zumba Sunrise Party,ZUMBA,2025-07-02,50
+2,10,Zumba Rhythm Flow,ZUMBA,2025-07-04,55
+2,11,Zumba Sweat It Out,ZUMBA,2025-07-07,60
+3,12,Functional Power Moves,FUNCTIONAL,2025-07-01,45
+3,13,Functional HIIT Circuit,FUNCTIONAL,2025-07-05,50
+3,14,Core & Stability Workout,FUNCTIONAL,2025-07-08,40
+4,15,Boxing Basics,BOXING,2025-07-03,60
+4,6,Boxing Power Combo,BOXING,2025-07-06,50
+4,7,BoxFit Burnout,BOXING,2025-07-09,45
+5,8,Pilates Stretch & Core,PILATES,2025-07-02,50
+5,9,Pilates Flow Session,PILATES,2025-07-04,55
+5,10,Pilates Flex & Tone,PILATES,2025-07-06,60
+1,11,CrossFit Beast Mode,CROSSFIT,2025-07-10,50
+2,12,Zumba Latin Party,ZUMBA,2025-07-11,60
+3,13,Total Body Strength,FUNCTIONAL,2025-07-12,55
+4,14,Boxing Power Hour,BOXING,2025-07-13,60
+5,15,Pilates Sunrise Stretch,PILATES,2025-07-14,45

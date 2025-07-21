@@ -29,11 +29,11 @@ public class Main {
         System.out.println();
 
         // Print each trainer
-        trainersStorage.forEach((id, trainer) -> {
-            System.out.println("Trainer ID: " + id);
-            System.out.println("Trainer: " + trainer);
-            System.out.println("---");
-        });
+//        trainersStorage.forEach((id, trainer) -> {
+//            System.out.println("Trainer ID: " + id);
+//            System.out.println("Trainer: " + trainer);
+//            System.out.println("---");
+//        });
 
         // Get the trainees storage from common storage
         Map<Long, Object> traineesStorage = commonStorage.get("trainees");
@@ -43,10 +43,25 @@ public class Main {
         System.out.println("Number of trainees loaded: " + traineesStorage.size());
         System.out.println();
 
-        // Print each trainer
-        traineesStorage.forEach((id, trainee) -> {
-            System.out.println("Trainee ID: " + id);
-            System.out.println("Trainee: " + trainee);
+        // Print each trainee
+//        traineesStorage.forEach((id, trainee) -> {
+//            System.out.println("Trainee ID: " + id);
+//            System.out.println("Trainee: " + trainee);
+//            System.out.println("---");
+//        });
+
+        // Get the trainings storage from common storage
+        Map<Long, Object> trainingStorage = commonStorage.get("trainings");
+
+        // Print results
+        System.out.println("=== Testing Common Storage - Trainings ===");
+        System.out.println("Number of trainings loaded: " + trainingStorage.size());
+        System.out.println();
+
+        // Print each training
+        trainingStorage.forEach((id, training) -> {
+            System.out.println("Training ID: " + id);
+            System.out.println("Training: " + training);
             System.out.println("---");
         });
     }
