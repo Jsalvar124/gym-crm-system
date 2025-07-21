@@ -6,6 +6,10 @@ public class Trainee extends User{
     String address;
     LocalDate dateOfBirth;
 
+    public Trainee(){
+        super();
+    }
+
     public Trainee(String firstName, String lastName, String username, String password, boolean isActive, String address, LocalDate dateOfBirth) {
         super(firstName, lastName, username, password, isActive);
         this.address = address;
@@ -26,5 +30,13 @@ public class Trainee extends User{
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    @Override
+    public String toString() {
+        return "Trainee{" +
+                "address='" + address + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                "} " + super.toString();
     }
 }
