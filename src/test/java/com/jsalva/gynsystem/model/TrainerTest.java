@@ -26,4 +26,10 @@ public class TrainerTest {
         assertNotEquals(trainer1.getUserId(), trainer2.getUserId());
         assertTrue(trainer2.getUserId() == trainer1.getUserId() + 1);
     }
+
+    @Test
+    void loadTrainersFromCSV(){
+
+    }
 }
+

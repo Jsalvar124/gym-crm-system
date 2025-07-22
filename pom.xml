@@ -21,7 +21,7 @@
 <!--        <mockito.version>4.6.1</mockito.version>-->
 
         <!-- Logging versions -->
-        <slf4j.version>1.7.36</slf4j.version>
+        <slf4j.version>2.0.17</slf4j.version>
     </properties>
 
     <dependencies>
@@ -49,6 +49,12 @@
             <version>${slf4j.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.8</version>
+        </dependency>
+
         <!-- Testing Dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -64,6 +70,7 @@
             <scope>test</scope>
         </dependency>
 
+<!--        @Postcontruct annotation dependency -->
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>

@@ -3,8 +3,8 @@ package com.jsalva.gymsystem.model;
 import java.time.LocalDate;
 
 public class Trainee extends User{
-    String address;
-    LocalDate dateOfBirth;
+    private String address;
+    private LocalDate dateOfBirth;
 
     public Trainee(){
         super();

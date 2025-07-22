@@ -1,7 +1,7 @@
 package com.jsalva.gymsystem.model;
 
 public class Trainer extends User{
-    TrainingType specialization;
+    private TrainingType specialization;
 
     public Trainer() {
         super();

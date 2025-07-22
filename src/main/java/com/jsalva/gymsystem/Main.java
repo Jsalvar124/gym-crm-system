@@ -1,6 +1,8 @@
 package com.jsalva.gymsystem;
 
 import com.jsalva.gymsystem.config.AppConfig;
+import com.jsalva.gymsystem.dao.TrainerDAO;
+import com.jsalva.gymsystem.dao.impl.TrainerDAOImpl;
 import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.TrainingType;
 import org.springframework.context.ApplicationContext;
@@ -18,7 +20,7 @@ public class Main {
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
 
         // Get the common storage bean
-        Map<String, Map<Long, Object>> commonStorage = (Map<String, Map<Long, Object>>) context.getBean("storage");
+        Map<String, Map<Long, Object>> commonStorage = (Map<String, Map<Long, Object>>) context.getBean("commonStorage");
 
         // Get the trainers storage from common storage
         Map<Long, Object> trainersStorage = commonStorage.get("trainers");
@@ -59,9 +61,32 @@ public class Main {
         System.out.println();
 
         // Print each training
-        trainingStorage.forEach((id, training) -> {
-            System.out.println("Training ID: " + id);
-            System.out.println("Training: " + training);
+//        trainingStorage.forEach((id, training) -> {
+//            System.out.println("Training ID: " + id);
+//            System.out.println("Training: " + training);
+//            System.out.println("---");
+//        });
+
+
+        TrainerDAO trainerDAO = context.getBean(TrainerDAOImpl.class); // if you use constructor, Spring does not take control of that instance.
+        Map<Long, Object> trainersMap = trainerDAO.getTrainers();
+
+        // is it the same instance?
+        System.out.println("SAME INSTANCE: ");
+        System.out.println(trainersMap == trainersStorage);
+
+        Trainer trainer = new Trainer("Juan", "Pérez", "Juan.Pérez", "pass231", true, TrainingType.BOULDERING);
+
+        trainersMap.put(trainer.getUserId(), trainer);
+        // Print results
+        System.out.println("=== Testing Common Storage - Trainers ===");
+        System.out.println("Number of trainers loaded: " + trainersStorage.size());
+        System.out.println();
+
+//         Print each trainer
+        trainersStorage.forEach((id, t) -> {
+            System.out.println("Trainer ID: " + id);
+            System.out.println("Trainer: " + t);
             System.out.println("---");
         });
     }

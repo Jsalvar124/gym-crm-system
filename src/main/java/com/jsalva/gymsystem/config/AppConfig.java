@@ -38,9 +38,8 @@ public class AppConfig {
         System.out.println("trainingStorage() bean method called!");
         return new TrainingStorage();
     }
-    @Bean("storage")
+    @Bean
     public Map<String, Map<Long, Object>> commonStorage() {
-
         System.out.println("commonStorage() bean method called!");
         Map<String, Map<Long, Object>> storage = new HashMap<>();
         storage.put("trainers", trainerStorage().getTrainers());
