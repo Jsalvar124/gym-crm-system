@@ -5,6 +5,8 @@ import com.jsalva.gymsystem.dao.TrainerDAO;
 import com.jsalva.gymsystem.dao.impl.TrainerDAOImpl;
 import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.TrainingType;
+import com.jsalva.gymsystem.service.TrainerService;
+import com.jsalva.gymsystem.service.impl.TrainerServiceImpl;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -75,19 +77,26 @@ public class Main {
         System.out.println("SAME INSTANCE: ");
         System.out.println(trainersMap == trainersStorage);
 
-        Trainer trainer = new Trainer("Juan", "Pérez", "Juan.Pérez", "pass231", true, TrainingType.BOULDERING);
+        Trainer trainer2 = new Trainer();
+        trainer2.setFirstName("Juan");
+        trainer2.setLastName("Pérez");
+        trainer2.setSpecialization(TrainingType.ZUMBA);
 
-        trainersMap.put(trainer.getUserId(), trainer);
-        // Print results
-        System.out.println("=== Testing Common Storage - Trainers ===");
-        System.out.println("Number of trainers loaded: " + trainersStorage.size());
-        System.out.println();
+        Trainer trainer3 = new Trainer();
+        trainer3.setFirstName("Juan");
+        trainer3.setLastName("Pérez");
+        trainer3.setSpecialization(TrainingType.BOXING);
 
-//         Print each trainer
-        trainersStorage.forEach((id, t) -> {
+        TrainerService trainerService = context.getBean(TrainerService.class); // Get from context, otherwise, dependencies won't be injected!
+        Trainer trainerFromService = trainerService.createTrainer(trainer2);
+        Trainer trainerFromService2 = trainerService.createTrainer(trainer3);
+
+        // Print each trainer
+        trainersStorage.forEach((id, tr) -> {
             System.out.println("Trainer ID: " + id);
-            System.out.println("Trainer: " + t);
+            System.out.println("Trainer: " + tr);
             System.out.println("---");
         });
+
     }
 }

@@ -21,7 +21,7 @@ public class TrainerDAOImpl implements TrainerDAO {
     // Setter Injection
     @Autowired
     public void setCommonStorage(Map<String, Map<Long, Object>> commonStorage) {
-        logger.debug("SetCommonStorage() inside DAO with setter Injection Called.");
+        logger.debug("SetCommonStorage() inside TrainerDAO with setter Injection Called.");
         this.trainers = commonStorage.get("trainers"); // only pass the trainers to the class to avoid multiple responsibility.
     }
 

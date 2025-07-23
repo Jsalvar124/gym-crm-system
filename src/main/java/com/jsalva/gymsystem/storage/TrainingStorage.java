@@ -18,7 +18,7 @@ import java.util.Map;
 @Component
 public class TrainingStorage {
 
-    private static Logger logger = LoggerFactory.getLogger(TrainingStorage.class);
+    private static final Logger logger = LoggerFactory.getLogger(TrainingStorage.class);
 
     @Value("${storage.trainings.file}")
     private String trainingsFilePath;

@@ -24,7 +24,6 @@ public class Trainer extends User{
     public String toString() {
         return "Trainer{" +
                 "specialization=" + specialization +
-                ", isActive=" + isActive +
                 "} " + super.toString();
     }
 }
