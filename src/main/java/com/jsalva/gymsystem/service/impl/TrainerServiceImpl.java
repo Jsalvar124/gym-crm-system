@@ -52,17 +52,33 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     public Trainer getTrainerById(Long id) {
-        return null;
+        Trainer trainer = trainerDAO.findById(id);
+        if(trainer == null){
+            throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
+        }
+        return trainer;
+
     }
 
     @Override
     public Trainer updateTrainer(Trainer trainer) {
-        return null;
+        // Verify that the id exists.
+        Trainer trainerFound = trainerDAO.findById(trainer.getUserId());
+        if(trainerFound == null){
+            throw new IllegalArgumentException("Trainer with Id " + trainer.getUserId() + " not found.");
+        }
+        trainerDAO.update(trainer);
+        return trainer;
     }
 
     @Override
     public void deleteTrainer(Long id) {
-
+        // Verify that the id exists.
+        Trainer trainerFound = trainerDAO.findById(id);
+        if(trainerFound == null){
+            throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
+        }
+        trainerDAO.delete(id);
     }
 
 }
