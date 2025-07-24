@@ -2,6 +2,7 @@ package com.jsalva.gymsystem.service.impl;
 import com.jsalva.gymsystem.dao.TrainerDAO;
 import com.jsalva.gymsystem.model.Trainee;
 import com.jsalva.gymsystem.model.Trainer;
+import com.jsalva.gymsystem.model.TrainingType;
 import com.jsalva.gymsystem.service.TraineeService;
 import com.jsalva.gymsystem.service.TrainerService;
 import com.jsalva.gymsystem.utils.UserUtils;
@@ -22,27 +23,28 @@ public class TrainerServiceImpl implements TrainerService {
     private TraineeService traineeService;
 
     @Override
-    public Trainer createTrainer(Trainer trainer) {
+    public void createTrainer(String firstName, String lastName, TrainingType trainingType) {
+        // Create Trainer instance and set basic information.
+        Trainer trainer = new Trainer();
+        trainer.setFirstName(firstName);
+        trainer.setLastName(lastName);
+        trainer.setSpecialization(trainingType);
 
         //Create Username as FirstName.LastnameXX, verify if any homonyms exist, if so add serial number as suffix
         List<Trainer> trainers = getAllTrainers();
         List<Trainee> trainees = traineeService.getAllTrainees();
-        String username = UserUtils.generateUniqueUsername(
-                trainer.getFirstName(),
-                trainer.getLastName(),
-                trainers,
-                trainees);
-
+        String username = UserUtils.generateUniqueUsername(trainer.getFirstName(), trainer.getLastName(), trainers, trainees);
         trainer.setUsername(username);
+
         //Generate and set random Password
         trainer.setPassword(UserUtils.generateRandomPassword());
 
-        //Default active boolean is true.
+        //Default isActive boolean set to true.
         trainer.setActive(true);
 
-        Trainer newTrainer = trainerDAO.save(trainer);
-
-        return null;
+        // Save trainer
+        trainerDAO.save(trainer);
+        logger.debug("Saved Trainer: {}", trainer);
     }
 
     @Override
@@ -61,14 +63,38 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
-    public Trainer updateTrainer(Trainer trainer) {
-        // Verify that the id exists.
-        Trainer trainerFound = trainerDAO.findById(trainer.getUserId());
-        if(trainerFound == null){
-            throw new IllegalArgumentException("Trainer with Id " + trainer.getUserId() + " not found.");
+    public void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive) {
+        //Check that id is not null
+        if(userId == null){
+            throw new IllegalArgumentException("User id cannot be null");
         }
+        // Verify that the id exists.
+        Trainer trainer = trainerDAO.findById(userId);
+        if(trainer == null){
+            throw new IllegalArgumentException("Trainer with Id " + userId + " not found.");
+        }
+        if(firstName != null){
+            trainer.setFirstName(firstName);
+        }
+        if(lastName != null){
+            trainer.setLastName(lastName);
+        }
+
+        // TODO REASIGN USERNAME
+
+        if(trainingType != null){
+            trainer.setSpecialization(trainingType);
+        }
+        if(newPassword != null){
+            trainer.setPassword(newPassword);
+        }
+        if(isActive != null){
+            trainer.setActive(isActive);
+        }
+
+        // Save in storage
         trainerDAO.update(trainer);
-        return trainer;
+        logger.debug("Updated Trainer: {}", getTrainerById(userId));
     }
 
     @Override

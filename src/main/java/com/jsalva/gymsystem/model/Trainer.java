@@ -12,6 +12,9 @@ public class Trainer extends User{
         this.specialization = specialization;
     }
 
+    // Copy constructor
+
+
     public TrainingType getSpecialization() {
         return specialization;
     }

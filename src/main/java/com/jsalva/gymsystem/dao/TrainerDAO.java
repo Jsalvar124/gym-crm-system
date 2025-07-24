@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 public interface TrainerDAO {
-    Trainer save(Trainer trainer);
+    void save(Trainer trainer);
     List<Trainer> findAll();
     Trainer findById(Long id);
-    Trainer update(Trainer trainer);
+    void update(Trainer trainer);
     void delete(Long id);
     Map<Long, Object> getTrainers(); // TODO REMOVE THIS IS JUST FOR MAIN TEST
 }

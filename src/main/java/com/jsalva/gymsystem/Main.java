@@ -77,19 +77,10 @@ public class Main {
         System.out.println("SAME INSTANCE: ");
         System.out.println(trainersMap == trainersStorage);
 
-        Trainer trainer2 = new Trainer();
-        trainer2.setFirstName("Juan");
-        trainer2.setLastName("Pérez");
-        trainer2.setSpecialization(TrainingType.ZUMBA);
-
-        Trainer trainer3 = new Trainer();
-        trainer3.setFirstName("Juan");
-        trainer3.setLastName("Pérez");
-        trainer3.setSpecialization(TrainingType.BOXING);
-
         TrainerService trainerService = context.getBean(TrainerService.class); // Get from context, otherwise, dependencies won't be injected!
-        Trainer trainerFromService = trainerService.createTrainer(trainer2);
-        Trainer trainerFromService2 = trainerService.createTrainer(trainer3);
+        trainerService.createTrainer("Juan","Pérez", TrainingType.BOXING);
+        trainerService.createTrainer("Juan","Pérez", TrainingType.PILATES);
+
 
         // Print each trainer
         trainersStorage.forEach((id, tr) -> {
@@ -97,6 +88,11 @@ public class Main {
             System.out.println("Trainer: " + tr);
             System.out.println("---");
         });
+
+        // Update Trainer 17
+        trainerService.updateTrainer(17L, null, null, null, "NewPassword", null);
+
+        trainerService.updateTrainer(25L, "Edgar", "Cifuentes", null, null, null);
 
     }
 }

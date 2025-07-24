@@ -31,11 +31,10 @@ public class TrainerDAOImpl implements TrainerDAO {
     }
 
     @Override
-    public Trainer save(Trainer trainer) {
+    public void save(Trainer trainer) {
         logger.info("Saving trainer with ID: {}", trainer.getUserId());
         trainers.put(trainer.getUserId(), trainer);
         logger.debug("Trainer saved successfully: {}", trainer.getUsername());
-        return trainer;
     }
 
     @Override
@@ -60,14 +59,13 @@ public class TrainerDAOImpl implements TrainerDAO {
     }
 
     @Override
-    public Trainer update(Trainer trainer) {
+    public void update(Trainer trainer) {
         if (trainer == null || trainer.getUserId() == null) {
-            logger.error("Attempted to find null trainer or trainer with null ID");
+            logger.error("Attempted to update null trainer or trainer with null ID");
             throw new IllegalArgumentException("Trainer ID cannot be null");
         }
-        logger.info("Updating rainer with id {}", trainer.getUserId());
+        logger.info("Updating trainer with id {}", trainer.getUserId());
         trainers.put(trainer.getUserId(), trainer);
-        return trainer;
     }
 
     @Override

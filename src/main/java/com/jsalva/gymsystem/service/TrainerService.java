@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface TrainerService {
-    Trainer createTrainer(Trainer trainer);
+    void createTrainer(String firstName, String lastName, TrainingType trainingType);
     List<Trainer> getAllTrainers();
     Trainer getTrainerById(Long id);
-    Trainer updateTrainer(Trainer trainer);
+    void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive);
     void deleteTrainer(Long id);
 }

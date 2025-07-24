@@ -22,20 +22,8 @@ public abstract class User {
         this.isActive = isActive;
     }
 
-    public static Long getIdCount() {
-        return idCount;
-    }
-
-    public static void setIdCount(Long idCount) {
-        User.idCount = idCount;
-    }
-
     public Long getUserId() {
         return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public String getFirstName() {
@@ -60,10 +48,6 @@ public abstract class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setPassword(String password) {
