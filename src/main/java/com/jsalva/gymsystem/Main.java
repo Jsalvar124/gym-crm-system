@@ -79,15 +79,8 @@ public class Main {
 
         TrainerService trainerService = context.getBean(TrainerService.class); // Get from context, otherwise, dependencies won't be injected!
         trainerService.createTrainer("Juan","Pérez", TrainingType.BOXING);
-        trainerService.createTrainer("Juan","Pérez", TrainingType.PILATES);
+        trainerService.createTrainer("Hector","Pérez", TrainingType.PILATES);
 
-
-        // Print each trainer
-        trainersStorage.forEach((id, tr) -> {
-            System.out.println("Trainer ID: " + id);
-            System.out.println("Trainer: " + tr);
-            System.out.println("---");
-        });
 
         // Update Trainer 17
         trainerService.updateTrainer(17L, null, null, null, "NewPassword", null);
@@ -95,11 +88,5 @@ public class Main {
         trainerService.updateTrainer(17L, "David", "Brown", TrainingType.ZUMBA, null, null);
 
         trainerService.deleteTrainer(17L);
-
-        trainersStorage.forEach((id, tr) -> {
-            System.out.println("Trainer ID: " + id);
-            System.out.println("Trainer: " + tr);
-            System.out.println("---");
-        });
     }
 }

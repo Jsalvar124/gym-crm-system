@@ -110,6 +110,7 @@ public class TrainerServiceImpl implements TrainerService {
         if(trainerFound == null){
             throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
         }
+        logger.info("Deleting trainer with id {}", id);
         trainerDAO.delete(id);
     }
 
