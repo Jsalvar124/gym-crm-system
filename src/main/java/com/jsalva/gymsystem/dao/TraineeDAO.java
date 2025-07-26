@@ -5,9 +5,9 @@ import com.jsalva.gymsystem.model.Trainee;
 import java.util.List;
 
 public interface TraineeDAO {
-    Trainee save(Trainee trainee);
+    void save(Trainee trainee);
     List<Trainee> findAll();
     Trainee findById(Long id);
-    Trainee update(Trainee trainee);
+    void update(Trainee trainee);
     void delete(Long id);
 }

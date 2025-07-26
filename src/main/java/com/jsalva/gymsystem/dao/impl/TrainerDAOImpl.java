@@ -75,5 +75,6 @@ public class TrainerDAOImpl implements TrainerDAO {
             throw new IllegalArgumentException("Trainer ID cannot be null");
         }
         trainers.remove(id);
+        logger.info("Deleting trainer with id {}", id);
     }
 }

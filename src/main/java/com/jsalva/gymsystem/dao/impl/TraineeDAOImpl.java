@@ -2,6 +2,7 @@ package com.jsalva.gymsystem.dao.impl;
 
 import com.jsalva.gymsystem.dao.TraineeDAO;
 import com.jsalva.gymsystem.model.Trainee;
+import com.jsalva.gymsystem.model.Trainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,10 @@ public class TraineeDAOImpl implements TraineeDAO {
 
 
     @Override
-    public Trainee save(Trainee trainee) {
+    public void save(Trainee trainee) {
         logger.info("Saving trainee with ID: {}", trainee.getUserId());
         trainees.put(trainee.getUserId(), trainee);
         logger.info("Saving trainee with ID: {}", trainee.getUserId());
-        return null;
     }
 
     @Override
@@ -45,16 +45,31 @@ public class TraineeDAOImpl implements TraineeDAO {
 
     @Override
     public Trainee findById(Long id) {
-        return null;
+        if (id == null) {
+            logger.error("Attempted to find trainee with null ID");
+            throw new IllegalArgumentException("Trainee ID cannot be null");
+        }
+        logger.info("Searching for trainee with id {}", id);
+        return (Trainee) trainees.get(id);
     }
 
     @Override
-    public Trainee update(Trainee trainee) {
-        return null;
+    public void update(Trainee trainee) {
+        if (trainee == null || trainee.getUserId() == null) {
+            logger.error("Attempted to update null trainee or trainee with null ID");
+            throw new IllegalArgumentException("Trainee ID cannot be null");
+        }
+        logger.info("Updating trainee with id {}", trainee.getUserId());
+        trainees.put(trainee.getUserId(), trainee);
     }
 
     @Override
     public void delete(Long id) {
-
+        if (id == null) {
+            logger.error("Attempted to remove trainee with null ID");
+            throw new IllegalArgumentException("Trainee ID cannot be null");
+        }
+        trainees.remove(id);
+        logger.info("Deleting trainee with id {}", id);
     }
 }

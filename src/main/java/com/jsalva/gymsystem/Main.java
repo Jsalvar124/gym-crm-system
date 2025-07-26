@@ -94,5 +94,12 @@ public class Main {
 
         trainerService.updateTrainer(17L, "David", "Brown", TrainingType.ZUMBA, null, null);
 
+        trainerService.deleteTrainer(17L);
+
+        trainersStorage.forEach((id, tr) -> {
+            System.out.println("Trainer ID: " + id);
+            System.out.println("Trainer: " + tr);
+            System.out.println("---");
+        });
     }
 }
