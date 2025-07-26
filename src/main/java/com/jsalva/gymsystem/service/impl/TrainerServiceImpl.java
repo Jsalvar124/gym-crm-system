@@ -73,14 +73,20 @@ public class TrainerServiceImpl implements TrainerService {
         if(trainer == null){
             throw new IllegalArgumentException("Trainer with Id " + userId + " not found.");
         }
+        // if either lastname or firstname change, reasign username.
+        if(firstName!=null && !firstName.equals(trainer.getFirstName()) || lastName != null && !lastName.equals(trainer.getLastName())){
+            List<Trainer> trainers = getAllTrainers();
+            List<Trainee> trainees = traineeService.getAllTrainees();
+            String username = UserUtils.generateUniqueUsername(firstName, lastName, trainers, trainees);
+            trainer.setUsername(username);
+        }
+
         if(firstName != null){
             trainer.setFirstName(firstName);
         }
         if(lastName != null){
             trainer.setLastName(lastName);
         }
-
-        // TODO REASIGN USERNAME
 
         if(trainingType != null){
             trainer.setSpecialization(trainingType);

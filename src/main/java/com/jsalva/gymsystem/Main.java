@@ -92,7 +92,7 @@ public class Main {
         // Update Trainer 17
         trainerService.updateTrainer(17L, null, null, null, "NewPassword", null);
 
-        trainerService.updateTrainer(25L, "Edgar", "Cifuentes", null, null, null);
+        trainerService.updateTrainer(17L, "David", "Brown", TrainingType.ZUMBA, null, null);
 
     }
 }
