@@ -40,11 +40,11 @@ public class Main {
         System.out.println();
 
         // Print each trainer
-//        trainersStorage.forEach((id, trainer) -> {
-//            System.out.println("Trainer ID: " + id);
-//            System.out.println("Trainer: " + trainer);
-//            System.out.println("---");
-//        });
+        trainersStorage.forEach((id, trainer) -> {
+            System.out.println("Trainer ID: " + id);
+            System.out.println("Trainer: " + trainer);
+            System.out.println("---");
+        });
 
         // Get the trainees storage from common storage
         Map<Long, Object> traineesStorage = commonStorage.get("trainees");

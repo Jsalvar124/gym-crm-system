@@ -2,11 +2,14 @@ package com.jsalva.gynsystem.model;
 
 import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.TrainingType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("User model Tests")
 public class TrainerTest {
     @Test
+    @DisplayName("Trainer test creation")
     void testTrainerCreation() {
         Trainer trainer = new Trainer("Juan", "Pérez", "Juan.Pérez", "pass231", true, TrainingType.BOULDERING);
 
@@ -19,6 +22,7 @@ public class TrainerTest {
     }
 
     @Test
+    @DisplayName("User Id Generation")
     void testUserIdGeneration() {
         Trainer trainer1 = new Trainer();
         Trainer trainer2 = new Trainer();
@@ -27,11 +31,6 @@ public class TrainerTest {
         assertNotEquals(trainer1.getUserId(), trainer2.getUserId());
         assertTrue(trainer2.getUserId() == trainer1.getUserId() + 1);
         assertTrue(trainer3.getUserId() == trainer2.getUserId() + 1);
-
-    }
-
-    @Test
-    void loadTrainersFromCSV(){
 
     }
 }

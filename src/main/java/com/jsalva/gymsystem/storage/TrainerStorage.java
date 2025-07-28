@@ -3,6 +3,8 @@ package com.jsalva.gymsystem.storage;
 import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.TrainingType;
 import jakarta.annotation.PostConstruct;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +16,8 @@ import java.util.Map;
 
 @Component
 public class TrainerStorage {
+
+    private final Logger logger = LoggerFactory.getLogger(TrainerStorage.class);
 
     @Value("${storage.trainers.file}")
     private String trainersFilePath;
@@ -32,7 +36,6 @@ public class TrainerStorage {
     }
 
     private void loadTrainersFromCSV() {
-        System.out.println("loadTrainersFromCSV called!");
         try (InputStream is = getClass().getClassLoader().getResourceAsStream(trainersFilePath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line = reader.readLine(); // Skip header
@@ -54,10 +57,9 @@ public class TrainerStorage {
                     count++;
                 }
             }
-            System.out.println("Loaded " + count + " trainers");
-
+            logger.info("Loaded {} trainers", count);
         } catch (Exception e) {
-            System.err.println("Error loading trainers: " + e.getMessage());
+            logger.error("Error loading trainers: {}", e.getMessage());
         }
     }
 }

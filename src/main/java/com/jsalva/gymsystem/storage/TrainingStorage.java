@@ -36,7 +36,6 @@ public class TrainingStorage {
     }
 
     private void loadTrainingsFromCSV() {
-        logger.info("Loading Trainings from csv file...");
         try (InputStream is = getClass().getClassLoader().getResourceAsStream(trainingsFilePath);
              BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
             String line = reader.readLine(); // Skip header

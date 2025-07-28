@@ -16,31 +16,29 @@ import java.util.Map;
 @ComponentScan(value="com.jsalva.gymsystem")
 @PropertySource("classpath:application.properties")
 public class AppConfig {
+
+
     @Bean
-    public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer(){
         return new PropertySourcesPlaceholderConfigurer();
     }
 
     @Bean
     public TrainerStorage trainerStorage() {
-        System.out.println("trainerStorage() bean method called!");
         return new TrainerStorage();
     }
 
     @Bean
     public TraineeStorage traineeStorage() {
-        System.out.println("traineeStorage() bean method called!");
         return new TraineeStorage();
     }
 
     @Bean
     public TrainingStorage trainingStorage() {
-        System.out.println("trainingStorage() bean method called!");
         return new TrainingStorage();
     }
     @Bean
     public Map<String, Map<Long, Object>> commonStorage() {
-        System.out.println("commonStorage() bean method called!");
         Map<String, Map<Long, Object>> storage = new HashMap<>();
         storage.put("trainers", trainerStorage().getTrainers());
         storage.put("trainees", traineeStorage().getTrainees());
