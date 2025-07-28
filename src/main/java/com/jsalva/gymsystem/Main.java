@@ -114,7 +114,7 @@ public class Main {
 
         List<Training> trainingList = trainingService.getAllTrainings();
 
-        System.out.println(trainingList.get(0));
+        System.out.println(trainingList.getFirst());
 
         trainingService.createTraining(1L,8L,"Leg Day Killer Workout", TrainingType.FUNCTIONAL, LocalDate.now(), 40);
 

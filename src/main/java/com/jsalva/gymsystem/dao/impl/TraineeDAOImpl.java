@@ -2,7 +2,6 @@ package com.jsalva.gymsystem.dao.impl;
 
 import com.jsalva.gymsystem.dao.TraineeDAO;
 import com.jsalva.gymsystem.model.Trainee;
-import com.jsalva.gymsystem.model.Trainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

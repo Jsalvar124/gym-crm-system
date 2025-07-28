@@ -1,7 +1,6 @@
 package com.jsalva.gymsystem.dao.impl;
 
 import com.jsalva.gymsystem.dao.TrainingDAO;
-import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.Training;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
