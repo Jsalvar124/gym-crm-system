@@ -59,15 +59,10 @@ public class TrainerServiceImpl implements TrainerService {
             throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
         }
         return trainer;
-
     }
 
     @Override
     public void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive) {
-        //Check that id is not null
-        if(userId == null){
-            throw new IllegalArgumentException("User id cannot be null");
-        }
         // Verify that the id exists.
         Trainer trainer = trainerDAO.findById(userId);
         if(trainer == null){

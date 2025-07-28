@@ -1,13 +1,15 @@
 package com.jsalva.gymsystem.service;
 
 import com.jsalva.gymsystem.model.Trainee;
+import com.jsalva.gymsystem.model.TrainingType;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface TraineeService {
-    Trainee createTrainee(Trainee trainee);
+    void createTrainee(String firstName, String lastName, String address, LocalDate dateOfBirth);
     List<Trainee> getAllTrainees();
     Trainee getTraineeById(Long id);
-    Trainee updateTrainee(Trainee trainee);
-    void deleteTrainer(Long id);
+    void updateTrainee(Long userId, String firstName, String lastName, String newPassword, Boolean isActive, String address, LocalDate dateOfBirth);
+    void deleteTrainee(Long id);
 }
