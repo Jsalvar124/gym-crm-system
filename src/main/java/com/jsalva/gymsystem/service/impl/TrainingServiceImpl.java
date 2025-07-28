@@ -63,7 +63,7 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public Training getTrainerById(Long id) {
+    public Training getTrainingById(Long id) {
         Training training = trainingDAO.findById(id);
         if(training == null){
             logger.error("Training id not found");

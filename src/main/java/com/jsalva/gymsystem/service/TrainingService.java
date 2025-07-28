@@ -9,5 +9,5 @@ import java.util.List;
 public interface TrainingService {
     void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingType trainingType, LocalDate trainingDate, Integer duration);
     List<Training> getAllTrainings();
-    Training getTrainerById(Long id);
+    Training getTrainingById(Long id);
 }

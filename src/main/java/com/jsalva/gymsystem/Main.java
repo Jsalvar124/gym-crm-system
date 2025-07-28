@@ -3,6 +3,7 @@ package com.jsalva.gymsystem;
 import com.jsalva.gymsystem.config.AppConfig;
 import com.jsalva.gymsystem.dao.TrainerDAO;
 import com.jsalva.gymsystem.dao.impl.TrainerDAOImpl;
+import com.jsalva.gymsystem.facade.GymFacade;
 import com.jsalva.gymsystem.model.Trainee;
 import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.Training;
@@ -117,6 +118,10 @@ public class Main {
         System.out.println(trainingList.getFirst());
 
         trainingService.createTraining(1L,8L,"Leg Day Killer Workout", TrainingType.FUNCTIONAL, LocalDate.now(), 40);
+
+        GymFacade gymFacade = context.getBean(GymFacade.class);
+
+        gymFacade.createTrainer("Juan", "Pérez", TrainingType.CROSSFIT);
 
     }
 }
