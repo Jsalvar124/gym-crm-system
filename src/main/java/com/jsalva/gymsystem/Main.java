@@ -5,9 +5,11 @@ import com.jsalva.gymsystem.dao.TrainerDAO;
 import com.jsalva.gymsystem.dao.impl.TrainerDAOImpl;
 import com.jsalva.gymsystem.model.Trainee;
 import com.jsalva.gymsystem.model.Trainer;
+import com.jsalva.gymsystem.model.Training;
 import com.jsalva.gymsystem.model.TrainingType;
 import com.jsalva.gymsystem.service.TraineeService;
 import com.jsalva.gymsystem.service.TrainerService;
+import com.jsalva.gymsystem.service.TrainingService;
 import com.jsalva.gymsystem.service.impl.TrainerServiceImpl;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -107,5 +109,14 @@ public class Main {
         traineeService.updateTrainee(19L, "José", null, null, false, null, null);
 
         traineeService.deleteTrainee(19L);
+
+        TrainingService trainingService = context.getBean(TrainingService.class);
+
+        List<Training> trainingList = trainingService.getAllTrainings();
+
+        System.out.println(trainingList.get(0));
+
+        trainingService.createTraining(1L,8L,"Leg Day Killer Workout", TrainingType.FUNCTIONAL, LocalDate.now(), 40);
+
     }
 }

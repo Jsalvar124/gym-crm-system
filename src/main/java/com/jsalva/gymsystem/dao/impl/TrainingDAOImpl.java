@@ -1,15 +1,18 @@
 package com.jsalva.gymsystem.dao.impl;
 
 import com.jsalva.gymsystem.dao.TrainingDAO;
+import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.Training;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Repository
 public class TrainingDAOImpl implements TrainingDAO {
 
     private final Logger logger = LoggerFactory.getLogger(TrainingDAOImpl.class);
@@ -43,6 +46,11 @@ public class TrainingDAOImpl implements TrainingDAO {
 
     @Override
     public Training findById(Long id) {
-        return null;
+        if(id == null){
+            logger.error("Attempted to find training with null ID");
+            throw new IllegalArgumentException("Training ID cannot be null");
+        }
+        logger.info("Searching for training with id {}", id);
+        return (Training) trainings.get(id);
     }
 }

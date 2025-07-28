@@ -56,6 +56,7 @@ public class TrainerServiceImpl implements TrainerService {
     public Trainer getTrainerById(Long id) {
         Trainer trainer = trainerDAO.findById(id);
         if(trainer == null){
+            logger.error("Trainer id not found");
             throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
         }
         return trainer;
@@ -66,6 +67,7 @@ public class TrainerServiceImpl implements TrainerService {
         // Verify that the id exists.
         Trainer trainer = trainerDAO.findById(userId);
         if(trainer == null){
+            logger.error("Trainer for update not found");
             throw new IllegalArgumentException("Trainer with Id " + userId + " not found.");
         }
         // if either lastname or firstname change, reasign username.
@@ -103,6 +105,7 @@ public class TrainerServiceImpl implements TrainerService {
         // Verify that the id exists.
         Trainer trainerFound = trainerDAO.findById(id);
         if(trainerFound == null){
+            logger.error("Trainer for deletion not found");
             throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
         }
         logger.info("Deleting trainer with id {}", id);

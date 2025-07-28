@@ -61,6 +61,7 @@ public class TraineeServiceImpl implements TraineeService {
         // Verify the ID exists
         Trainee trainee = traineeDAO.findById(userId);
         if(trainee == null){
+            logger.error("Trainee for update not found");
             throw new IllegalArgumentException("Trainee with Id " + userId + " not found.");
         }
         // Check if firstname or lastname changed and reassign username accordingly.
@@ -98,6 +99,7 @@ public class TraineeServiceImpl implements TraineeService {
     public void deleteTrainee(Long id) {
         Trainee trainee = traineeDAO.findById(id);
         if(trainee == null){
+            logger.error("Trainee for deletion not found");
             throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
         }
         logger.info("Deleting trainee with id {}", id);

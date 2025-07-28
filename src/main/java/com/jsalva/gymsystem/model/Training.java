@@ -27,6 +27,8 @@ public class Training {
         this.duration = duration;
     }
 
+
+
     public Long getTrainingId() {
         return trainingId;
     }

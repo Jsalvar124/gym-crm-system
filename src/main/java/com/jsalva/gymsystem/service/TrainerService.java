@@ -4,7 +4,6 @@ import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.TrainingType;
 
 import java.util.List;
-import java.util.Map;
 
 public interface TrainerService {
     void createTrainer(String firstName, String lastName, TrainingType trainingType);

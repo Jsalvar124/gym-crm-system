@@ -8,5 +8,4 @@ public interface TrainingDAO {
     void save(Training training);
     List<Training> findAll();
     Training findById(Long id);
-
 }
