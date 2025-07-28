@@ -104,7 +104,7 @@ public class Main {
         traineeService.createTrainee("Carlos", "Ramos", "CR 43 # 56-14", LocalDate.of(1990, 5, 27));
         traineeService.createTrainee("Carlos", "Ramirez", "CL 52 # 12-22", LocalDate.of(1990, 5, 27));
 
-        traineeService.updateTrainee(19L, "José", null, "changePassword", false, null, null);
+        traineeService.updateTrainee(19L, "José", null, null, false, null, null);
 
         traineeService.deleteTrainee(19L);
     }
