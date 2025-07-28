@@ -31,9 +31,9 @@ public class TrainerServiceImpl implements TrainerService {
         trainer.setSpecialization(trainingType);
 
         //Create Username as FirstName.LastnameXX, verify if any homonyms exist, if so add serial number as suffix
-        List<Trainer> trainers = getAllTrainers();
-        List<Trainee> trainees = traineeService.getAllTrainees();
-        String username = UserUtils.generateUniqueUsername(trainer.getFirstName(), trainer.getLastName(), trainers, trainees);
+        String first = firstName == null? trainer.getFirstName() : firstName;
+        String last = lastName == null? trainer.getLastName() : lastName;
+        String username = UserUtils.generateUniqueUsername(trainer.getFirstName(), trainer.getLastName(), getAllTrainers(), traineeService.getAllTrainees());
         trainer.setUsername(username);
 
         //Generate and set random Password

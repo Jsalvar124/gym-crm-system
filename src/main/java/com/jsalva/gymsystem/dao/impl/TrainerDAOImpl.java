@@ -40,7 +40,7 @@ public class TrainerDAOImpl implements TrainerDAO {
     @Override
     public List<Trainer> findAll() {
         List<Trainer> trainerList = new ArrayList<>();
-        logger.info("Retriving all trainers");
+        logger.info("Retrieving all trainers");
         trainers.forEach((id, trainer)->{
             trainerList.add((Trainer) trainer);
         });

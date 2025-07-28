@@ -30,13 +30,13 @@ public class TraineeDAOImpl implements TraineeDAO {
     public void save(Trainee trainee) {
         logger.info("Saving trainee with ID: {}", trainee.getUserId());
         trainees.put(trainee.getUserId(), trainee);
-        logger.info("Saving trainee with ID: {}", trainee.getUserId());
+        logger.debug("Trainee saved successfully: {}", trainee.getUsername());
     }
 
     @Override
     public List<Trainee> findAll() {
         List<Trainee> traineeList = new ArrayList<>();
-        logger.info("Retriving all trainees");
+        logger.info("Retrieving all trainees");
         trainees.forEach((id, trainee)->{
             traineeList.add((Trainee) trainee);
         });

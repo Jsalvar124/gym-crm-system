@@ -32,6 +32,9 @@ public class TraineeServiceImpl implements TraineeService {
         trainee.setAddress(address);
         trainee.setDateOfBirth(dateOfBirth);
 
+        //Generate and set random Password
+        trainee.setPassword(UserUtils.generateRandomPassword());
+
         // Create unique username
         String username = UserUtils.generateUniqueUsername(firstName, lastName, trainerService.getAllTrainers(), getAllTrainees());
         trainee.setUsername(username);
@@ -62,7 +65,9 @@ public class TraineeServiceImpl implements TraineeService {
         }
         // Check if firstname or lastname changed and reassign username accordingly.
         if(firstName!=null && !firstName.equals(trainee.getFirstName()) || lastName != null && !lastName.equals(trainee.getLastName())) {
-            String username = UserUtils.generateUniqueUsername(firstName, lastName, trainerService.getAllTrainers(), getAllTrainees());
+            String first = firstName == null? trainee.getFirstName() : firstName;
+            String last = lastName == null? trainee.getLastName() : lastName;
+            String username = UserUtils.generateUniqueUsername(first, last, trainerService.getAllTrainers(), getAllTrainees());
             trainee.setUsername(username);
         }
         if(firstName != null){

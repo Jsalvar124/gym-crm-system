@@ -3,13 +3,17 @@ package com.jsalva.gymsystem;
 import com.jsalva.gymsystem.config.AppConfig;
 import com.jsalva.gymsystem.dao.TrainerDAO;
 import com.jsalva.gymsystem.dao.impl.TrainerDAOImpl;
+import com.jsalva.gymsystem.model.Trainee;
 import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.TrainingType;
+import com.jsalva.gymsystem.service.TraineeService;
 import com.jsalva.gymsystem.service.TrainerService;
 import com.jsalva.gymsystem.service.impl.TrainerServiceImpl;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 
 public class Main {
@@ -88,5 +92,20 @@ public class Main {
         trainerService.updateTrainer(17L, "David", "Brown", TrainingType.ZUMBA, null, null);
 
         trainerService.deleteTrainer(17L);
+
+        TraineeService traineeService = context.getBean(TraineeService.class);
+
+        List<Trainee> traineeList = traineeService.getAllTrainees();
+
+        for (Trainee trnee : traineeList){
+            System.out.println(trnee);
+        }
+
+        traineeService.createTrainee("Carlos", "Ramos", "CR 43 # 56-14", LocalDate.of(1990, 5, 27));
+        traineeService.createTrainee("Carlos", "Ramirez", "CL 52 # 12-22", LocalDate.of(1990, 5, 27));
+
+        traineeService.updateTrainee(19L, "José", null, "changePassword", false, null, null);
+
+        traineeService.deleteTrainee(19L);
     }
 }
