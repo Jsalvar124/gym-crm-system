@@ -81,6 +81,7 @@ public class Training {
         }
     }
 
+    // Regular Getters and setters for the outer class
     public Long getTrainingId() {
         return trainingId;
     }
