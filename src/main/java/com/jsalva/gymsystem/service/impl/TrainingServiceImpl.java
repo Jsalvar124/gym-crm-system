@@ -44,13 +44,14 @@ public class TrainingServiceImpl implements TrainingService {
             throw new IllegalArgumentException("Trainee with Id " + traineeId + " not found.");
         }
         // If both exist, proceed
-        Training training = new Training();
-        training.setTrainerId(trainerId);
-        training.setTraineeId(traineeId);
-        training.setTrainingName(trainingName);
-        training.setTrainingType(trainingType);
-        training.setTrainingDate(trainingDate);
-        training.setDuration(duration);
+        Training training = new Training.Builder()
+                .setTrainerId(trainerId)
+                .setTraineeId(traineeId)
+                .setTrainingName(trainingName)
+                .setTrainingType(trainingType)
+                .setTrainingDate(trainingDate)
+                .setDuration(duration)
+                .build();
 
         trainingDAO.save(training);
         logger.debug("Saved Training: {}", training);

@@ -29,7 +29,7 @@ public class TraineeDAOImpl implements TraineeDAO {
     public void save(Trainee trainee) {
         logger.info("Saving trainee with ID: {}", trainee.getUserId());
         trainees.put(trainee.getUserId(), trainee);
-        logger.debug("Trainee saved successfully: {}", trainee.getUsername());
+        logger.info("Trainee saved successfully: {}", trainee.getUsername());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TraineeDAOImpl implements TraineeDAO {
         trainees.forEach((id, trainee)->{
             traineeList.add((Trainee) trainee);
         });
-        logger.debug("Found {} trainees", traineeList.size());
+        logger.info("Found {} trainees", traineeList.size());
         return traineeList;    }
 
     @Override

@@ -29,7 +29,7 @@ public class TrainerDAOImpl implements TrainerDAO {
     public void save(Trainer trainer) {
         logger.info("Saving trainer with ID: {}", trainer.getUserId());
         trainers.put(trainer.getUserId(), trainer);
-        logger.debug("Trainer saved successfully: {}", trainer.getUsername());
+        logger.info("Trainer saved successfully: {}", trainer.getUsername());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class TrainerDAOImpl implements TrainerDAO {
         trainers.forEach((id, trainer)->{
             trainerList.add((Trainer) trainer);
         });
-        logger.debug("Found {} trainers", trainerList.size());
+        logger.info("Found {} trainers", trainerList.size());
         return trainerList;
     }
 
