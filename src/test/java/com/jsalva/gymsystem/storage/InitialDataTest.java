@@ -1,15 +1,13 @@
-package com.jsalva.gynsystem.storage;
+package com.jsalva.gymsystem.storage;
 
 import com.jsalva.gymsystem.config.AppConfig;
 import com.jsalva.gymsystem.model.Trainee;
 import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.Training;
 import com.jsalva.gymsystem.model.TrainingType;
-import com.jsalva.gymsystem.storage.TrainerStorage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import java.time.LocalDate;

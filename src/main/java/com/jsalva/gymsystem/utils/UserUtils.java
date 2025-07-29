@@ -11,12 +11,14 @@ import java.util.stream.Stream;
 public class UserUtils {
 
     public static String generateRandomPassword(){
-        String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        SecureRandom RANDOM = new SecureRandom();
+        SecureRandom random = new SecureRandom();
         StringBuilder password = new StringBuilder(10);
-        for (int i = 0; i < 10; i++) {
-            int index = RANDOM.nextInt(CHARACTERS.length());
-            password.append(CHARACTERS.charAt(index));
+
+        while (password.length() < 10) {
+            int codePoint = random.nextInt(75) + 48; // generates [48, 122]
+            if (Character.isLetterOrDigit(codePoint)) {
+                password.append((char) codePoint);
+            }
         }
         return password.toString();
     }

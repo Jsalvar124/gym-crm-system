@@ -1,7 +1,5 @@
-package com.jsalva.gynsystem.model;
+package com.jsalva.gymsystem.model;
 
-import com.jsalva.gymsystem.model.Trainer;
-import com.jsalva.gymsystem.model.TrainingType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

@@ -21,107 +21,25 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
-//        Trainer trainer = new Trainer("Juan", "Pérez", "Juan.Pérez", "pass231", true, TrainingType.BOULDERING);
-//        Trainer trainer1 = new Trainer("Jorge", "Cifuentes", "Jorge.Cifuentes", "pass123", true, TrainingType.BOXING);
-//        System.out.println(trainer);
-//        System.out.println(trainer1);
-        // Create Spring application context
         ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-
-        // Get the common storage bean
-        Map<String, Map<Long, Object>> commonStorage = (Map<String, Map<Long, Object>>) context.getBean("commonStorage");
-
-        // Get the trainers storage from common storage
-        Map<Long, Object> trainersStorage = commonStorage.get("trainers");
-
-        // Print results
-        System.out.println("=== Testing Common Storage - Trainers ===");
-        System.out.println("Number of trainers loaded: " + trainersStorage.size());
-        System.out.println();
-
-        // Print each trainer
-        trainersStorage.forEach((id, trainer) -> {
-            System.out.println("Trainer ID: " + id);
-            System.out.println("Trainer: " + trainer);
-            System.out.println("---");
-        });
-
-        // Get the trainees storage from common storage
-        Map<Long, Object> traineesStorage = commonStorage.get("trainees");
-
-        // Print results
-        System.out.println("=== Testing Common Storage - Trainees ===");
-        System.out.println("Number of trainees loaded: " + traineesStorage.size());
-        System.out.println();
-
-        // Print each trainee
-//        traineesStorage.forEach((id, trainee) -> {
-//            System.out.println("Trainee ID: " + id);
-//            System.out.println("Trainee: " + trainee);
-//            System.out.println("---");
-//        });
-
-        // Get the trainings storage from common storage
-        Map<Long, Object> trainingStorage = commonStorage.get("trainings");
-
-        // Print results
-        System.out.println("=== Testing Common Storage - Trainings ===");
-        System.out.println("Number of trainings loaded: " + trainingStorage.size());
-        System.out.println();
-
-        // Print each training
-//        trainingStorage.forEach((id, training) -> {
-//            System.out.println("Training ID: " + id);
-//            System.out.println("Training: " + training);
-//            System.out.println("---");
-//        });
-
-
-        TrainerDAO trainerDAO = context.getBean(TrainerDAOImpl.class); // if you use constructor, Spring does not take control of that instance.
-        Map<Long, Object> trainersMap = trainerDAO.getTrainers();
-
-        // is it the same instance?
-        System.out.println("SAME INSTANCE: ");
-        System.out.println(trainersMap == trainersStorage);
-
-        TrainerService trainerService = context.getBean(TrainerService.class); // Get from context, otherwise, dependencies won't be injected!
-        trainerService.createTrainer("Juan","Pérez", TrainingType.BOXING);
-        trainerService.createTrainer("Hector","Pérez", TrainingType.PILATES);
-
-
-        // Update Trainer 17
-        trainerService.updateTrainer(17L, null, null, null, "NewPassword", null);
-
-        trainerService.updateTrainer(17L, "David", "Brown", TrainingType.ZUMBA, null, null);
-
-        trainerService.deleteTrainer(17L);
-
-        TraineeService traineeService = context.getBean(TraineeService.class);
-
-        List<Trainee> traineeList = traineeService.getAllTrainees();
-
-        for (Trainee trnee : traineeList){
-            System.out.println(trnee);
-        }
-
-        traineeService.createTrainee("Carlos", "Ramos", "CR 43 # 56-14", LocalDate.of(1990, 5, 27));
-        traineeService.createTrainee("Carlos", "Ramirez", "CL 52 # 12-22", LocalDate.of(1990, 5, 27));
-
-        traineeService.updateTrainee(19L, "José", null, null, false, null, null);
-
-        traineeService.deleteTrainee(19L);
-
-        TrainingService trainingService = context.getBean(TrainingService.class);
-
-        List<Training> trainingList = trainingService.getAllTrainings();
-
-        System.out.println(trainingList.getFirst());
-
-        trainingService.createTraining(1L,8L,"Leg Day Killer Workout", TrainingType.FUNCTIONAL, LocalDate.now(), 40);
 
         GymFacade gymFacade = context.getBean(GymFacade.class);
 
-        gymFacade.createTrainer("Juan", "Pérez", TrainingType.CROSSFIT);
+        gymFacade.createTrainer("Juan", "Pérez", TrainingType.BOULDERING);
+        gymFacade.createTrainer("Juan", "Pérez", TrainingType.BOXING);
+
+        Trainer t1 = gymFacade.getTrainerById(16L);
+        Trainer t2 = gymFacade.getTrainerById(17L);
+
+        System.out.println(t1);
+        // Error, not existing id.
+        gymFacade.getTrainerById(100L);
+
+        System.out.println(t2);
+
+        gymFacade.updateTrainer(17L, "Juan", "Pulgarín", TrainingType.BOULDERING, null, null);
+
+        System.out.println(t2);
 
     }
 }

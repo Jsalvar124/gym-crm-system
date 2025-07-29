@@ -54,12 +54,18 @@ public abstract class User {
         this.password = password;
     }
 
+    public String getPassword() { return password; }
+
     public boolean isActive() {
         return isActive;
     }
 
     public void setActive(boolean active) {
         isActive = active;
+    }
+
+    public static void setIdCount(Long idCount) {
+        User.idCount = idCount;
     }
 
     @Override
