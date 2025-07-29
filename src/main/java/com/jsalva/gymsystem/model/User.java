@@ -26,6 +26,11 @@ public abstract class User {
         return userId;
     }
 
+    // For testing
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
     public String getFirstName() {
         return firstName;
     }

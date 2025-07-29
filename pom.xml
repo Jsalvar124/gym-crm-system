@@ -18,7 +18,7 @@
 
         <!-- Testing versions -->
         <junit.version>5.10.2</junit.version>
-<!--        <mockito.version>4.6.1</mockito.version>-->
+        <mockito.version>5.11.0</mockito.version>
 
         <!-- Logging versions -->
         <slf4j.version>2.0.17</slf4j.version>
@@ -67,6 +67,20 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>5.12.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
 

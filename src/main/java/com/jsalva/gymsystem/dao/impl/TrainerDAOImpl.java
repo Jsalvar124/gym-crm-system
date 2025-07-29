@@ -25,11 +25,6 @@ public class TrainerDAOImpl implements TrainerDAO {
         this.trainers = commonStorage.get("trainers"); // only pass the trainers to the class to avoid multiple responsibility.
     }
 
-    // TODO REMOVE, THIS IS JUT FOR MAIN TEST
-    public Map<Long, Object> getTrainers() {
-        return trainers;
-    }
-
     @Override
     public void save(Trainer trainer) {
         logger.info("Saving trainer with ID: {}", trainer.getUserId());
