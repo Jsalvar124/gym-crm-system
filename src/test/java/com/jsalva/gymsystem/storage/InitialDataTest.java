@@ -5,8 +5,10 @@ import com.jsalva.gymsystem.model.Trainee;
 import com.jsalva.gymsystem.model.Trainer;
 import com.jsalva.gymsystem.model.Training;
 import com.jsalva.gymsystem.model.TrainingType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -16,11 +18,42 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringJUnitConfig(AppConfig.class)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Initial Data Load Tests")
 public class InitialDataTest {
 
     @Autowired
     private Map<String, Map<Long, Object>> commonStorage;
+
+    @Autowired
+    private TraineeStorage traineeStorage;
+
+    @Autowired
+    private TrainerStorage trainerStorage; // assuming you have this
+
+    @Autowired
+    private TrainingStorage trainingStorage; // assuming you have this
+
+    @BeforeAll
+    void reloadAllData() {
+        // Clear existing data
+        commonStorage.clear();
+
+        // Clear individual storage maps
+        traineeStorage.getTrainees().clear();
+        trainerStorage.getTrainers().clear(); // adjust method name as needed
+        trainingStorage.getTrainings().clear(); // adjust method name as needed
+
+        // Reload data by calling the @PostConstruct methods directly
+        traineeStorage.initializeTraineeData();
+        trainerStorage.initializeTrainerData(); // adjust method name as needed
+        trainingStorage.initializeTrainingData(); // adjust method name as needed
+
+        // Repopulate commonStorage
+        commonStorage.put("trainees", traineeStorage.getTrainees());
+        commonStorage.put("trainers", trainerStorage.getTrainers());
+        commonStorage.put("trainings", trainingStorage.getTrainings());
+    }
 
     @Test
     @DisplayName("Trainer File Tests")

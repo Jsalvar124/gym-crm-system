@@ -37,6 +37,7 @@ public class AppConfig {
     public TrainingStorage trainingStorage() {
         return new TrainingStorage();
     }
+
     @Bean
     public Map<String, Map<Long, Object>> commonStorage() {
         Map<String, Map<Long, Object>> storage = new HashMap<>();
