@@ -1,0 +1,100 @@
+package com.jsalva.gymsystem.repository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.transaction.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+public abstract class GenericRepository<T, K> {
+    protected EntityManager em;
+    private final Class<T> entityClass;
+
+
+    public GenericRepository(Class<T> entityClass, EntityManager em) {
+        this.entityClass = entityClass;
+        this.em = em;
+    }
+
+    @Transactional
+    public T create(T t) {
+        EntityTransaction tx = em.getTransaction();
+        try{
+            tx.begin();
+            em.persist(t);
+            tx.commit();
+            return t;
+        }catch (RuntimeException e){
+            if(tx.isActive()){
+                tx.rollback();
+            }
+            System.err.println("Failed to create entity: " + e.getMessage());
+            throw e;
+        }finally {
+            em.close();
+        }
+    }
+
+    @Transactional
+    public T update(T t) {
+        EntityTransaction tx = em.getTransaction();
+        try{
+            tx.begin();
+            T merged = em.merge(t);
+            tx.commit();
+            return merged;
+        }catch (RuntimeException e){
+            if(tx.isActive()){
+                tx.rollback();
+            }
+            System.err.println("Failed to update entity: " + e.getMessage());
+            throw e;
+        }finally {
+            em.close();
+        }
+    }
+
+    @Transactional
+    public boolean delete(K id) {
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+            T entity = em.find(entityClass, id);
+            if (entity != null) {
+                em.remove(entity);
+                tx.commit();
+                return true;
+            } else {
+                tx.rollback();
+                System.err.println("Failed to delete entity, Entity not found!");
+                return false;
+            }
+        } catch (RuntimeException e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            System.err.println("Failed to delete entity: " + e.getMessage());
+            return false;
+        } finally {
+            em.close();
+        }
+    }
+
+    public Optional<T> findById(K id) {
+        try {
+            T entity = em.find(entityClass, id);
+            return Optional.ofNullable(entity);
+        } finally {
+            em.close();
+        }
+    }
+
+    public List<T> findAll() {
+        try {
+            String jpql = "SELECT e FROM " + entityClass.getSimpleName() + " e";
+            return em.createQuery(jpql, entityClass).getResultList();
+        } finally {
+            em.close();
+        }    }
+}
+

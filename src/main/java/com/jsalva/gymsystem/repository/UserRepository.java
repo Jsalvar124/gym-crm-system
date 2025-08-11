@@ -1,4 +1,7 @@
 package com.jsalva.gymsystem.repository;
 
-public interface UserRepository {
+import com.jsalva.gymsystem.entity.User;
+
+public interface UserRepository{
+
 }
