@@ -11,10 +11,6 @@ public class Trainee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "specialization_id")
-    private TrainingType specialization;
-
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -34,15 +30,6 @@ public class Trainee {
 
     public Trainee setId(Long id) {
         this.id = id;
-        return this;
-    }
-
-    public TrainingType getSpecialization() {
-        return specialization;
-    }
-
-    public Trainee setSpecialization(TrainingType specialization) {
-        this.specialization = specialization;
         return this;
     }
 
