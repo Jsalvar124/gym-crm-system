@@ -3,7 +3,7 @@ package com.jsalva.gymsystem.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "training_type")
+@Table(name = "training_types")
 public class TrainingType {
 
     @Id
