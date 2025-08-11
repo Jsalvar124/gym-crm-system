@@ -11,7 +11,8 @@ public class TrainingType {
     private Long id;
 
     @Column(name = "training_type_name", nullable = false)
-    private String trainingTypeName;
+    @Enumerated(EnumType.STRING)
+    private TrainingTypeEnum trainingTypeName;
 
     public TrainingType() {
     }
@@ -25,11 +26,11 @@ public class TrainingType {
         return this;
     }
 
-    public String getTrainingTypeName() {
+    public TrainingTypeEnum getTrainingTypeName() {
         return trainingTypeName;
     }
 
-    public TrainingType setTrainingTypeName(String trainingTypeName) {
+    public TrainingType setTrainingTypeName(TrainingTypeEnum trainingTypeName) {
         this.trainingTypeName = trainingTypeName;
         return this;
     }

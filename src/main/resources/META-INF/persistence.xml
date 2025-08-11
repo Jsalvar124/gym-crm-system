@@ -15,8 +15,8 @@
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/gymdb"/>
             <property name="jakarta.persistence.jdbc.user" value="postgres"/>
             <property name="jakarta.persistence.jdbc.password" value="postgres"/>
-<!--            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>-->
-            <property name="hibernate.hbm2ddl.auto" value="update"/>
+            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+<!--            <property name="hibernate.hbm2ddl.auto" value="update"/>-->
             <property name="jakarta.persistence.sql-load-script-source" value="data.sql"/>
 
             <!-- Optional: show SQL in console -->
