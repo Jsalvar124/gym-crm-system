@@ -20,8 +20,8 @@
             <property name="jakarta.persistence.sql-load-script-source" value="data.sql"/>
 
             <!-- Optional: show SQL in console -->
-            <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>

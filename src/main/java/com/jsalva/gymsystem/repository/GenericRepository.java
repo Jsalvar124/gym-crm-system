@@ -30,8 +30,6 @@ public abstract class GenericRepository<T, K> {
             }
             System.err.println("Failed to create entity: " + e.getMessage());
             throw e;
-        }finally {
-            em.close();
         }
     }
 
@@ -49,8 +47,6 @@ public abstract class GenericRepository<T, K> {
             }
             System.err.println("Failed to update entity: " + e.getMessage());
             throw e;
-        }finally {
-            em.close();
         }
     }
 
@@ -75,8 +71,6 @@ public abstract class GenericRepository<T, K> {
             }
             System.err.println("Failed to delete entity: " + e.getMessage());
             return false;
-        } finally {
-            em.close();
         }
     }
 
@@ -84,8 +78,8 @@ public abstract class GenericRepository<T, K> {
         try {
             T entity = em.find(entityClass, id);
             return Optional.ofNullable(entity);
-        } finally {
-            em.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -93,8 +87,9 @@ public abstract class GenericRepository<T, K> {
         try {
             String jpql = "SELECT e FROM " + entityClass.getSimpleName() + " e";
             return em.createQuery(jpql, entityClass).getResultList();
-        } finally {
-            em.close();
-        }    }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
 

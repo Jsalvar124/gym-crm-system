@@ -6,14 +6,8 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "trainees")
-public class Trainee {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+@PrimaryKeyJoinColumn(name = "user_id")
+public class Trainee extends User{
 
     @Column(name = "address", nullable = true) //optional
     private String address;
@@ -22,24 +16,6 @@ public class Trainee {
     private LocalDate dateOfBirth;
 
     public Trainee() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Trainee setId(Long id) {
-        this.id = id;
-        return this;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Trainee setUser(User user) {
-        this.user = user;
-        return this;
     }
 
     public String getAddress() {

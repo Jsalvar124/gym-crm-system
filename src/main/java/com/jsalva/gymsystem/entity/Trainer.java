@@ -4,11 +4,8 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "trainers")
-public class Trainer {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@PrimaryKeyJoinColumn(name = "user_id")
+public class Trainer extends User{
 
 //    0..n means zero to many (optional, many side). 1 means exactly one (mandatory, single side).
 //    A Trainer must have exactly one Specialization (the 1 side). A Specialization can be linked to zero or many Trainers (the 0..n side).
@@ -25,20 +22,7 @@ public class Trainer {
 //    A Trainer cannot exist without a User.
 //    If you delete the User, the related Trainee or Trainer must also be deleted.
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     public Trainer() {
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public Trainer setId(Long id) {
-        this.id = id;
-        return this;
     }
 
     public TrainingType getSpecialization() {
@@ -50,12 +34,10 @@ public class Trainer {
         return this;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public Trainer setUser(User user) {
-        this.user = user;
-        return this;
+    @Override
+    public String toString() {
+        return "Trainer{" +
+                "specialization=" + specialization +
+                "} " + super.toString();
     }
 }
