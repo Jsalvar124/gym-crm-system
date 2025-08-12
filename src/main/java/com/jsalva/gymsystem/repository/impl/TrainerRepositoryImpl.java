@@ -4,9 +4,12 @@ import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.repository.GenericRepository;
 import com.jsalva.gymsystem.repository.TrainerRepository;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TrainerRepositoryImpl extends GenericRepository<Trainer, Long> implements TrainerRepository {
     public TrainerRepositoryImpl(Class<Trainer> entityClass, EntityManager em) {
@@ -14,11 +17,26 @@ public class TrainerRepositoryImpl extends GenericRepository<Trainer, Long> impl
     }
 
     @Override
-    public void toggleActiveState(String username, Boolean isActive) {
-        em.createQuery("UPDATE Trainer t SET t.isActive = :isActive WHERE t.username = :username")
-                .setParameter("isActive", isActive)
-                .setParameter("username", username)
-                .executeUpdate();
+    public void toggleActiveState(Long id) {
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        try{
+            Trainer trainer = em.find(Trainer.class, id);
+            if(trainer != null){
+                boolean current = trainer.getActive();
+                trainer.setActive(!current);
+                em.merge(trainer);
+                tx.commit();
+                System.out.println("Active status for id "+ id + " set to: " +!current);
+            }else{
+                System.out.println("Id not found");
+            }
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        }
     }
 
     @Override
@@ -32,17 +50,36 @@ public class TrainerRepositoryImpl extends GenericRepository<Trainer, Long> impl
     }
 
     @Override
-    public Trainer findByUsername(String username) {
-        return null;
+    public Optional<Trainer> findByUsername(String username) {
+        try {
+            TypedQuery<Trainer> typedQuery = em.createQuery("SELECT t FROM Trainer t WHERE t.username = :username", Trainer.class);
+            typedQuery.setParameter("username", username);
+            return Optional.of(typedQuery.getSingleResult());
+        } catch (NoResultException e){
+            System.out.println("No result!");
+            return Optional.empty();
+        }
     }
 
     @Override
-    public void updatePassword(String username, String oldPassword, String newPassword) {
-
+    public void updatePassword(Long id, String newPassword) {
+        EntityTransaction tx = em.getTransaction();
+        tx.begin();
+        try {
+            Trainer trainer = em.find(Trainer.class, id);
+            if (trainer != null) {
+                trainer.setPassword(newPassword);
+                em.merge(trainer);
+                tx.commit();
+            } else {
+                tx.rollback();
+            }
+        } catch (Exception e) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw e;
+        }
     }
 
-    @Override
-    public List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername) {
-        return List.of();
-    }
 }
