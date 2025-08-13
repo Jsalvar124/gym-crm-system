@@ -8,10 +8,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class TraineeRepositoryImpl extends GenericRepository<Trainee, Long> implements TraineeRepository {
     public TraineeRepositoryImpl(Class<Trainee> entityClass, EntityManager em) {
         super(entityClass, em);
@@ -104,12 +106,18 @@ public class TraineeRepositoryImpl extends GenericRepository<Trainee, Long> impl
 
     @Override
     public List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername) {
+        // Check that trainee Username exists.
+        Optional<Trainee> trainee = findByUsername(traineeUsername);
+        if(!trainee.isPresent()){
+            System.out.println("Username does not exist");
+            return List.of();
+        }
         TypedQuery<Trainer> typedQuery = em.createQuery(
                 """
                       SELECT t FROM Trainer t
                       WHERE t NOT IN (
                         SELECT DISTINCT tr.trainer FROM Training tr
-                        WHERE tr.trainee.username = :traineeUsername;
+                        WHERE tr.trainee.username = :traineeUsername
                         )
                    """, Trainer.class);
         typedQuery.setParameter("traineeUsername", traineeUsername);

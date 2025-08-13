@@ -7,10 +7,11 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
+@Repository
 public class TrainerRepositoryImpl extends GenericRepository<Trainer, Long> implements TrainerRepository {
     public TrainerRepositoryImpl(Class<Trainer> entityClass, EntityManager em) {
         super(entityClass, em);

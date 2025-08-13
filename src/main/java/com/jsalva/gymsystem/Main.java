@@ -1,11 +1,9 @@
 package com.jsalva.gymsystem;
 
-import com.jsalva.gymsystem.entity.Trainee;
-import com.jsalva.gymsystem.entity.Trainer;
-import com.jsalva.gymsystem.entity.TrainingType;
-import com.jsalva.gymsystem.entity.TrainingTypeEnum;
+import com.jsalva.gymsystem.entity.*;
 import com.jsalva.gymsystem.repository.impl.TraineeRepositoryImpl;
 import com.jsalva.gymsystem.repository.impl.TrainerRepositoryImpl;
+import com.jsalva.gymsystem.repository.impl.TrainingRepositoryImpl;
 import com.jsalva.gymsystem.repository.impl.TrainingTypeRepositoryImpl;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -78,6 +76,28 @@ public class Main {
 //            traineeRepository.create(trainee);
 
             // Populate trainings
+            TrainingRepositoryImpl trainingRepository = new TrainingRepositoryImpl(Training.class, em);
+
+//            Training training = new Training();
+//            Trainee trainee = traineeRepository.findByUsername("Julian.Salva").get();
+//            Trainer trainer = trainerRepository.findByUsername("Juan.Perez").get();
+//
+//            training.setTrainee(trainee);
+//            training.setTrainer(trainer);
+//            training.setTrainingDate(LocalDate.of(2025, 8,14));
+//            training.setTrainingName("Advanced Functional");
+//            training.setDuration(90);
+//            TrainingType trainingType = trainingTypeRepository.findById(3L).get();
+//            training.setTrainingType(trainingType);
+//
+//            trainingRepository.create(training);
+
+            List<Trainer> trainerList = traineeRepository.findUnassignedTrainersByTrainee("Julian.Salva");
+            System.out.println(trainerList);
+            trainerList = traineeRepository.findUnassignedTrainersByTrainee("Chacho.Apá");
+            System.out.println(trainerList);
+
+
 
 
         } catch (Exception e) {
