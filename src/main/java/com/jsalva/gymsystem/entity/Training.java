@@ -32,6 +32,14 @@ public class Training {
     @Column(name = "duration")
     private Integer duration; // Minutes
 
+    // Lifecycle Events - Automatically maintain M2M relationship
+    @PostPersist
+    @PostUpdate
+    private void updateTrainerTraineeRelationship() {
+        if (trainer != null && trainee != null) {
+            trainer.addTrainee(trainee);
+        }
+    }
 
     public Training() {
     }

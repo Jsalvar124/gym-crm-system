@@ -3,6 +3,9 @@ package com.jsalva.gymsystem.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "trainees")
@@ -14,6 +17,10 @@ public class Trainee extends User{
 
     @Column(name = "birthday", nullable = true) //optional
     private LocalDate dateOfBirth;
+
+    // Many-to-Many non-owner side
+    @ManyToMany(mappedBy = "trainees") // Points to the property in Trainer
+    private Set<Trainer> trainers = new HashSet<>();
 
     public Trainee() {
     }
@@ -34,5 +41,9 @@ public class Trainee extends User{
     public Trainee setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         return this;
+    }
+
+    public Set<Trainer> getTrainers() {
+        return this.trainers;
     }
 }

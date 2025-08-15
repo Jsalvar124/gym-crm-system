@@ -12,6 +12,7 @@ import jakarta.persistence.Persistence;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.SocketHandler;
 
 public class Main {
     public static void main(String[] args) {
@@ -78,16 +79,16 @@ public class Main {
             // Populate trainings
             TrainingRepositoryImpl trainingRepository = new TrainingRepositoryImpl(Training.class, em);
 
-//            Training training = new Training();
-//            Trainee trainee = traineeRepository.findByUsername("Julian.Salva").get();
-//            Trainer trainer = trainerRepository.findByUsername("Juan.Perez").get();
-//
+            Training training = new Training();
+            Trainee trainee = traineeRepository.findByUsername("Chacho.Apá").get();
+            Trainer trainer = trainerRepository.findByUsername("Ana.Gomez").get();
+
 //            training.setTrainee(trainee);
 //            training.setTrainer(trainer);
-//            training.setTrainingDate(LocalDate.of(2025, 8,14));
-//            training.setTrainingName("Advanced Functional");
-//            training.setDuration(90);
-//            TrainingType trainingType = trainingTypeRepository.findById(3L).get();
+//            training.setTrainingDate(LocalDate.of(2025, 8,20));
+//            training.setTrainingName("Boxing introduction");
+//            training.setDuration(60);
+//            TrainingType trainingType = trainingTypeRepository.findById(4L).get();
 //            training.setTrainingType(trainingType);
 //
 //            trainingRepository.create(training);
@@ -96,6 +97,12 @@ public class Main {
             System.out.println(trainerList);
             trainerList = traineeRepository.findUnassignedTrainersByTrainee("Chacho.Apá");
             System.out.println(trainerList);
+
+            System.out.println("Chacho trainers");
+            System.out.println(trainee.getTrainers());
+
+            System.out.println("Ana Gomez Trainees");
+            System.out.println(trainer.getTrainees());
 
 
 
