@@ -3,6 +3,7 @@ package com.jsalva.gymsystem.repository.impl;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.repository.GenericRepository;
 import com.jsalva.gymsystem.repository.TrainerRepository;
+import com.jsalva.gymsystem.utils.EncoderUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
@@ -13,6 +14,9 @@ import java.util.Optional;
 
 @Repository
 public class TrainerRepositoryImpl extends GenericRepository<Trainer, Long> implements TrainerRepository {
+
+    EncoderUtils encoderUtils = new EncoderUtils();
+
     public TrainerRepositoryImpl(Class<Trainer> entityClass, EntityManager em) {
         super(entityClass, em);
     }
@@ -42,12 +46,18 @@ public class TrainerRepositoryImpl extends GenericRepository<Trainer, Long> impl
 
     @Override
     public boolean validateCredentials(String username, String password) {
-        TypedQuery<Long> typedQuery = em.createQuery(
-                "SELECT COUNT(t) FROM Trainer t WHERE t.username = :username AND t.password = :password",
-                Long.class);
-                typedQuery.setParameter("username", username);
-                typedQuery.setParameter("password", password);
-                return typedQuery.getSingleResult() > 0;
+        try {
+            Optional<Trainer> trainer = findByUsername(username);
+            if (trainer.isPresent()) {
+                String hashedPassword = trainer.get().getPassword();
+                return encoderUtils.verifyPassword(password, hashedPassword);
+            } else {
+                return false; // Trainer not found, password is false.
+            }
+        } catch (Exception e){
+            System.out.println("Error validating credentials");
+            throw e;
+        }
     }
 
     @Override
@@ -69,11 +79,13 @@ public class TrainerRepositoryImpl extends GenericRepository<Trainer, Long> impl
         try {
             Trainer trainer = em.find(Trainer.class, id);
             if (trainer != null) {
-                trainer.setPassword(newPassword);
+                String hashedPassword = encoderUtils.encryptPassword(newPassword);
+                trainer.setPassword(hashedPassword);
                 em.merge(trainer);
                 tx.commit();
             } else {
                 tx.rollback();
+                System.out.println("Trainer with id " + id + " not found.");
             }
         } catch (Exception e) {
             if (tx.isActive()) {

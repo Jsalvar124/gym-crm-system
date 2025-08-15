@@ -5,6 +5,7 @@ import com.jsalva.gymsystem.repository.impl.TraineeRepositoryImpl;
 import com.jsalva.gymsystem.repository.impl.TrainerRepositoryImpl;
 import com.jsalva.gymsystem.repository.impl.TrainingRepositoryImpl;
 import com.jsalva.gymsystem.repository.impl.TrainingTypeRepositoryImpl;
+import com.jsalva.gymsystem.utils.EncoderUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -43,13 +44,13 @@ public class Main {
             TrainerRepositoryImpl trainerRepository = new TrainerRepositoryImpl(Trainer.class, em);
 
 //            Trainer trainer = new Trainer();
-//            TrainingType trainingType = trainingTypeRepository.findById(4L).get(); // BOULDERING MANAGED ENTITY
+//            TrainingType trainingType = trainingTypeRepository.findById(6L).get(); // BOULDERING MANAGED ENTITY
 //            trainer.setSpecialization(trainingType);
 //            trainer.setActive(true);
-//            trainer.setFirstName("Elena");
-//            trainer.setLastName("Vega");
-//            trainer.setUsername("Elena.Vega");
-//            trainer.setPassword("oooooo");
+//            trainer.setFirstName("Andres");
+//            trainer.setLastName("Nichols");
+//            trainer.setUsername("Andres.Nichols");
+//            trainer.setPassword("aNdReS420");
 //
 //            trainerRepository.create(trainer);
 //
@@ -66,43 +67,55 @@ public class Main {
             TraineeRepositoryImpl traineeRepository = new TraineeRepositoryImpl(Trainee.class, em);
 //
 //            Trainee trainee = new Trainee();
-//            trainee.setAddress("21 Strasse, Berlin");
-//            trainee.setDateOfBirth(LocalDate.of(1854,2,15));
+//            trainee.setAddress("Calle Wallaby 42, Sidney");
+//            trainee.setDateOfBirth(LocalDate.of(1990,3,22));
 //            trainee.setActive(true);
-//            trainee.setFirstName("Gustav");
-//            trainee.setLastName("Mahler");
-//            trainee.setUsername("Gustav.Mahler");
-//            trainee.setPassword("eeeeee");
+//            trainee.setFirstName("Dory");
+//            trainee.setLastName("Blue");
+//            trainee.setUsername("Dory.Blue");
+//            trainee.setPassword("aSd1Fg");
 //
 //            traineeRepository.create(trainee);
 
             // Populate trainings
             TrainingRepositoryImpl trainingRepository = new TrainingRepositoryImpl(Training.class, em);
 
-            Training training = new Training();
-            Trainee trainee = traineeRepository.findByUsername("Chacho.Apá").get();
-            Trainer trainer = trainerRepository.findByUsername("Ana.Gomez").get();
-
+//            Training training = new Training();
+//            Trainee trainee = traineeRepository.findByUsername("Dory.Blue").get();
+//            Trainer trainer = trainerRepository.findByUsername("Elena.Vega").get();
+//
 //            training.setTrainee(trainee);
 //            training.setTrainer(trainer);
 //            training.setTrainingDate(LocalDate.of(2025, 8,20));
-//            training.setTrainingName("Boxing introduction");
+//            training.setTrainingName("Swimming basics");
 //            training.setDuration(60);
 //            TrainingType trainingType = trainingTypeRepository.findById(4L).get();
 //            training.setTrainingType(trainingType);
 //
 //            trainingRepository.create(training);
 
-            List<Trainer> trainerList = traineeRepository.findUnassignedTrainersByTrainee("Julian.Salva");
-            System.out.println(trainerList);
-            trainerList = traineeRepository.findUnassignedTrainersByTrainee("Chacho.Apá");
-            System.out.println(trainerList);
+//            List<Trainer> trainerList = traineeRepository.findUnassignedTrainersByTrainee("Julian.Salva");
+//            System.out.println(trainerList);
+//            trainerList = traineeRepository.findUnassignedTrainersByTrainee("Chacho.Apá");
+//            System.out.println(trainerList);
 
-            System.out.println("Chacho trainers");
-            System.out.println(trainee.getTrainers());
+//            System.out.println("Chacho trainers");
+//            System.out.println(trainee.getTrainers());
+//
+//            System.out.println("Ana Gomez Trainees");
+//            System.out.println(trainer.getTrainees());
 
-            System.out.println("Ana Gomez Trainees");
-            System.out.println(trainer.getTrainees());
+            Trainer tr = trainerRepository.findByUsername("Andres.Nichols").get();
+
+//            trainerRepository.updatePassword(tr.getId(), "newPassword2");
+
+            EncoderUtils encoder = new EncoderUtils();
+
+            boolean result = encoder.verifyPassword("newPassword2", tr.getPassword());
+
+            System.out.println("Validation result: " + result);
+
+
 
 
 
