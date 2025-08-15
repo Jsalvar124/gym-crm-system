@@ -115,6 +115,8 @@ public class Main {
 
             System.out.println("Validation result: " + result);
 
+            List<Trainer> trainersForJulian = trainingRepository.getTrainerListByTraineeUsernameOrDateSpan("Julian.Salva", null, null);
+            System.out.println(trainersForJulian);
 
 
 
