@@ -1,12 +1,14 @@
 package com.jsalva.gymsystem.repository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.PersistenceContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 public abstract class GenericRepository<T, K> {
+    @PersistenceContext
     protected EntityManager em;
     private final Class<T> entityClass;
 
@@ -73,7 +75,7 @@ public abstract class GenericRepository<T, K> {
             return false;
         }
     }
-
+    @Transactional(readOnly = true)
     public Optional<T> findById(K id) {
         try {
             T entity = em.find(entityClass, id);
@@ -83,6 +85,7 @@ public abstract class GenericRepository<T, K> {
         }
     }
 
+    @Transactional(readOnly = true)
     public List<T> findAll() {
         try {
             String jpql = "SELECT e FROM " + entityClass.getSimpleName() + " e";

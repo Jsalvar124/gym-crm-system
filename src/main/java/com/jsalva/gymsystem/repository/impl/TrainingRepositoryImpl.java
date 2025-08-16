@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class TrainingRepositoryImpl extends GenericRepository<Training, Long> implements TrainingRepository {
@@ -25,11 +24,11 @@ public class TrainingRepositoryImpl extends GenericRepository<Training, Long> im
         StringBuilder sb = new StringBuilder("SELECT DISTINCT t.trainer FROM Training t WHERE t.trainee.username = :username");
 
         if(fromDate != null){
-            sb.append("AND t.training_date >= :fromDate");
+            sb.append(" AND t.trainingDate >= :fromDate");
         }
 
         if(toDate != null){
-            sb.append("AND t.training_date <= :toDate");
+            sb.append(" AND t.trainingDate <= :toDate");
         }
 
         try {
@@ -50,6 +49,28 @@ public class TrainingRepositoryImpl extends GenericRepository<Training, Long> im
 
     @Override
     public List<Trainee> getTraineeListByTrainerUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
-        return List.of();
-    }
+        StringBuilder sb = new StringBuilder("SELECT DISTINCT t.trainee FROM Training t WHERE t.trainer.username = :username");
+
+        if(fromDate != null){
+            sb.append(" AND t.trainingDate >= :fromDate");
+        }
+
+        if(toDate != null){
+            sb.append(" AND t.trainingDate <= :toDate");
+        }
+
+        try {
+            TypedQuery<Trainee> typedQuery = em.createQuery(sb.toString(), Trainee.class);
+            typedQuery.setParameter("username", username);
+            if(fromDate != null){
+                typedQuery.setParameter("fromDate", fromDate);
+            }
+            if(toDate != null){
+                typedQuery.setParameter("toDate", toDate);
+            }
+            return typedQuery.getResultList();
+        } catch (NoResultException e){
+            System.out.println("No results for given username!");
+            return List.of();
+        }    }
 }
