@@ -80,19 +80,19 @@ public class Main {
             // Populate trainings
             TrainingRepositoryImpl trainingRepository = new TrainingRepositoryImpl(Training.class, em);
 
-//            Training training = new Training();
-//            Trainee trainee = traineeRepository.findByUsername("Dory.Blue").get();
-//            Trainer trainer = trainerRepository.findByUsername("Elena.Vega").get();
-//
-//            training.setTrainee(trainee);
-//            training.setTrainer(trainer);
-//            training.setTrainingDate(LocalDate.of(2025, 8,20));
-//            training.setTrainingName("Swimming basics");
-//            training.setDuration(60);
-//            TrainingType trainingType = trainingTypeRepository.findById(4L).get();
-//            training.setTrainingType(trainingType);
-//
-//            trainingRepository.create(training);
+            Training training = new Training();
+            Trainee trainee = traineeRepository.findByUsername("Dory.Blue").get();
+            Trainer trainer = trainerRepository.findByUsername("Andres.Nichols").get();
+
+            training.setTrainee(trainee);
+            training.setTrainer(trainer);
+            training.setTrainingDate(LocalDate.of(2025, 9,20));
+            training.setTrainingName("Rock Climbing");
+            training.setDuration(120);
+            TrainingType trainingType = trainingTypeRepository.findById(6L).get();
+            training.setTrainingType(trainingType);
+
+            trainingRepository.create(training);
 
 //            List<Trainer> trainerList = traineeRepository.findUnassignedTrainersByTrainee("Julian.Salva");
 //            System.out.println(trainerList);
@@ -118,6 +118,9 @@ public class Main {
             List<Trainer> trainersForJulian = trainingRepository.getTrainerListByTraineeUsernameOrDateSpan("Julian.Salva", LocalDate.of(2025, 8,14), LocalDate.of(2025, 8,20));
             System.out.println(trainersForJulian);
 
+            List<Trainee> traineeListForNichols = trainingRepository.getTraineeListByTrainerUsernameOrDateSpan("Andres.Nichols", null, null);
+
+            System.out.println(traineeListForNichols);
 
 
 

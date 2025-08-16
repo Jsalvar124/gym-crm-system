@@ -46,4 +46,12 @@ public class Trainee extends User{
     public Set<Trainer> getTrainers() {
         return this.trainers;
     }
+
+    @Override
+    public String toString() {
+        return "Trainee{" +
+                "address='" + address + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                "} " + super.toString();
+    }
 }
