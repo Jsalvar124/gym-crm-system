@@ -1,33 +1,37 @@
 package com.jsalva.gymsystem.service.impl;
 
-import com.jsalva.gymsystem.dao.TrainingDAO;
-import com.jsalva.gymsystem.model.Trainee;
-import com.jsalva.gymsystem.model.Trainer;
-import com.jsalva.gymsystem.model.Training;
-import com.jsalva.gymsystem.model.TrainingType;
+import com.jsalva.gymsystem.entity.Trainee;
+import com.jsalva.gymsystem.entity.Trainer;
+import com.jsalva.gymsystem.entity.Training;
+import com.jsalva.gymsystem.entity.TrainingType;
+import com.jsalva.gymsystem.repository.TrainingRepository;
 import com.jsalva.gymsystem.service.TraineeService;
 import com.jsalva.gymsystem.service.TrainerService;
 import com.jsalva.gymsystem.service.TrainingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TrainingServiceImpl implements TrainingService {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainingServiceImpl.class);
-    @Autowired
-    private TrainingDAO trainingDAO;
 
-    @Autowired
-    private TraineeService traineeService;
+    private final TrainingRepository trainingRepository;
 
-    @Autowired
-    private TrainerService trainerService;
+    private final TraineeService traineeService;
+
+    private final TrainerService trainerService;
+
+    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeService traineeService, TrainerService trainerService) {
+        this.trainingRepository = trainingRepository;
+        this.traineeService = traineeService;
+        this.trainerService = trainerService;
+    }
 
     @Override
     public void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingType trainingType, LocalDate trainingDate, Integer duration) {
@@ -45,31 +49,40 @@ public class TrainingServiceImpl implements TrainingService {
         }
         // If both exist, proceed
         Training training = new Training.Builder()
-                .setTrainerId(trainerId)
-                .setTraineeId(traineeId)
+                .setTrainer(trainer)
+                .setTrainee(trainee)
                 .setTrainingName(trainingName)
                 .setTrainingType(trainingType)
                 .setTrainingDate(trainingDate)
                 .setDuration(duration)
                 .build();
 
-        trainingDAO.save(training);
         logger.debug("Saved Training: {}", training);
 
     }
 
     @Override
     public List<Training> getAllTrainings() {
-        return trainingDAO.findAll();
+        return trainingRepository.findAll();
     }
 
     @Override
     public Training getTrainingById(Long id) {
-        Training training = trainingDAO.findById(id);
-        if(training == null){
+        Optional<Training> training = trainingRepository.findById(id);
+        if(training.isEmpty()){
             logger.error("Training id not found");
             throw new IllegalArgumentException("Training with Id " + id + " not found.");
         }
-        return training;
+        return training.get();
+    }
+
+    @Override
+    public List<Trainer> getTrainerListByTraineeUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
+        return trainingRepository.getTrainerListByTraineeUsernameOrDateSpan(username,fromDate,toDate);
+    }
+
+    @Override
+    public List<Trainee> getTraineeListByTrainerUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
+        return trainingRepository.getTraineeListByTrainerUsernameOrDateSpan(username,fromDate,toDate);
     }
 }

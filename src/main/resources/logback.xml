@@ -10,5 +10,5 @@
     </appender>
 
     <!-- Optional: specific package logging level -->
-    <logger name="com.jsalva.gymsystem" level="INFO" />
+    <logger name="com.jsalva.gymsystem" level="DEBUG" />
 </configuration>

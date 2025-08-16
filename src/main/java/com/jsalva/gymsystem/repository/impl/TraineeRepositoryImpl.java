@@ -2,7 +2,6 @@ package com.jsalva.gymsystem.repository.impl;
 
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
-import com.jsalva.gymsystem.repository.GenericRepository;
 import com.jsalva.gymsystem.repository.TraineeRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -14,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class TraineeRepositoryImpl extends GenericRepository<Trainee, Long> implements TraineeRepository {
+public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> implements TraineeRepository {
     public TraineeRepositoryImpl(Class<Trainee> entityClass, EntityManager em) {
         super(entityClass, em);
     }
@@ -123,4 +122,32 @@ public class TraineeRepositoryImpl extends GenericRepository<Trainee, Long> impl
         typedQuery.setParameter("traineeUsername", traineeUsername);
         return typedQuery.getResultList();
     }
+
+    @Override
+    public String generateUniqueUsername(String firstName, String lastName) {
+        try {
+            String baseUsername = firstName + "." + lastName;
+            String jpql = "SELECT u.username FROM User u WHERE u.username LIKE :baseUsername";
+            List<String> usernames = em.createQuery(jpql, String.class)
+                    .setParameter("baseUsername", baseUsername + "%")
+                    .getResultList();
+            // if it's empty or there are no coincidences, return base
+            if(usernames.isEmpty() || !usernames.contains(baseUsername)){
+                return baseUsername;
+            }
+
+            int counter = 1;
+            String uniqueUserName;
+            do {
+                uniqueUserName = baseUsername + counter;
+                counter++;
+            } while(usernames.contains(uniqueUserName));
+
+            return uniqueUserName;
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
 }

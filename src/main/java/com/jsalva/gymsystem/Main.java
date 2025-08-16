@@ -5,15 +5,14 @@ import com.jsalva.gymsystem.repository.impl.TraineeRepositoryImpl;
 import com.jsalva.gymsystem.repository.impl.TrainerRepositoryImpl;
 import com.jsalva.gymsystem.repository.impl.TrainingRepositoryImpl;
 import com.jsalva.gymsystem.repository.impl.TrainingTypeRepositoryImpl;
+import com.jsalva.gymsystem.service.impl.TrainerServiceImpl;
 import com.jsalva.gymsystem.utils.EncoderUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
-import java.util.logging.SocketHandler;
 
 public class Main {
     public static void main(String[] args) {
@@ -80,19 +79,19 @@ public class Main {
             // Populate trainings
             TrainingRepositoryImpl trainingRepository = new TrainingRepositoryImpl(Training.class, em);
 
-            Training training = new Training();
-            Trainee trainee = traineeRepository.findByUsername("Dory.Blue").get();
-            Trainer trainer = trainerRepository.findByUsername("Andres.Nichols").get();
-
-            training.setTrainee(trainee);
-            training.setTrainer(trainer);
-            training.setTrainingDate(LocalDate.of(2025, 9,20));
-            training.setTrainingName("Rock Climbing");
-            training.setDuration(120);
-            TrainingType trainingType = trainingTypeRepository.findById(6L).get();
-            training.setTrainingType(trainingType);
-
-            trainingRepository.create(training);
+//            Training training = new Training();
+//            Trainee trainee = traineeRepository.findByUsername("Dory.Blue").get();
+//            Trainer trainer = trainerRepository.findByUsername("Andres.Nichols").get();
+//
+//            training.setTrainee(trainee);
+//            training.setTrainer(trainer);
+//            training.setTrainingDate(LocalDate.of(2025, 9,20));
+//            training.setTrainingName("Rock Climbing");
+//            training.setDuration(120);
+//            TrainingType trainingType = trainingTypeRepository.findById(6L).get();
+//            training.setTrainingType(trainingType);
+//
+//            trainingRepository.create(training);
 
 //            List<Trainer> trainerList = traineeRepository.findUnassignedTrainersByTrainee("Julian.Salva");
 //            System.out.println(trainerList);
@@ -122,8 +121,16 @@ public class Main {
 
             System.out.println(traineeListForNichols);
 
+            TrainerServiceImpl trainerService = new TrainerServiceImpl(trainerRepository);
+
+            TrainingType ttp = trainingTypeRepository.findById(6L).get(); //CROSSFIT
+//            trainerService.updateTrainer(20L, null, "Escobar", ttp, "anotherPass",null);
 
 
+            trainerService.toggleActiveState(20L);
+            Trainer trainer = trainerService.findByUsername("Camilo.Escobar5");
+
+            System.out.println(trainerService.validateCredentials("Camilo.Escobar5", "anotherPass"));
 
         } catch (Exception e) {
             throw new RuntimeException(e);

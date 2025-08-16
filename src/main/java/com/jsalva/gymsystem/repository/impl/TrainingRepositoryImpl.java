@@ -3,7 +3,6 @@ package com.jsalva.gymsystem.repository.impl;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.entity.Training;
-import com.jsalva.gymsystem.repository.GenericRepository;
 import com.jsalva.gymsystem.repository.TrainingRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -14,7 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public class TrainingRepositoryImpl extends GenericRepository<Training, Long> implements TrainingRepository {
+public class TrainingRepositoryImpl extends GenericRepositoryImpl<Training, Long> implements TrainingRepository {
     public TrainingRepositoryImpl(Class<Training> entityClass, EntityManager em) {
         super(entityClass, em);
     }
