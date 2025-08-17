@@ -146,8 +146,24 @@ public class TraineeServiceImpl implements TraineeService {
     public void updatePassword(Long id, String newPassword) {
         try{
             traineeRepository.updatePassword(id, newPassword);
+            logger.info("Trainee's password updated");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void deleteTraineeByUsername(String username) {
+        try{
+            traineeRepository.deleteByUsername(username);
+            logger.info("Trainee with username {} deleted", username);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername) {
+        return traineeRepository.findUnassignedTrainersByTrainee(traineeUsername);
     }
 }
