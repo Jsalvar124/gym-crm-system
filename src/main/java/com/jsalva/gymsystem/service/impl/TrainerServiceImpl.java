@@ -4,6 +4,7 @@ import com.jsalva.gymsystem.entity.TrainingTypeEnum;
 import com.jsalva.gymsystem.repository.TrainerRepository;
 import com.jsalva.gymsystem.repository.TrainingTypeRepository;
 import com.jsalva.gymsystem.service.TrainerService;
+import com.jsalva.gymsystem.service.TrainingTypeService;
 import com.jsalva.gymsystem.utils.UserUtils;
 import com.jsalva.gymsystem.utils.EncoderUtils;
 import org.slf4j.Logger;
@@ -20,26 +21,27 @@ public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerRepository trainerRepository;
 
-    private final TrainingTypeRepository trainingTypeRepository;
+    private final TrainingTypeService trainingTypeService;
 
-    public TrainerServiceImpl(TrainerRepository trainerRepository, TrainingTypeRepository trainingTypeRepository) {
+    public TrainerServiceImpl(TrainerRepository trainerRepository, TrainingTypeService trainingTypeService) {
         this.trainerRepository = trainerRepository;
-        this.trainingTypeRepository = trainingTypeRepository;
+        this.trainingTypeService = trainingTypeService;
     }
 
     @Override
     public void createTrainer(String firstName, String lastName, TrainingTypeEnum trainingType) {
-        Optional<TrainingType> result = trainingTypeRepository.findTrainingTypeByName(trainingType);
+        TrainingType type = trainingTypeService.findTrainingTypeByName(trainingType);
 
-        if(result.isEmpty()){
+        if(type==null){
             logger.error("Invalid training type");
             throw new RuntimeException();
         }
+
         // Create Trainer instance and set basic information.
         Trainer trainer = new Trainer();
         trainer.setFirstName(firstName);
         trainer.setLastName(lastName);
-        trainer.setSpecialization(result.get());
+        trainer.setSpecialization(type);
 
         //Create Username as FirstName.LastnameXX, verify if any homonyms exist, if so add serial number as suffix
         String uniqueUsername = trainerRepository.generateUniqueUsername(firstName,lastName);
@@ -149,7 +151,7 @@ public class TrainerServiceImpl implements TrainerService {
             logger.error("Trainer with username {} not found", username);
             throw new IllegalArgumentException("Trainer with username " + username + " not found.");
         }
-        logger.info("Trainer found: {}", trainer.get());
+        logger.info("Trainer with username {} found", username);
         return trainer.get();
     }
 

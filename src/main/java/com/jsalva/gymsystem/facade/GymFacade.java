@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface GymFacade {
     boolean login(String username, String password);
+    void logout();
 
     //Trainer
     void createTrainer(String firstName, String lastName, TrainingTypeEnum trainingType);
@@ -31,7 +32,7 @@ public interface GymFacade {
     List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername);
 
     //Training
-    void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingType trainingType, LocalDate trainingDate, Integer duration);
+    void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingTypeEnum trainingType, LocalDate trainingDate, Integer duration);
     List<Training> getAllTrainings();
     Training getTrainingById(Long id);
 }

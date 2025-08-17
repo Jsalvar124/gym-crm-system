@@ -128,14 +128,18 @@ public class GymFacadeImpl implements GymFacade {
     public boolean login(String username, String password) {
         try {
             if(trainerService.validateCredentials(username,password)){
-                setUserLogged(findTrainerByUsername(username));
-                setLoggedUserType(UserType.TRAINER);
                 setAuthenticated(true);
+                setLoggedUserType(UserType.TRAINER);
+                setUserLogged(new User());
+                setUserLogged(findTrainerByUsername(username));
+                logger.info("Login successful for trainer {}", username);
                 return true;
             } else if (traineeService.validateCredentials(username,password)) {
-                setUserLogged(findTraineeByUsername(username));
-                setLoggedUserType(UserType.TRAINEE);
                 setAuthenticated(true);
+                setLoggedUserType(UserType.TRAINEE);
+                setUserLogged(new User());
+                setUserLogged(findTraineeByUsername(username));
+                logger.info("Login successful for trainee {}", username);
                 return true;
             } else {
                 logger.warn("Invalid Credentials");
@@ -148,9 +152,22 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
+    public void logout() {
+        try {
+            requireAuthentication();
+            setUserLogged(null);
+            setLoggedUserType(null);
+            setAuthenticated(false);
+        }catch (RuntimeException e){
+            logger.error(e.getMessage());
+        }
+    }
+
+
+    @Override
     public Trainer findTrainerByUsername(String username) {
         try {
-            requireTrainerAuthentication(); //
+            requireAuthentication();
             return trainerService.findByUsername(username);
         }catch (IllegalArgumentException e){
             logger.error("Error looking for trainer with username {}, {}",username, e.getMessage());
@@ -232,7 +249,7 @@ public class GymFacadeImpl implements GymFacade {
     @Override
     public Trainee findTraineeByUsername(String username) {
         try {
-            requireTrainerAuthentication();
+            requireAuthentication();
             return traineeService.findByUsername(username);
         }catch (IllegalArgumentException e){
             logger.error("Error looking for trainee with username {}, {}",username, e.getMessage());
@@ -272,7 +289,7 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingType trainingType, LocalDate trainingDate, Integer duration) {
+    public void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingTypeEnum trainingType, LocalDate trainingDate, Integer duration) {
         try {
             requireTrainerAuthentication();
             trainingService.createTraining(trainerId, traineeId, trainingName, trainingType, trainingDate, duration);

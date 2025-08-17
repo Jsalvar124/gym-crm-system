@@ -17,11 +17,37 @@ public class Main {
         System.out.println("GYM - CRM - SYSTEM -------------------------------------------------------");
         System.out.println("--------------------------------------------------------------------------");
         try {
-//            gymFacade.createTrainer("Juan", "Jorge", TrainingTypeEnum.ZUMBA);
+//            gymFacade.createTrainer("Lucas", "Jhones", TrainingTypeEnum.FUNCTIONAL);
+//            gymFacade.createTrainer("Lucas", "Jhones", TrainingTypeEnum.BOULDERING);
+//            gymFacade.createTrainer("Lucas", "Jhones", TrainingTypeEnum.ZUMBA);
+//
+//            gymFacade.createTrainee("Lucas", "Jhones", "Address 1", LocalDate.now());
+//            gymFacade.createTrainee("Lucas", "Jhones", "Address 2", LocalDate.now());
+//            gymFacade.createTrainee("Lucas", "Jhones", "Address 3", LocalDate.now());
 
-            Trainee trainee = gymFacade.findTraineeByUsername("Mariana.Cañas");
+            gymFacade.createTrainer("Temistocles", "Hernandez", TrainingTypeEnum.PILATES);
 
-            System.out.println("Does this happen?");
+
+            gymFacade.login("Temistocles.Hernandez", "45wVfmgSoM");
+            gymFacade.createTraining(1L,6L, "Bouldering Advaned", TrainingTypeEnum.BOULDERING, LocalDate.now(), 180);
+
+            gymFacade.logout();
+
+            gymFacade.login("Pedro.Salva","newPassword");
+
+            Trainer trainer = gymFacade.findTrainerByUsername("Temistocles.Hernandez");
+
+            Trainee trainee = gymFacade.findTraineeByUsername("Julian.Salva");
+
+
+
+
+//            Trainee trainee = gymFacade.findTraineeByUsername("Mariana.Cañas");
+//
+//            gymFacade.logout();
+//
+//            trainee = gymFacade.findTraineeByUsername("Mariana.Cañas");
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {
