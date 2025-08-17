@@ -64,7 +64,7 @@ public class GymFacadeImpl implements GymFacade {
 
     // No authentication needed.
     @Override
-    public void createTrainer(String firstName, String lastName, TrainingType trainingType) {
+    public void createTrainer(String firstName, String lastName, TrainingTypeEnum trainingType) {
         try {
             trainerService.createTrainer(firstName,lastName,trainingType);
         }catch (IllegalArgumentException e){
@@ -141,7 +141,7 @@ public class GymFacadeImpl implements GymFacade {
                 logger.warn("Invalid Credentials");
                 return false;
             }
-        }catch (IllegalArgumentException e){
+        }catch (SecurityException e){
             logger.error("Error in login: {}", e.getMessage());
         }
         return false;

@@ -1,18 +1,15 @@
 package com.jsalva.gymsystem.facade;
 
-import com.jsalva.gymsystem.entity.Trainee;
-import com.jsalva.gymsystem.entity.Trainer;
-import com.jsalva.gymsystem.entity.Training;
-import com.jsalva.gymsystem.entity.TrainingType;
+import com.jsalva.gymsystem.entity.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 public interface GymFacade {
     boolean login(String username, String password);
+
     //Trainer
-    void createTrainer(String firstName, String lastName, TrainingType trainingType);
+    void createTrainer(String firstName, String lastName, TrainingTypeEnum trainingType);
     List<Trainer> getAllTrainers();
     Trainer getTrainerById(Long id);
     void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive);
@@ -20,6 +17,7 @@ public interface GymFacade {
     void toggleTrainerActiveState(Long id);
     Trainer findTrainerByUsername(String username);
     void updateTrainerPassword(Long id, String newPassword);
+
     //Trainee
     void createTrainee(String firstName, String lastName, String address, LocalDate dateOfBirth);
     List<Trainee> getAllTrainees();
@@ -31,6 +29,7 @@ public interface GymFacade {
     void updateTraineePassword(Long id, String newPassword);
     void deleteTraineeByUsername(String username);
     List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername);
+
     //Training
     void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingType trainingType, LocalDate trainingDate, Integer duration);
     List<Training> getAllTrainings();

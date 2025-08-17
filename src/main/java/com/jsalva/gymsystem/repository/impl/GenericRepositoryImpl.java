@@ -2,15 +2,15 @@ package com.jsalva.gymsystem.repository.impl;
 import com.jsalva.gymsystem.repository.GenericRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.PersistenceContext;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 public abstract class GenericRepositoryImpl<T, K> implements GenericRepository<T,K> {
-    @PersistenceContext
+
     protected EntityManager em;
+
     private final Class<T> entityClass;
 
 

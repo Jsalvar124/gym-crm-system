@@ -14,8 +14,8 @@ import java.util.List;
 
 @Repository
 public class TrainingRepositoryImpl extends GenericRepositoryImpl<Training, Long> implements TrainingRepository {
-    public TrainingRepositoryImpl(Class<Training> entityClass, EntityManager em) {
-        super(entityClass, em);
+    public TrainingRepositoryImpl(EntityManager em) {
+        super(Training.class, em);
     }
 
     @Override

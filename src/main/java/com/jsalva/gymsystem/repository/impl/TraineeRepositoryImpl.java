@@ -14,8 +14,8 @@ import java.util.Optional;
 
 @Repository
 public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> implements TraineeRepository {
-    public TraineeRepositoryImpl(Class<Trainee> entityClass, EntityManager em) {
-        super(entityClass, em);
+    public TraineeRepositoryImpl(EntityManager em) {
+        super(Trainee.class, em);
     }
 
     public void toggleActiveState(Long id) {

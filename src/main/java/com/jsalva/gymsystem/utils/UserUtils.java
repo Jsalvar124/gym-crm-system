@@ -2,12 +2,13 @@ package com.jsalva.gymsystem.utils;
 
 import com.jsalva.gymsystem.model.Trainee;
 import com.jsalva.gymsystem.model.Trainer;
+import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.stream.Stream;
 
-
+@Component
 public class UserUtils {
 
     public static String generateRandomPassword(){

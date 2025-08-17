@@ -1,6 +1,8 @@
 package com.jsalva.gymsystem.service.impl;
 import com.jsalva.gymsystem.entity.TrainingType;
+import com.jsalva.gymsystem.entity.TrainingTypeEnum;
 import com.jsalva.gymsystem.repository.TrainerRepository;
+import com.jsalva.gymsystem.repository.TrainingTypeRepository;
 import com.jsalva.gymsystem.service.TrainerService;
 import com.jsalva.gymsystem.utils.UserUtils;
 import com.jsalva.gymsystem.utils.EncoderUtils;
@@ -18,17 +20,26 @@ public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerRepository trainerRepository;
 
-    public TrainerServiceImpl(TrainerRepository trainerRepository) {
+    private final TrainingTypeRepository trainingTypeRepository;
+
+    public TrainerServiceImpl(TrainerRepository trainerRepository, TrainingTypeRepository trainingTypeRepository) {
         this.trainerRepository = trainerRepository;
+        this.trainingTypeRepository = trainingTypeRepository;
     }
 
     @Override
-    public void createTrainer(String firstName, String lastName, TrainingType trainingType) {
+    public void createTrainer(String firstName, String lastName, TrainingTypeEnum trainingType) {
+        Optional<TrainingType> result = trainingTypeRepository.findTrainingTypeByName(trainingType);
+
+        if(result.isEmpty()){
+            logger.error("Invalid training type");
+            throw new RuntimeException();
+        }
         // Create Trainer instance and set basic information.
         Trainer trainer = new Trainer();
         trainer.setFirstName(firstName);
         trainer.setLastName(lastName);
-        trainer.setSpecialization(trainingType);
+        trainer.setSpecialization(result.get());
 
         //Create Username as FirstName.LastnameXX, verify if any homonyms exist, if so add serial number as suffix
         String uniqueUsername = trainerRepository.generateUniqueUsername(firstName,lastName);

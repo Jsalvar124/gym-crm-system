@@ -1,141 +1,31 @@
 package com.jsalva.gymsystem;
 
+import com.jsalva.gymsystem.config.AppConfig;
 import com.jsalva.gymsystem.entity.*;
-import com.jsalva.gymsystem.repository.impl.TraineeRepositoryImpl;
-import com.jsalva.gymsystem.repository.impl.TrainerRepositoryImpl;
-import com.jsalva.gymsystem.repository.impl.TrainingRepositoryImpl;
-import com.jsalva.gymsystem.repository.impl.TrainingTypeRepositoryImpl;
-import com.jsalva.gymsystem.service.impl.TrainerServiceImpl;
-import com.jsalva.gymsystem.utils.EncoderUtils;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
+import com.jsalva.gymsystem.facade.GymFacade;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-//        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-
-//        GymFacade gymFacade = context.getBean(GymFacade.class);
-
+        ApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+        GymFacade gymFacade = context.getBean(GymFacade.class);
 
         System.out.println("--------------------------------------------------------------------------");
-        System.out.println("GYM - CRM - SYSTEM - WITH DB ------------------------------------------------------");
+        System.out.println("GYM - CRM - SYSTEM -------------------------------------------------------");
         System.out.println("--------------------------------------------------------------------------");
-
-
-        EntityManagerFactory emf = Persistence.createEntityManagerFactory("PersistenceUnit");
-        EntityManager em = emf.createEntityManager();
-
         try {
-            TrainingTypeRepositoryImpl trainingTypeRepository = new TrainingTypeRepositoryImpl(TrainingType.class, em);
-//            // Populate Training Type
-//            Table.
-//            for(TrainingTypeEnum tp : TrainingTypeEnum.values()){
-//                TrainingType trainingType = new TrainingType();
-//                trainingType.setTrainingTypeName(tp);
-//                trainingTypeRepository.create(trainingType);
-//            }
+//            gymFacade.createTrainer("Juan", "Jorge", TrainingTypeEnum.ZUMBA);
 
-            // Populate Trainers Table.
-            TrainerRepositoryImpl trainerRepository = new TrainerRepositoryImpl(Trainer.class, em);
+            Trainee trainee = gymFacade.findTraineeByUsername("Mariana.Cañas");
 
-//            Trainer trainer = new Trainer();
-//            TrainingType trainingType = trainingTypeRepository.findById(6L).get(); // BOULDERING MANAGED ENTITY
-//            trainer.setSpecialization(trainingType);
-//            trainer.setActive(true);
-//            trainer.setFirstName("Andres");
-//            trainer.setLastName("Nichols");
-//            trainer.setUsername("Andres.Nichols");
-//            trainer.setPassword("aNdReS420");
-//
-//            trainerRepository.create(trainer);
-//
-
-//            Trainer trainer = trainerRepository.findByUsername("Juan.Perez").get();
-//            TrainingType trainingType = trainingTypeRepository.findById(2L).get(); // BOULDERING MANAGED ENTITY
-//
-//            trainer.setSpecialization(trainingType);
-//
-//            trainerRepository.update(trainer);
-
-
-            // Populate Trainees Table.
-            TraineeRepositoryImpl traineeRepository = new TraineeRepositoryImpl(Trainee.class, em);
-//
-//            Trainee trainee = new Trainee();
-//            trainee.setAddress("Calle Wallaby 42, Sidney");
-//            trainee.setDateOfBirth(LocalDate.of(1990,3,22));
-//            trainee.setActive(true);
-//            trainee.setFirstName("Dory");
-//            trainee.setLastName("Blue");
-//            trainee.setUsername("Dory.Blue");
-//            trainee.setPassword("aSd1Fg");
-//
-//            traineeRepository.create(trainee);
-
-            // Populate trainings
-            TrainingRepositoryImpl trainingRepository = new TrainingRepositoryImpl(Training.class, em);
-
-//            Training training = new Training();
-//            Trainee trainee = traineeRepository.findByUsername("Dory.Blue").get();
-//            Trainer trainer = trainerRepository.findByUsername("Andres.Nichols").get();
-//
-//            training.setTrainee(trainee);
-//            training.setTrainer(trainer);
-//            training.setTrainingDate(LocalDate.of(2025, 9,20));
-//            training.setTrainingName("Rock Climbing");
-//            training.setDuration(120);
-//            TrainingType trainingType = trainingTypeRepository.findById(6L).get();
-//            training.setTrainingType(trainingType);
-//
-//            trainingRepository.create(training);
-
-//            List<Trainer> trainerList = traineeRepository.findUnassignedTrainersByTrainee("Julian.Salva");
-//            System.out.println(trainerList);
-//            trainerList = traineeRepository.findUnassignedTrainersByTrainee("Chacho.Apá");
-//            System.out.println(trainerList);
-
-//            System.out.println("Chacho trainers");
-//            System.out.println(trainee.getTrainers());
-//
-//            System.out.println("Ana Gomez Trainees");
-//            System.out.println(trainer.getTrainees());
-
-            Trainer tr = trainerRepository.findByUsername("Andres.Nichols").get();
-
-//            trainerRepository.updatePassword(tr.getId(), "newPassword2");
-
-            EncoderUtils encoder = new EncoderUtils();
-
-            boolean result = encoder.verifyPassword("newPassword2", tr.getPassword());
-
-            System.out.println("Validation result: " + result);
-
-            List<Trainer> trainersForJulian = trainingRepository.getTrainerListByTraineeUsernameOrDateSpan("Julian.Salva", LocalDate.of(2025, 8,14), LocalDate.of(2025, 8,20));
-            System.out.println(trainersForJulian);
-
-            List<Trainee> traineeListForNichols = trainingRepository.getTraineeListByTrainerUsernameOrDateSpan("Andres.Nichols", null, null);
-
-            System.out.println(traineeListForNichols);
-
-            TrainerServiceImpl trainerService = new TrainerServiceImpl(trainerRepository);
-
-            TrainingType ttp = trainingTypeRepository.findById(6L).get(); //CROSSFIT
-//            trainerService.updateTrainer(20L, null, "Escobar", ttp, "anotherPass",null);
-
-
-            trainerService.toggleActiveState(20L);
-            Trainer trainer = trainerService.findByUsername("Camilo.Escobar5");
-
-            System.out.println(trainerService.validateCredentials("Camilo.Escobar5", "anotherPass"));
-
+            System.out.println("Does this happen?");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }finally {
-            em.close();
+            System.out.println("Finish!");
         }
     }
 }

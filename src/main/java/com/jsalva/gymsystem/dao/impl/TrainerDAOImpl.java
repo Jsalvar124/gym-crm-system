@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Repository
 public class TrainerDAOImpl implements TrainerDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(TrainerDAOImpl.class);
@@ -19,7 +18,6 @@ public class TrainerDAOImpl implements TrainerDAO {
     private Map<Long, Object> trainers;
 
     // Setter Injection
-    @Autowired
     public void setCommonStorage(Map<String, Map<Long, Object>> commonStorage) {
         logger.debug("SetCommonStorage() inside TrainerDAO with setter Injection Called.");
         this.trainers = commonStorage.get("trainers"); // only pass the trainers to the class to avoid multiple responsibility.

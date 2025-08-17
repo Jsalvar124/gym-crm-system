@@ -15,10 +15,8 @@ import java.util.Optional;
 @Repository
 public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> implements TrainerRepository {
 
-    EncoderUtils encoderUtils = new EncoderUtils();
-
-    public TrainerRepositoryImpl(Class<Trainer> entityClass, EntityManager em) {
-        super(entityClass, em);
+    public TrainerRepositoryImpl(EntityManager em) {
+        super(Trainer.class, em);
     }
 
     @Override
@@ -50,7 +48,7 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
             Optional<Trainer> trainer = findByUsername(username);
             if (trainer.isPresent()) {
                 String hashedPassword = trainer.get().getPassword();
-                return encoderUtils.verifyPassword(password, hashedPassword);
+                return EncoderUtils.verifyPassword(password, hashedPassword);
             } else {
                 return false; // Trainer not found, password is false.
             }
@@ -79,7 +77,7 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
         try {
             Trainer trainer = em.find(Trainer.class, id);
             if (trainer != null) {
-                String hashedPassword = encoderUtils.encryptPassword(newPassword);
+                String hashedPassword = EncoderUtils.encryptPassword(newPassword);
                 trainer.setPassword(hashedPassword);
                 em.merge(trainer);
                 tx.commit();
