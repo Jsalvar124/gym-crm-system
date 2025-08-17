@@ -7,6 +7,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.Optional;
 
 @Repository
 public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> implements TrainerRepository {
+
+    private final Logger logger = LoggerFactory.getLogger(TrainerRepositoryImpl.class);
 
     public TrainerRepositoryImpl(EntityManager em) {
         super(Trainer.class, em);
@@ -30,9 +34,9 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
                 trainer.setActive(!current);
                 em.merge(trainer);
                 tx.commit();
-                System.out.println("Active status for id "+ id + " set to: " +!current);
+                logger.debug("Active status for id {} set to: {}",id, !current);
             }else{
-                System.out.println("Id not found");
+                logger.info("Id {} not found", id);
             }
         } catch (Exception e) {
             if (tx.isActive()) {
@@ -52,8 +56,8 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
             } else {
                 return false; // Trainer not found, password is false.
             }
-        } catch (Exception e){
-            System.out.println("Error validating credentials");
+        } catch (SecurityException e){
+            logger.error("Error validating credentials");
             throw e;
         }
     }
@@ -65,7 +69,7 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
             typedQuery.setParameter("username", username);
             return Optional.of(typedQuery.getSingleResult());
         } catch (NoResultException e){
-            System.out.println("No result!");
+            logger.error("No results found!");
             return Optional.empty();
         }
     }
@@ -83,7 +87,7 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
                 tx.commit();
             } else {
                 tx.rollback();
-                System.out.println("Trainer with id " + id + " not found.");
+                logger.warn("Trainer with id {} not found.", id);
             }
         } catch (Exception e) {
             if (tx.isActive()) {

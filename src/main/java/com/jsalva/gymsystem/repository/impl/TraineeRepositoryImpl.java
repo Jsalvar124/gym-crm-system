@@ -3,10 +3,13 @@ package com.jsalva.gymsystem.repository.impl;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.repository.TraineeRepository;
+import com.jsalva.gymsystem.utils.EncoderUtils;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -14,6 +17,10 @@ import java.util.Optional;
 
 @Repository
 public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> implements TraineeRepository {
+
+    private final Logger logger = LoggerFactory.getLogger(TraineeRepositoryImpl.class);
+
+
     public TraineeRepositoryImpl(EntityManager em) {
         super(Trainee.class, em);
     }
@@ -43,12 +50,18 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
 
     @Override
     public boolean validateCredentials(String username, String password) {
-        TypedQuery<Long> typedQuery = em.createQuery(
-                "SELECT COUNT(t) FROM Trainee t WHERE t.username = :username AND t.password = :password",
-                Long.class);
-        typedQuery.setParameter("username", username);
-        typedQuery.setParameter("password", password);
-        return typedQuery.getSingleResult() > 0;
+        try {
+            Optional<Trainee> trainee = findByUsername(username);
+            if (trainee.isPresent()) {
+                String hashedPassword = trainee.get().getPassword();
+                return EncoderUtils.verifyPassword(password, hashedPassword);
+            } else {
+                return false;
+            }
+        } catch (SecurityException e){
+            logger.error("Error validating credentials");
+            throw e;
+        }
     }
 
     @Override
@@ -58,7 +71,7 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
             typedQuery.setParameter("username", username);
             return Optional.of(typedQuery.getSingleResult());
         } catch (NoResultException e){
-            System.out.println("No result!");
+            logger.error("No results found!");
             return Optional.empty();
         }
     }
@@ -75,6 +88,7 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
                 tx.commit();
             } else {
                 tx.rollback();
+                logger.warn("Trainer with id {} not found.", id);
             }
         } catch (Exception e) {
             if (tx.isActive()) {
@@ -95,10 +109,10 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
                 tx.commit();
             }else {
                 tx.rollback();
-                System.out.println("Unable to delete, Trainee not found: " + username);
+                logger.warn("Unable to delete, Trainee not found with username {}",username);
             }
         } catch (Exception e) {
-            System.out.println("Error deleting trainee: " +e.getMessage());
+            logger.error("Error deleting trainee: {}", e.getMessage());
             throw new RuntimeException(e);
         }
     }
@@ -107,8 +121,8 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
     public List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername) {
         // Check that trainee Username exists.
         Optional<Trainee> trainee = findByUsername(traineeUsername);
-        if(!trainee.isPresent()){
-            System.out.println("Username does not exist");
+        if(trainee.isEmpty()){
+            logger.error("Username does not exist");
             return List.of();
         }
         TypedQuery<Trainer> typedQuery = em.createQuery(
