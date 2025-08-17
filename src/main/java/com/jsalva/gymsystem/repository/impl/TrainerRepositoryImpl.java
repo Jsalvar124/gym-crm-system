@@ -3,13 +3,11 @@ package com.jsalva.gymsystem.repository.impl;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.repository.TrainerRepository;
 import com.jsalva.gymsystem.utils.EncoderUtils;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +45,7 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
     }
 
     @Override
+    @Transactional
     public boolean validateCredentials(String username, String password) {
         try {
             Optional<Trainer> trainer = findByUsername(username);
@@ -123,5 +122,4 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
             throw new RuntimeException(e);
         }
     }
-
 }
