@@ -2,7 +2,6 @@ package com.jsalva.gymsystem.service.impl;
 import com.jsalva.gymsystem.entity.TrainingType;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
 import com.jsalva.gymsystem.repository.TrainerRepository;
-import com.jsalva.gymsystem.repository.TrainingTypeRepository;
 import com.jsalva.gymsystem.service.TrainerService;
 import com.jsalva.gymsystem.service.TrainingTypeService;
 import com.jsalva.gymsystem.utils.UserUtils;

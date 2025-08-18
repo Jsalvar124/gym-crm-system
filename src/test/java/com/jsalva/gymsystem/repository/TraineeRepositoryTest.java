@@ -13,13 +13,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TraineeRepositoryTest {
@@ -119,5 +119,31 @@ public class TraineeRepositoryTest {
 
         // Then
         assertEquals("Jane.Smith", username); // Should return base username
+    }
+
+    @Test
+    void shouldFindTraineeByUsername() {
+        // Given
+        String username = "John.Doe";
+        Trainee expectedTrainee = new Trainee();
+        expectedTrainee.setUsername(username);
+
+        TypedQuery<Trainee> query = mock(TypedQuery.class);
+        when(entityManager.createQuery("SELECT t FROM Trainee t WHERE t.username = :username", Trainee.class))
+                .thenReturn(query);
+        when(query.setParameter("username", username)).thenReturn(query);
+        when(query.getSingleResult()).thenReturn(expectedTrainee);
+
+        // Act
+        Optional<Trainee> result = traineeRepository.findByUsername(username);
+
+        // Assert
+        assertTrue(result.isPresent());
+        assertEquals(expectedTrainee, result.get());
+        assertEquals(username, result.get().getUsername());
+
+        verify(entityManager).createQuery("SELECT t FROM Trainee t WHERE t.username = :username", Trainee.class);
+        verify(query).setParameter("username", username);
+        verify(query).getSingleResult();
     }
 }

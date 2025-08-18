@@ -1,227 +1,120 @@
 package com.jsalva.gymsystem.service;
 
-import com.jsalva.gymsystem.config.AppConfig;
-import com.jsalva.gymsystem.model.Trainer;
-import com.jsalva.gymsystem.model.TrainingType;
-import com.jsalva.gymsystem.model.User;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import com.jsalva.gymsystem.entity.TrainingTypeEnum;
+import com.jsalva.gymsystem.entity.Trainer;
+import com.jsalva.gymsystem.entity.TrainingType;
+import com.jsalva.gymsystem.repository.TrainerRepository;
+import com.jsalva.gymsystem.service.impl.TrainerServiceImpl;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
-@SpringJUnitConfig(AppConfig.class)
-@DisplayName("Trainer Servcie Tests")
+@ExtendWith(MockitoExtension.class)
 public class TrainerServiceTest {
-    @Autowired
-    private Map<String, Map<Long, Object>> commonStorage;
 
-    @Autowired
-    TrainerService trainerService;
-//
-    private Map<Long, Object> trainers;
+    @Mock
+    private TrainerRepository trainerRepository;
 
-    @BeforeEach
-    void setUp() {
-        trainers = commonStorage.get("trainers");
-        trainers.clear(); // Reset the state before each test, start with 0 trainers.
-        User.setIdCount(1L); // reset ID static count
+    @Mock
+    private TrainingTypeService trainingTypeService;
+
+    @InjectMocks
+    private TrainerServiceImpl trainerService;
+
+    @Test
+    void shouldCreateTrainerSuccessfully() {
+        // Given
+        String firstName = "John";
+        String lastName = "Doe";
+        TrainingTypeEnum trainingType = TrainingTypeEnum.BOXING;
+
+        TrainingType mockTrainingType = new TrainingType();
+        mockTrainingType.setTrainingTypeName(trainingType);
+
+        // Mock the dependencies
+        when(trainingTypeService.findTrainingTypeByName(trainingType)).thenReturn(mockTrainingType);
+        when(trainerRepository.generateUniqueUsername(firstName, lastName)).thenReturn("John.Doe");
+        when(trainerRepository.create(any(Trainer.class))).thenReturn(new Trainer());
+
+        // When
+        trainerService.createTrainer(firstName, lastName, trainingType);
+
+        // Then
+        verify(trainingTypeService).findTrainingTypeByName(trainingType);
+        verify(trainerRepository).generateUniqueUsername(firstName, lastName);
+        verify(trainerRepository).create(any(Trainer.class));
     }
 
     @Test
-    @DisplayName("Trainer creation test")
-    void testTrainerCreation() {
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.BOXING);
-        assertEquals(1, trainers.size(), "Expected number of loaded trainers is 1.");
+    void shouldSetTrainerPropertiesCorrectly() {
+        // Given
+        String firstName = "Jane";
+        String lastName = "Smith";
+        TrainingTypeEnum trainingType = TrainingTypeEnum.ZUMBA;
 
-        trainerService.createTrainer("Hector", "Pérez", TrainingType.PILATES);
-        assertEquals(2, trainers.size(), "Expected number of loaded trainers is 2.");
+        TrainingType mockTrainingType = new TrainingType();
+        mockTrainingType.setTrainingTypeName(trainingType);
 
+        when(trainingTypeService.findTrainingTypeByName(trainingType)).thenReturn(mockTrainingType);
+        when(trainerRepository.generateUniqueUsername(firstName, lastName)).thenReturn("Jane.Smith");
 
-        boolean juanPerezFound = trainers.values().stream()
-                .filter(Trainer.class::isInstance)
-                .map(Trainer.class::cast)
-                .anyMatch(trainer ->
-                        trainer.getFirstName().equals("Juan") &&
-                                trainer.getLastName().equals("Pérez") &&
-                                trainer.getUsername().equals("Juan.Pérez") &&
-                                trainer.getSpecialization() == TrainingType.BOXING
-                );
+        // When
+        trainerService.createTrainer(firstName, lastName, trainingType);
 
-        assertTrue(juanPerezFound, "Expected trainer 'Juan Pérez'");
+        // Then - verify the trainer passed to create() has correct properties
+        verify(trainerRepository).create(argThat(trainer ->
+                trainer.getFirstName().equals("Jane") &&
+                        trainer.getLastName().equals("Smith") &&
+                        trainer.getUsername().equals("Jane.Smith") &&
+                        trainer.getActive() == true &&
+                        trainer.getSpecialization().equals(mockTrainingType) &&
+                        trainer.getPassword() != null
+        ));
     }
 
     @Test
-    @DisplayName("Trainer find by id service")
-    void testTrainerGetTrainerByIdService() {
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.BOXING);
-        assertEquals(1, trainers.size(), "Expected number of loaded trainers is 1.");
+    void shouldReturnTrainerWhenIdExists() {
+        // Given an id
+        Long trainerId = 1L;
+        Trainer trainer = new Trainer();
+        trainer.setUsername("Juan.Perez");
 
-        trainerService.createTrainer("Hector", "Pérez", TrainingType.PILATES);
-        assertEquals(2, trainers.size(), "Expected number of loaded trainers is 2.");
+        //Mock the trainerRepository response
+        when(trainerRepository.findById(trainerId)).thenReturn(Optional.of(trainer));
 
-        Trainer t1 = trainerService.getTrainerById(1L);
-        Trainer t2 = trainerService.getTrainerById(2L);
+        // Make the call to the tested method
+        Trainer trainerResult = trainerService.getTrainerById(trainerId);
 
-        assertEquals(1L, t1.getUserId());
-        assertEquals("Juan", t1.getFirstName());
-        assertEquals("Hector.Pérez", t2.getUsername());
+        //Verify (Expected, Actual)
+        assertEquals(trainer.getUsername(), trainerResult.getUsername());
     }
 
     @Test
-    @DisplayName("Trainer find by id service with invalid id")
-    void testInvalidIdOnTrainerGetTrainerByIdService() {
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.BOXING);
-        assertEquals(1, trainers.size(), "Expected number of loaded trainers is 1.");
+    void shouldThrowExceptionWhenTrainerNotFound() {
+        // Given an invalid Id
+        Long trainerId = 999L;
+        Trainer trainer = new Trainer();
+        trainer.setUsername("Juan.Perez");
 
+        //Mock the trainerRepository response
+        when(trainerRepository.findById(trainerId)).thenReturn(Optional.empty());
+
+        //Verify Exception is thrown
         Exception ex = assertThrows(IllegalArgumentException.class, ()->{
-            trainerService.getTrainerById(1000L);
-        } );
+            //the call of the method with an invalid id
+            trainerService.getTrainerById(trainerId);
+        });
 
-        assertEquals("Trainer with Id 1000 not found.", ex.getMessage());
-
-
-        ex = assertThrows(IllegalArgumentException.class, ()->{
-            trainerService.getTrainerById(null);
-        } );
-
-        assertEquals("Trainer ID cannot be null", ex.getMessage());
-    }
-
-    @Test
-    @DisplayName("Trainer username with homonym test")
-    void testUserNameWithHomonymCreation() {
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.BOXING);
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.ZUMBA);
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.PILATES);
-
-        Trainer t1 = trainerService.getTrainerById(1L);
-        Trainer t2 = trainerService.getTrainerById(2L);
-        Trainer t3 = trainerService.getTrainerById(3L);
-
-        assertEquals("Juan.Pérez", t1.getUsername());
-        assertEquals("Juan.Pérez1", t2.getUsername());
-        assertEquals("Juan.Pérez2", t3.getUsername());
-    }
-
-
-    @Test
-    @DisplayName("Trainer password generation test")
-    void testRandomPasswordGeneration() {
-        assertEquals(0, trainers.size(), "Expected number of loaded trainers is 0.");
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.BOXING);
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.ZUMBA);
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.PILATES);
-
-        Trainer t1 = trainerService.getTrainerById(1L);
-        Trainer t2 = trainerService.getTrainerById(2L);
-        Trainer t3 = trainerService.getTrainerById(3L);
-
-        // Password has 10 characters
-        assertEquals(10, t1.getPassword().length());
-
-        // Password is different for each user.
-        assertNotEquals(t1.getPassword(), t2.getPassword());
-        assertNotEquals(t1.getPassword(), t3.getPassword());
-        assertNotEquals(t2.getPassword(), t3.getPassword());
-
-        // characters are random from 1-9 and a-zA-Z
-        String password = t1.getPassword();
-        assertTrue(password.matches("[a-zA-Z0-9]{10}"), "Password must contain only a-z, A-Z, 0-9 and be 10 characters long");
-    }
-
-    @Test
-    @DisplayName("Trainer update service test")
-    void testTrainerUpdateService() {
-        //Start with 0 trainers
-        assertEquals(0, trainers.size(), "Expected number of loaded trainers is 0.");
-
-        //Add 1
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.BOXING);
-
-        //Update trainer
-        trainerService.updateTrainer(1L, "Edgar", null, TrainingType.PILATES, "ChangedPassword", false);
-
-        // Retrieve updated Trainer
-        Trainer updatedTrainer = trainerService.getTrainerById(1L);
-
-
-        assertEquals(1L, updatedTrainer.getUserId());
-        assertEquals("Edgar", updatedTrainer.getFirstName());
-        assertEquals("Pérez", updatedTrainer.getLastName());
-        assertEquals(TrainingType.PILATES, updatedTrainer.getSpecialization());
-        assertEquals("ChangedPassword", updatedTrainer.getPassword());
-        assertEquals(false, updatedTrainer.isActive());
-    }
-
-    @Test
-    @DisplayName("Trainer update service test with invalid id")
-    void testInvalidIdOnTrainerUpdateService() {
-        //Start with 0 trainers
-        assertEquals(0, trainers.size(), "Expected number of loaded trainers is 0.");
-
-        //Add 1
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.BOXING);
-
-        //Update trainer
-        Exception ex = assertThrows(IllegalArgumentException.class, ()->{
-            trainerService.updateTrainer(1000L, "Edgar", null, TrainingType.PILATES, "ChangedPassword", false);
-        } );
-
-        assertEquals("Trainer with Id 1000 not found.", ex.getMessage());
-
-
-        ex = assertThrows(IllegalArgumentException.class, ()->{
-            trainerService.updateTrainer(null, "Edgar", null, TrainingType.PILATES, "ChangedPassword", false);
-        } );
-
-        assertEquals("Trainer ID cannot be null", ex.getMessage());
-
-    }
-
-
-    @Test
-    @DisplayName("Trainer delete service test")
-    void testTrainerDeleteService() {
-        //Start with 0 trainers
-        assertEquals(0, trainers.size(), "Expected number of loaded trainers is 0.");
-
-        //Add 1
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.BOXING);
-
-        assertEquals(1, trainers.size(), "Expected number of loaded trainers is 1.");
-
-        trainerService.deleteTrainer(1L);
-
-        assertEquals(0, trainers.size(), "Expected number of loaded trainers is 0.");
-    }
-
-    @Test
-    @DisplayName("Trainer delete service test with invalid id")
-    void testInvalidIdOnTrainerDeleteService() {
-        //Start with 0 trainers
-        assertEquals(0, trainers.size(), "Expected number of loaded trainers is 0.");
-
-        //Add 1
-        trainerService.createTrainer("Juan", "Pérez", TrainingType.BOXING);
-
-        //Delete non existent trainer
-        Exception ex = assertThrows(IllegalArgumentException.class, ()->{
-            trainerService.deleteTrainer(1000L);
-        } );
-
-        assertEquals("Trainer with Id 1000 not found.", ex.getMessage());
-
-
-        ex = assertThrows(IllegalArgumentException.class, ()->{
-            trainerService.deleteTrainer(null);
-        } );
-
-        assertEquals("Trainer ID cannot be null", ex.getMessage());
-
+        assertEquals("Trainer with Id 999 not found.", ex.getMessage());
     }
 }
