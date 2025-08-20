@@ -10,6 +10,24 @@ A Customer Relationship Management (CRM) system for gym operations built with JP
 - Method-level authorization for trainers, trainees, and resource owners
 - Protected operations requiring proper authentication
 
+### Password Security
+- **BCrypt Encryption**: All user passwords are securely hashed using BCrypt algorithm
+- **Spring Security Crypto**: Utilizes `BCryptPasswordEncoder` for industry-standard password hashing
+- **Salt Generation**: BCrypt automatically generates unique salts for each password
+- **Password Verification**: Secure password matching without storing plain text passwords
+- **No Plain Text Storage**: Raw passwords are never stored in the database
+
+```java
+// Password encryption utility
+public static String encryptPassword(String password) {
+    return encoder.encode(password); // BCrypt hashing with automatic salt
+}
+
+public static boolean verifyPassword(String plainPassword, String hashedPassword) {
+    return encoder.matches(plainPassword, hashedPassword); // Secure verification
+}
+```
+
 ### Trainer Management
 - Create new trainers with specialization (CrossFit, Zumba, Functional, Boxing, Pilates, Bouldering)
 - Retrieve all trainers or specific trainer by ID/username
