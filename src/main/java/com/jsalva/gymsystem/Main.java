@@ -8,6 +8,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
@@ -28,28 +29,36 @@ public class Main {
 //            gymFacade.createTrainee("Sergio", "Hernandez", "CR 32 # 45S - 15", LocalDate.of(1990,12,12));
 //            gymFacade.createTrainee("Juan", "Perez", "CR 45 # 25 - 20", LocalDate.of(1992,8,6));
 
+            // Try to create a training without login
+//            gymFacade.createTraining(1L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+
             // Login
-            gymFacade.login("Ana.Gomez","ChangePassword");
+//            gymFacade.login("Ana.Gomez","1jJlQ2300e");
 
-            Trainee trainee = gymFacade.findTraineeByUsername("Sergio.Hernandez");
-            gymFacade.toggleTraineeActiveState(trainee.getId());
+            // Create a training after Login
+//             gymFacade.createTraining(1L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
 
-            List<Trainer> trainerList = gymFacade.getAllTrainers();
+            // Get and modify trainee infromation.
+//            Trainee trainee = gymFacade.findTraineeByUsername("Sergio.Hernandez");
+//            gymFacade.toggleTraineeActiveState(trainee.getId());
+//
+             // Set from Many to Many Relation.
+//            Set<Trainer> trainerSet = trainee.getTrainers();
+//            System.out.println(trainerSet);
 
-            System.out.println(trainerList);
+            // try to update someone else's password
+//            gymFacade.updateTrainerPassword(2L, "changePassword");
 
-//            gymFacade.toggleTrainerActiveState(1L);
+            // Update owners password
+//            gymFacade.updateTrainerPassword(1L,"newPassword");
 
-//            gymFacade.findTrainerByUsername("Ana.Gomez");
+//            List<Trainer> list = gymFacade.getTrainerListByTraineeUsernameOrDateSpan("Juan.Perez2", null, null);
 
+            //delete trainee with cascade training deletion
+//            gymFacade.deleteTrainee(trainee.getId());
 
-//            Trainee t = gymFacade.findTraineeByUsername("Juan.Perez2");
+//            gymFacade.logout();
 
-            List<Trainer> list = gymFacade.getTrainerListByTraineeUsernameOrDateSpan("Juan.Perez2", null, null);
-
-            System.out.println(list);
-
-            gymFacade.logout();
 
         } catch (Exception e) {
             System.out.println(e.getMessage());

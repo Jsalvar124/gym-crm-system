@@ -2,6 +2,8 @@ package com.jsalva.gymsystem.repository.impl;
 import com.jsalva.gymsystem.repository.GenericRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -12,6 +14,8 @@ public abstract class GenericRepositoryImpl<T, K> implements GenericRepository<T
     protected EntityManager em;
 
     private final Class<T> entityClass;
+
+    private final Logger logger = LoggerFactory.getLogger(GenericRepositoryImpl.class);
 
 
     public GenericRepositoryImpl(Class<T> entityClass, EntityManager em) {
@@ -31,7 +35,7 @@ public abstract class GenericRepositoryImpl<T, K> implements GenericRepository<T
             if(tx.isActive()){
                 tx.rollback();
             }
-            System.err.println("Failed to create entity: " + e.getMessage());
+            logger.error("Failed to create entity: {}", e.getMessage());
             throw e;
         }
     }
@@ -48,7 +52,7 @@ public abstract class GenericRepositoryImpl<T, K> implements GenericRepository<T
             if(tx.isActive()){
                 tx.rollback();
             }
-            System.err.println("Failed to update entity: " + e.getMessage());
+            logger.error("Failed to update entity: {}", e.getMessage());
             throw e;
         }
     }
@@ -62,18 +66,18 @@ public abstract class GenericRepositoryImpl<T, K> implements GenericRepository<T
             if (entity != null) {
                 em.remove(entity);
                 tx.commit();
-                System.out.println("Entity removed successfully");
+                logger.info("Entity removed successfully");
                 return true;
             } else {
                 tx.rollback();
-                System.err.println("Failed to delete entity, Entity not found!");
+                logger.warn("Failed to delete entity, Entity not found!");
                 return false;
             }
         } catch (RuntimeException e) {
             if (tx.isActive()) {
                 tx.rollback();
             }
-            System.err.println("Failed to delete entity: " + e.getMessage());
+            logger.error("Failed to delete entity: {}", e.getMessage());
             return false;
         }
     }

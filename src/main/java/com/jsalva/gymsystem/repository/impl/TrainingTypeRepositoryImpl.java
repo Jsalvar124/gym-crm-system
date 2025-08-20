@@ -7,6 +7,8 @@ import com.jsalva.gymsystem.repository.TrainingTypeRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -17,6 +19,8 @@ public class TrainingTypeRepositoryImpl extends GenericRepositoryImpl<TrainingTy
         super(TrainingType.class, em);
     }
 
+    private final Logger logger = LoggerFactory.getLogger(TrainingTypeRepositoryImpl.class);
+
     @Override
     public Optional<TrainingType> findTrainingTypeByName(TrainingTypeEnum typeEnum) {
         try {
@@ -24,7 +28,7 @@ public class TrainingTypeRepositoryImpl extends GenericRepositoryImpl<TrainingTy
             typedQuery.setParameter("typeEnum", typeEnum);
             return Optional.of(typedQuery.getSingleResult());
         } catch (NoResultException e){
-            System.out.println("No result!");
+            logger.error("No results found for training type {}", typeEnum.name());
             return Optional.empty();
         }
     }
