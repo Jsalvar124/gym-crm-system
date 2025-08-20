@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TraineeServiceImpl implements TraineeService {
@@ -106,12 +107,20 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     public void deleteTrainee(Long id) {
-        Optional<Trainee> trainee = traineeRepository.findById(id);
-        if(trainee.isEmpty()){
+        Optional<Trainee> result = traineeRepository.findById(id);
+        if(result.isEmpty()){
             logger.error("Trainee for deletion not found");
             throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
         }
         logger.info("Deleting trainee with id {}", id);
+        // Clean up many-to-many relationships BEFORE deletion
+        Trainee trainee = result.get();
+        Set<Trainer> trainers = trainee.getTrainers();
+        for (Trainer trainer : trainers) {
+            trainer.getTrainees().remove(trainee); // Remove trainee from trainer's collection
+        }
+        trainee.getTrainers().clear(); // Clear trainee's trainer collection
+
         traineeRepository.delete(id);
     }
 

@@ -62,6 +62,7 @@ public abstract class GenericRepositoryImpl<T, K> implements GenericRepository<T
             if (entity != null) {
                 em.remove(entity);
                 tx.commit();
+                System.out.println("Entity removed successfully");
                 return true;
             } else {
                 tx.rollback();

@@ -22,6 +22,10 @@ public class Trainee extends User{
     @ManyToMany(mappedBy = "trainees") // Points to the property in Trainer
     private Set<Trainer> trainers = new HashSet<>();
 
+    // One to many non-owner side, cascade deletion
+    @OneToMany(mappedBy = "trainee", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Training> trainings = new HashSet<>();
+
     public Trainee() {
     }
 

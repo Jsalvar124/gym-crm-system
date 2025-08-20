@@ -14,7 +14,7 @@ public class Trainer extends User{
     private TrainingType specialization;
 
     // Many-to-Many with Trainer as owner
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "trainer_trainee", // Junction table name
             joinColumns = @JoinColumn(name = "trainer_id"), // Trainer side

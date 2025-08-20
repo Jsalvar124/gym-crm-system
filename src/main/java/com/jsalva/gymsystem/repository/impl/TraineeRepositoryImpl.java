@@ -20,11 +20,11 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
 
     private final Logger logger = LoggerFactory.getLogger(TraineeRepositoryImpl.class);
 
-
     public TraineeRepositoryImpl(EntityManager em) {
         super(Trainee.class, em);
     }
 
+    @Override
     public void toggleActiveState(Long id) {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
@@ -105,7 +105,7 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
             tx.begin();
             Optional<Trainee> trainee = findByUsername(username);
             if(trainee.isPresent()){
-                delete(trainee.get().getId());
+                em.remove(trainee.get());
                 tx.commit();
             }else {
                 tx.rollback();

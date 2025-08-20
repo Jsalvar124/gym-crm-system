@@ -11,11 +11,11 @@ public class Training {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "trainee_id")
     private Trainee trainee;
 
@@ -166,5 +166,18 @@ public class Training {
     public Training setId(Long id) {
         this.id = id;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Training{" +
+                "id=" + id +
+                ", trainer=" + trainer +
+                ", trainee=" + trainee +
+                ", trainingName='" + trainingName + '\'' +
+                ", trainingType=" + trainingType +
+                ", trainingDate=" + trainingDate +
+                ", duration=" + duration +
+                '}';
     }
 }
