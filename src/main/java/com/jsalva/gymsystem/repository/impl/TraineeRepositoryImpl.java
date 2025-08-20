@@ -11,6 +11,7 @@ import jakarta.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,14 +36,15 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
                 trainee.setActive(!current);
                 em.merge(trainee);
                 tx.commit();
-                System.out.println("Active status for id "+ id + " set to: " +!current);
+                logger.debug("Active status for id {} set to: {}",id, !current);
             }else{
-                System.out.println("Id not found");
+                logger.warn("Id not found");
             }
         } catch (Exception e) {
             if (tx.isActive()) {
                 tx.rollback();
             }
+            logger.error("Error changing trainee's active status {}",e.getMessage());
             throw e;
         }
     }

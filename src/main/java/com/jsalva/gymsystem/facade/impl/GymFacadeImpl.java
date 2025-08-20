@@ -319,6 +319,28 @@ public class GymFacadeImpl implements GymFacade {
             return null;
         }
     }
+
+    @Override
+    public List<Trainer> getTrainerListByTraineeUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
+        try {
+            requireTrainerAuthentication();
+            return trainingService.getTrainerListByTraineeUsernameOrDateSpan(username, fromDate, toDate);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error fetching trainer's list for trainee: {} {}",username, e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<Trainee> getTraineeListByTrainerUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
+        try {
+            requireTrainerAuthentication();
+            return trainingService.getTraineeListByTrainerUsernameOrDateSpan(username, fromDate, toDate);
+        } catch (IllegalArgumentException e) {
+            logger.error("Error fetching traiee's list for trainer: {} {}",username, e.getMessage());
+            return null;
+        }    }
+
     private void requireAuthentication() {
         if (!isAuthenticated || userLogged == null) {
             logger.error("Attempt to access protected resource without authentication");
