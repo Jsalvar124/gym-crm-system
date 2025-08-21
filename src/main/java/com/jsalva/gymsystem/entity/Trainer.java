@@ -14,13 +14,13 @@ public class Trainer extends User{
     private TrainingType specialization;
 
     // Many-to-Many with Trainer as owner
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}) // TODO ADD FETCH LAZY???
     @JoinTable(
             name = "trainer_trainee", // Junction table name
             joinColumns = @JoinColumn(name = "trainer_id"), // Trainer side
             inverseJoinColumns = @JoinColumn(name = "trainee_id") // Trainee side
     )
-    private Set<Trainee> trainees = new HashSet<>(); // Fixed: was Set<Trainer>
+    private Set<Trainee> trainees = new HashSet<>();
 
     public Trainer() {
     }

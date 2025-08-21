@@ -5,7 +5,8 @@ import com.jsalva.gymsystem.entity.*;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface GymFacade {
+public interface
+GymFacade {
     boolean login(String username, String password);
     void logout();
 

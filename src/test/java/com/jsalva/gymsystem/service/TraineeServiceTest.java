@@ -69,6 +69,7 @@ public class TraineeServiceTest {
                         trainee.getAddress().equals("20 St. City") &&
                         trainee.getDateOfBirth().equals(date) &&
                         trainee.getPassword() != null
+
         ));
     }
 }
