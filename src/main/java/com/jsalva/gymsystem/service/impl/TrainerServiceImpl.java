@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Optional;
 
 import com.jsalva.gymsystem.entity.Trainer;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class TrainerServiceImpl implements TrainerService {
 
@@ -28,6 +30,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    @Transactional
     public void createTrainer(String firstName, String lastName, TrainingTypeEnum trainingType) {
         TrainingType type = trainingTypeService.findTrainingTypeByName(trainingType);
 
@@ -62,11 +65,13 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Trainer> getAllTrainers() {
         return trainerRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Trainer getTrainerById(Long id) {
         Optional<Trainer> trainer = trainerRepository.findById(id);
         if(trainer.isEmpty()){
@@ -77,6 +82,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    @Transactional
     public void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive) {
         // Verify that the id exists.
         Optional<Trainer> result = trainerRepository.findById(userId);
@@ -115,6 +121,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    @Transactional
     public void deleteTrainer(Long id) {
         // Verify that the id exists.
         Optional<Trainer> trainerFound = trainerRepository.findById(id);
@@ -127,6 +134,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    @Transactional
     public void toggleActiveState(Long id) {
         Optional<Trainer> trainerFound = trainerRepository.findById(id);
         if(trainerFound.isEmpty()){
@@ -139,11 +147,13 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean validateCredentials(String username, String password) {
         return trainerRepository.validateCredentials(username,password);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Trainer findByUsername(String username) {
         Optional<Trainer> trainer = trainerRepository.findByUsername(username);
         if(trainer.isEmpty()){
@@ -155,6 +165,7 @@ public class TrainerServiceImpl implements TrainerService {
     }
 
     @Override
+    @Transactional
     public void updatePassword(Long id, String newPassword) {
         try{
             trainerRepository.updatePassword(id, newPassword);

@@ -6,6 +6,7 @@ import com.jsalva.gymsystem.entity.Training;
 import com.jsalva.gymsystem.repository.TrainingRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import org.springframework.stereotype.Repository;
 
@@ -14,8 +15,12 @@ import java.util.List;
 
 @Repository
 public class TrainingRepositoryImpl extends GenericRepositoryImpl<Training, Long> implements TrainingRepository {
-    public TrainingRepositoryImpl(EntityManager em) {
-        super(Training.class, em);
+
+    @PersistenceContext  // Add persistence context to entity manager
+    private EntityManager em;
+
+    public TrainingRepositoryImpl() {
+        super(Training.class);
     }
 
     @Override

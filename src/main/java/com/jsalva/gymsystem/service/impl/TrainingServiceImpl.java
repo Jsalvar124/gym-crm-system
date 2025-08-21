@@ -9,6 +9,7 @@ import com.jsalva.gymsystem.service.TrainingTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -35,6 +36,7 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
+    @Transactional
     public void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingTypeEnum trainingType, LocalDate trainingDate, Integer duration) {
         // Check that both trainer and trainee exist.
         Trainer trainer = trainerService.getTrainerById(trainerId);
@@ -70,11 +72,13 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Training> getAllTrainings() {
         return trainingRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Training getTrainingById(Long id) {
         Optional<Training> training = trainingRepository.findById(id);
         if(training.isEmpty()){
@@ -85,11 +89,13 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Trainer> getTrainerListByTraineeUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
         return trainingRepository.getTrainerListByTraineeUsernameOrDateSpan(username,fromDate,toDate);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Trainee> getTraineeListByTrainerUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
         return trainingRepository.getTraineeListByTrainerUsernameOrDateSpan(username,fromDate,toDate);
     }

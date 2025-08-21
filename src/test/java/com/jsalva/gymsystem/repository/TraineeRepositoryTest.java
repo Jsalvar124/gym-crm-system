@@ -34,7 +34,7 @@ public class TraineeRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        traineeRepository = new TraineeRepositoryImpl(entityManager);
+        traineeRepository = new TraineeRepositoryImpl();
 
     }
 

@@ -14,7 +14,7 @@ public class Trainer extends User{
     private TrainingType specialization;
 
     // Many-to-Many with Trainer as owner
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}) // TODO ADD FETCH LAZY???
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY) // added fetch lazy
     @JoinTable(
             name = "trainer_trainee", // Junction table name
             joinColumns = @JoinColumn(name = "trainer_id"), // Trainer side

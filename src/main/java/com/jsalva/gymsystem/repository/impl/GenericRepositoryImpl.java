@@ -1,87 +1,72 @@
 package com.jsalva.gymsystem.repository.impl;
 import com.jsalva.gymsystem.repository.GenericRepository;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.PersistenceContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public abstract class GenericRepositoryImpl<T, K> implements GenericRepository<T,K> {
 
-    protected EntityManager em;
+    @PersistenceContext  // Add persistence context to entity manager
+    private EntityManager em;
 
     private final Class<T> entityClass;
 
     private final Logger logger = LoggerFactory.getLogger(GenericRepositoryImpl.class);
 
 
-    public GenericRepositoryImpl(Class<T> entityClass, EntityManager em) {
+    public GenericRepositoryImpl(Class<T> entityClass) { // removed em constructor injection, annotation handles it.
         this.entityClass = entityClass;
-        this.em = em;
     }
 
-    @Transactional
     public T create(T t) {
-        EntityTransaction tx = em.getTransaction();
+//        EntityTransaction tx = em.getTransaction(); // Remove Transaction
         try{
-            tx.begin();
+//            tx.begin(); // remove Begin
             em.persist(t);
-            tx.commit();
+//            tx.commit(); // remove Commit
             return t;
         }catch (RuntimeException e){
-            if(tx.isActive()){
-                tx.rollback();
-            }
+//            if(tx.isActive()){
+//                tx.rollback(); // remove rollback!
+//            }
             logger.error("Failed to create entity: {}", e.getMessage());
             throw e;
         }
     }
 
-    @Transactional
     public T update(T t) {
-        EntityTransaction tx = em.getTransaction();
         try{
-            tx.begin();
             T merged = em.merge(t);
-            tx.commit();
             return merged;
         }catch (RuntimeException e){
-            if(tx.isActive()){
-                tx.rollback();
-            }
             logger.error("Failed to update entity: {}", e.getMessage());
             throw e;
         }
     }
 
-    @Transactional
     public boolean delete(K id) {
-        EntityTransaction tx = em.getTransaction();
         try {
-            tx.begin();
             T entity = em.find(entityClass, id);
             if (entity != null) {
                 em.remove(entity);
-                tx.commit();
                 logger.info("Entity removed successfully");
                 return true;
             } else {
-                tx.rollback();
                 logger.warn("Failed to delete entity, Entity not found!");
                 return false;
             }
         } catch (RuntimeException e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
+
             logger.error("Failed to delete entity: {}", e.getMessage());
             return false;
         }
     }
-    @Transactional(readOnly = true)
     public Optional<T> findById(K id) {
         try {
             T entity = em.find(entityClass, id);
@@ -91,7 +76,6 @@ public abstract class GenericRepositoryImpl<T, K> implements GenericRepository<T
         }
     }
 
-    @Transactional(readOnly = true)
     public List<T> findAll() {
         try {
             String jpql = "SELECT e FROM " + entityClass.getSimpleName() + " e";

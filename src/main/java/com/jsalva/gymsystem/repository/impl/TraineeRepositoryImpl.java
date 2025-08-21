@@ -4,14 +4,10 @@ import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.repository.TraineeRepository;
 import com.jsalva.gymsystem.utils.EncoderUtils;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,29 +17,26 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
 
     private final Logger logger = LoggerFactory.getLogger(TraineeRepositoryImpl.class);
 
-    public TraineeRepositoryImpl(EntityManager em) {
-        super(Trainee.class, em);
+    @PersistenceContext  // Add persistence context to entity manager
+    private EntityManager em;
+
+    public TraineeRepositoryImpl() {
+        super(Trainee.class);
     }
 
     @Override
     public void toggleActiveState(Long id) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         try{
             Trainee trainee = em.find(Trainee.class, id);
             if(trainee != null){
                 boolean current = trainee.getActive();
                 trainee.setActive(!current);
                 em.merge(trainee);
-                tx.commit();
                 logger.debug("Active status for id {} set to: {}",id, !current);
             }else{
                 logger.warn("Id not found");
             }
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             logger.error("Error changing trainee's active status {}",e.getMessage());
             throw e;
         }
@@ -80,22 +73,15 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
 
     @Override
     public void updatePassword(Long id, String newPassword) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         try {
             Trainee trainee = em.find(Trainee.class, id);
             if (trainee != null) {
                 trainee.setPassword(newPassword);
                 em.merge(trainee);
-                tx.commit();
             } else {
-                tx.rollback();
                 logger.warn("Trainer with id {} not found.", id);
             }
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             throw e;
         }
     }
@@ -103,14 +89,10 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
     @Override
     public void deleteByUsername(String username) {
         try{
-            EntityTransaction tx = em.getTransaction();
-            tx.begin();
             Optional<Trainee> trainee = findByUsername(username);
             if(trainee.isPresent()){
                 em.remove(trainee.get());
-                tx.commit();
             }else {
-                tx.rollback();
                 logger.warn("Unable to delete, Trainee not found with username {}",username);
             }
         } catch (Exception e) {
@@ -164,6 +146,4 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
             throw new RuntimeException(e);
         }
     }
-
-
 }

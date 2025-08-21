@@ -8,6 +8,7 @@ import com.jsalva.gymsystem.service.TrainingTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -23,6 +24,7 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public TrainingType findTrainingTypeByName(TrainingTypeEnum typeEnum) {
         Optional<TrainingType> trainingType = trainingTypeRepository.findTrainingTypeByName(typeEnum);
         if(trainingType.isEmpty()){

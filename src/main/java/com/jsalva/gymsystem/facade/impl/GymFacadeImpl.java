@@ -180,6 +180,8 @@ public class GymFacadeImpl implements GymFacade {
             try{
                 requireOwnership(id);
                 trainerService.updatePassword(id, newPassword);
+                logger.info("Trainer's password with id {} updated", id);
+
             }catch (Exception e){
                 logger.error("Error updating trainer's password with id {} ", id);
             }

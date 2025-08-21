@@ -9,6 +9,7 @@ import com.jsalva.gymsystem.utils.UserUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,6 +29,7 @@ public class TraineeServiceImpl implements TraineeService {
 
 
     @Override
+    @Transactional
     public void createTrainee(String firstName, String lastName, String address, LocalDate dateOfBirth) {
         Trainee trainee = new Trainee();
         trainee.setFirstName(firstName);
@@ -43,6 +45,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         // Create unique username
         String username = traineeRepository.generateUniqueUsername(firstName,lastName);
+        logger.debug("generated username: {}", username);
         trainee.setUsername(username);
 
         //Default isActive boolean set to true.
@@ -54,11 +57,13 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Trainee> getAllTrainees() {
         return traineeRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Trainee getTraineeById(Long id) {
         Optional<Trainee> trainee = traineeRepository.findById(id);
         if(trainee.isEmpty()){
@@ -68,6 +73,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional
     public void updateTrainee(Long userId, String firstName, String lastName, String newPassword, Boolean isActive, String address, LocalDate dateOfBirth) {
         // Verify the ID exists
         Optional<Trainee> result = traineeRepository.findById(userId);
@@ -106,6 +112,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional
     public void deleteTrainee(Long id) {
         Optional<Trainee> result = traineeRepository.findById(id);
         if(result.isEmpty()){
@@ -125,6 +132,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional
     public void toggleActiveState(Long id) {
         Optional<Trainee> traineeFound = traineeRepository.findById(id);
         if(traineeFound.isEmpty()){
@@ -136,11 +144,13 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public boolean validateCredentials(String username, String password) {
         return traineeRepository.validateCredentials(username,password);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Trainee findByUsername(String username) {
         Optional<Trainee> trainee = traineeRepository.findByUsername(username);
         if(trainee.isEmpty()){
@@ -152,6 +162,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional
     public void updatePassword(Long id, String newPassword) {
         try{
             traineeRepository.updatePassword(id, newPassword);
@@ -162,6 +173,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional
     public void deleteTraineeByUsername(String username) {
         try{
             traineeRepository.deleteByUsername(username);
@@ -172,6 +184,7 @@ public class TraineeServiceImpl implements TraineeService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername) {
         return traineeRepository.findUnassignedTrainersByTrainee(traineeUsername);
     }

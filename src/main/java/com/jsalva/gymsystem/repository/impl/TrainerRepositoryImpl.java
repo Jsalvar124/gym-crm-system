@@ -7,7 +7,6 @@ import jakarta.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,35 +16,31 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
 
     private final Logger logger = LoggerFactory.getLogger(TrainerRepositoryImpl.class);
 
-    public TrainerRepositoryImpl(EntityManager em) {
-        super(Trainer.class, em);
+    @PersistenceContext  // Add persistence context to entity manager
+    private EntityManager em;
+
+    public TrainerRepositoryImpl() {
+        super(Trainer.class);
     }
 
     @Override
     public void toggleActiveState(Long id) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         try{
             Trainer trainer = em.find(Trainer.class, id);
             if(trainer != null){
                 boolean current = trainer.getActive();
                 trainer.setActive(!current);
                 em.merge(trainer);
-                tx.commit();
                 logger.debug("Active status for id {} set to: {}",id, !current);
             }else{
                 logger.info("Id {} not found", id);
             }
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             throw e;
         }
     }
 
     @Override
-    @Transactional
     public boolean validateCredentials(String username, String password) {
         try {
             Optional<Trainer> trainer = findByUsername(username);
@@ -75,23 +70,16 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
 
     @Override
     public void updatePassword(Long id, String newPassword) {
-        EntityTransaction tx = em.getTransaction();
-        tx.begin();
         try {
             Trainer trainer = em.find(Trainer.class, id);
             if (trainer != null) {
                 String hashedPassword = EncoderUtils.encryptPassword(newPassword);
                 trainer.setPassword(hashedPassword);
                 em.merge(trainer);
-                tx.commit();
             } else {
-                tx.rollback();
                 logger.warn("Trainer with id {} not found.", id);
             }
         } catch (Exception e) {
-            if (tx.isActive()) {
-                tx.rollback();
-            }
             throw e;
         }
     }

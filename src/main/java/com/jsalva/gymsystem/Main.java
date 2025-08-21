@@ -33,14 +33,14 @@ public class Main {
 //            gymFacade.createTraining(1L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
 
             // Login
-//            gymFacade.login("Ana.Gomez","1jJlQ2300e");
+            gymFacade.login("Ana.Gomez","newPassword");
 
             // Create a training after Login
-//             gymFacade.createTraining(1L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+//             gymFacade.createTraining(1L, 5L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
 
             // Get and modify trainee infromation.
-//            Trainee trainee = gymFacade.findTraineeByUsername("Sergio.Hernandez");
-//            gymFacade.toggleTraineeActiveState(trainee.getId());
+            Trainee trainee = gymFacade.findTraineeByUsername("Sergio.Hernandez1");
+            gymFacade.toggleTraineeActiveState(trainee.getId());
 //
              // Set from Many to Many Relation.
 //            Set<Trainer> trainerSet = trainee.getTrainers();
@@ -52,8 +52,9 @@ public class Main {
             // Update owners password
 //            gymFacade.updateTrainerPassword(1L,"newPassword");
 
-//            List<Trainer> list = gymFacade.getTrainerListByTraineeUsernameOrDateSpan("Juan.Perez2", null, null);
+            List<Trainer> list = gymFacade.getTrainerListByTraineeUsernameOrDateSpan("Juan.Perez2", null, null);
 
+            System.out.println(list);
             //delete trainee with cascade training deletion
 //            gymFacade.deleteTrainee(trainee.getId());
 

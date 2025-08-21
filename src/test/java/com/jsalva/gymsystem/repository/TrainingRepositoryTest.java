@@ -30,7 +30,7 @@ public class TrainingRepositoryTest {
 
     @BeforeEach
     void setUp(){
-        trainingRepository = new TrainingRepositoryImpl(entityManager);
+        trainingRepository = new TrainingRepositoryImpl();
     }
 
     @Test

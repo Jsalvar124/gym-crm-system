@@ -8,9 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
 @Configuration
+@EnableTransactionManagement // Add enable Transaction Management
 @ComponentScan(value="com.jsalva.gymsystem")
 @PropertySource("classpath:application.properties")
 public class AppConfig {
@@ -24,10 +27,14 @@ public class AppConfig {
         return Persistence.createEntityManagerFactory("gym-persistence-unit");
     }
 
-    @Bean
-    EntityManager entityManager(EntityManagerFactory entityManagerFactory){
-        return entityManagerFactory.createEntityManager();
-    }
+    // Remove entity Manager bean, in order to use @PersistenceContext
 
+    // Add Transaction Manager to use @Tansactional
+    @Bean
+    public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(entityManagerFactory);
+        return transactionManager;
+    }
 }
 

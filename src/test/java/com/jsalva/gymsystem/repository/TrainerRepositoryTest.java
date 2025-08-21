@@ -32,7 +32,7 @@ public class TrainerRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        trainerRepository = new TrainerRepositoryImpl(entityManager);
+        trainerRepository = new TrainerRepositoryImpl();
 
     }
 
