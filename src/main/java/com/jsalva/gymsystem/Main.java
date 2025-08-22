@@ -33,28 +33,33 @@ public class Main {
 //            gymFacade.createTraining(1L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
 
             // Login
-            gymFacade.login("Ana.Gomez","newPassword");
+            gymFacade.login("Ana.Gomez","zflg5IzoEA");
 
             // Create a training after Login
-//             gymFacade.createTraining(1L, 5L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+//            gymFacade.createTraining(1L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+//            gymFacade.createTraining(1L, 5L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+//            gymFacade.createTraining(2L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+//            gymFacade.createTraining(2L, 5L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+
+
 
             // Get and modify trainee infromation.
-            Trainee trainee = gymFacade.findTraineeByUsername("Sergio.Hernandez1");
+            Trainee trainee = gymFacade.findTraineeByUsername("Sergio.Hernandez");
             gymFacade.toggleTraineeActiveState(trainee.getId());
 //
              // Set from Many to Many Relation.
-//            Set<Trainer> trainerSet = trainee.getTrainers();
-//            System.out.println(trainerSet);
+            Set<Trainer> trainerSet = gymFacade.getTrainerListForTrainee(trainee.getId());
 
+            System.out.println(trainerSet);
             // try to update someone else's password
 //            gymFacade.updateTrainerPassword(2L, "changePassword");
 
             // Update owners password
-//            gymFacade.updateTrainerPassword(1L,"newPassword");
+//            gymFacade.updateTrainerPassword(1L,"newPassword1");
 
-            List<Trainer> list = gymFacade.getTrainerListByTraineeUsernameOrDateSpan("Juan.Perez2", null, null);
+//            List<Trainer> list = gymFacade.getTrainerListByTraineeUsernameOrDateSpan("Juan.Perez2", null, null);
 
-            System.out.println(list);
+//            System.out.println(list);
             //delete trainee with cascade training deletion
 //            gymFacade.deleteTrainee(trainee.getId());
 

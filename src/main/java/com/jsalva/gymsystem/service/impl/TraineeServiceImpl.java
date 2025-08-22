@@ -120,7 +120,7 @@ public class TraineeServiceImpl implements TraineeService {
             throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
         }
         logger.info("Deleting trainee with id {}", id);
-        // Clean up many-to-many relationships BEFORE deletion
+        // Clean up many-to-many relationships BEFORE deletion, since Trainee is the owner of the relation.
         Trainee trainee = result.get();
         Set<Trainer> trainers = trainee.getTrainers();
         for (Trainer trainer : trainers) {
@@ -187,5 +187,20 @@ public class TraineeServiceImpl implements TraineeService {
     @Transactional(readOnly = true)
     public List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername) {
         return traineeRepository.findUnassignedTrainersByTrainee(traineeUsername);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Trainer> getTrainersSetForTrainee(Long id) {
+        try{
+            Optional<Trainee> trainee = traineeRepository.findById(id);
+            if(trainee.isEmpty()){
+                logger.error("Trainee id not found");
+                throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
+            }
+            return trainee.get().getTrainers();
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

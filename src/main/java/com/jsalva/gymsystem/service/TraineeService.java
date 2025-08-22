@@ -5,6 +5,7 @@ import com.jsalva.gymsystem.entity.Trainer;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface TraineeService {
     void createTrainee(String firstName, String lastName, String address, LocalDate dateOfBirth);
@@ -18,4 +19,5 @@ public interface TraineeService {
     void updatePassword(Long id, String newPassword);
     void deleteTraineeByUsername(String username);
     List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername);
+    Set<Trainer> getTrainersSetForTrainee(Long id);
 }

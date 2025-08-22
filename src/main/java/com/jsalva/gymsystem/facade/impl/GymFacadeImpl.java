@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 @Component
 public class GymFacadeImpl implements GymFacade {
@@ -288,6 +289,17 @@ public class GymFacadeImpl implements GymFacade {
             logger.error("Error finding unassigned trainers for trainee with username {}", traineeUsername);
         }
         return List.of();
+    }
+
+    @Override
+    public Set<Trainer> getTrainerListForTrainee(Long id) {
+        try {
+            requireAuthentication();
+            return traineeService.getTrainersSetForTrainee(id);
+        } catch (Exception e) {
+            logger.error("Error finding trainers set for trainee with id {}", id);
+        }
+        return Set.of();
     }
 
     @Override

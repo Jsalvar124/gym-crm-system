@@ -4,6 +4,7 @@ import com.jsalva.gymsystem.entity.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 
 public interface
 GymFacade {
@@ -31,6 +32,7 @@ GymFacade {
     void updateTraineePassword(Long id, String newPassword);
     void deleteTraineeByUsername(String username);
     List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername);
+    Set<Trainer> getTrainerListForTrainee(Long id);
 
     //Training
     void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingTypeEnum trainingType, LocalDate trainingDate, Integer duration);
