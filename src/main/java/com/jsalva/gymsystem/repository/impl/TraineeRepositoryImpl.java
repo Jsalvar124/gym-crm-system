@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> implements TraineeRepository {
@@ -89,9 +90,15 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
     @Override
     public void deleteByUsername(String username) {
         try{
-            Optional<Trainee> trainee = findByUsername(username);
-            if(trainee.isPresent()){
-                em.remove(trainee.get());
+            Optional<Trainee> result = findByUsername(username);
+            if(result.isPresent()){
+                Trainee trainee = result.get();
+                Set<Trainer> trainers = trainee.getTrainers();
+                for (Trainer trainer : trainers) {
+                    trainer.getTrainees().remove(trainee); // Remove trainee from trainer's collection
+                }
+                em.remove(trainee);
+                logger.info("Trainee with username {} deleted", username);
             }else {
                 logger.warn("Unable to delete, Trainee not found with username {}",username);
             }

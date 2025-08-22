@@ -1,4 +1,5 @@
 package com.jsalva.gymsystem.service.impl;
+import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.TrainingType;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
 import com.jsalva.gymsystem.repository.TrainerRepository;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import com.jsalva.gymsystem.entity.Trainer;
 import org.springframework.transaction.annotation.Transactional;
@@ -174,4 +176,18 @@ public class TrainerServiceImpl implements TrainerService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public Set<Trainee> getTraineeSetForTriner(Long id) {
+        try{
+            Optional<Trainer> trainer = trainerRepository.findById(id);
+            if(trainer.isEmpty()){
+                logger.error("Trainee id not found");
+                throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
+            }
+            return trainer.get().getTrainees();
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -1,11 +1,13 @@
 package com.jsalva.gymsystem.service;
 
+import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.entity.TrainingType;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface TrainerService {
     void createTrainer(String firstName, String lastName, TrainingTypeEnum trainingType);
@@ -17,4 +19,6 @@ public interface TrainerService {
     boolean validateCredentials(String username, String password);
     Trainer findByUsername(String username);
     void updatePassword(Long id, String newPassword);
+    Set<Trainee> getTraineeSetForTriner(Long id);
+
 }

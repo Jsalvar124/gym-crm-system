@@ -1,6 +1,7 @@
 package com.jsalva.gymsystem.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.Hibernate;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -47,6 +48,9 @@ public class Trainer extends User{
     }
 
     public Set<Trainee> getTrainees() {
+        if (trainees != null) {
+            Hibernate.initialize(trainees); // Forces load of Trainees.
+        }
         return this.trainees;
     }
 }

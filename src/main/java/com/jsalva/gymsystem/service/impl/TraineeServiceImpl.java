@@ -165,8 +165,8 @@ public class TraineeServiceImpl implements TraineeService {
     @Transactional
     public void updatePassword(Long id, String newPassword) {
         try{
+            logger.info("Trying to update Trainee's password with id {}", id);
             traineeRepository.updatePassword(id, newPassword);
-            logger.info("Trainee's password updated");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -176,8 +176,8 @@ public class TraineeServiceImpl implements TraineeService {
     @Transactional
     public void deleteTraineeByUsername(String username) {
         try{
+            logger.info("Trying to delete Trainee with username {}", username);
             traineeRepository.deleteByUsername(username);
-            logger.info("Trainee with username {} deleted", username);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

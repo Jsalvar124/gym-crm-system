@@ -16,10 +16,10 @@ GymFacade {
     List<Trainer> getAllTrainers();
     Trainer getTrainerById(Long id);
     void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive);
-    void deleteTrainer(Long id);
     void toggleTrainerActiveState(Long id);
     Trainer findTrainerByUsername(String username);
     void updateTrainerPassword(Long id, String newPassword);
+    Set<Trainee> getTraineeListForTrainer(Long id);
 
     //Trainee
     void createTrainee(String firstName, String lastName, String address, LocalDate dateOfBirth);

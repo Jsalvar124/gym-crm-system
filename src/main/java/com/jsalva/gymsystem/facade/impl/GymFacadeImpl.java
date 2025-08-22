@@ -106,16 +106,6 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public void deleteTrainer(Long id) {
-        try {
-            requireTrainerAuthentication();
-            trainerService.deleteTrainer(id);
-        }catch (IllegalArgumentException e){
-            logger.error("Error deleting trainer: {}", e.getMessage());
-        }
-    }
-
-    @Override
     public void toggleTrainerActiveState(Long id) {
         try {
             requireTrainerAuthentication();
@@ -178,15 +168,25 @@ public class GymFacadeImpl implements GymFacade {
 
     @Override
     public void updateTrainerPassword(Long id, String newPassword) {
-            try{
-                requireOwnership(id);
-                trainerService.updatePassword(id, newPassword);
-                logger.info("Trainer's password with id {} updated", id);
+        try{
+            requireOwnership(id);
+            trainerService.updatePassword(id, newPassword);
+            logger.info("Trainer's password with id {} updated", id);
 
-            }catch (Exception e){
-                logger.error("Error updating trainer's password with id {} ", id);
-            }
+        }catch (Exception e){
+            logger.error("Error updating trainer's password with id {} ", id);
+        }
     }
+
+    @Override
+    public Set<Trainee> getTraineeListForTrainer(Long id) {
+        try {
+            requireAuthentication();
+            return trainerService.getTraineeSetForTriner(id);
+        } catch (Exception e) {
+            logger.error("Error finding trainee's set for trainer with id {}", id);
+        }
+        return Set.of();    }
 
     // Trainee Methods
     // No authentication

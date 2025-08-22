@@ -36,21 +36,22 @@ public class Main {
             gymFacade.login("Ana.Gomez","zflg5IzoEA");
 
             // Create a training after Login
-//            gymFacade.createTraining(1L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
-//            gymFacade.createTraining(1L, 5L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
-//            gymFacade.createTraining(2L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
-//            gymFacade.createTraining(2L, 5L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+            gymFacade.createTraining(1L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+            gymFacade.createTraining(1L, 5L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+            gymFacade.createTraining(2L, 4L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
+            gymFacade.createTraining(2L, 5L, "Bouldering Training", TrainingTypeEnum.BOULDERING, LocalDate.now(), 90);
 
 
 
             // Get and modify trainee infromation.
-            Trainee trainee = gymFacade.findTraineeByUsername("Sergio.Hernandez");
-            gymFacade.toggleTraineeActiveState(trainee.getId());
 //
+            Trainer trainer = gymFacade.findTrainerByUsername("Ana.Gomez");
              // Set from Many to Many Relation.
-            Set<Trainer> trainerSet = gymFacade.getTrainerListForTrainee(trainee.getId());
 
-            System.out.println(trainerSet);
+            Set<Trainee> traineeSet = gymFacade.getTraineeListForTrainer(trainer.getId());
+
+            System.out.println(traineeSet);
+
             // try to update someone else's password
 //            gymFacade.updateTrainerPassword(2L, "changePassword");
 
@@ -61,9 +62,9 @@ public class Main {
 
 //            System.out.println(list);
             //delete trainee with cascade training deletion
-//            gymFacade.deleteTrainee(trainee.getId());
+            gymFacade.deleteTraineeByUsername("Juan.Perez5");
 
-//            gymFacade.logout();
+            gymFacade.logout();
 
 
         } catch (Exception e) {
