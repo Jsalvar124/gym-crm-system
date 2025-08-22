@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,14 +36,13 @@ public class TraineeRepositoryTest {
     @BeforeEach
     void setUp() {
         traineeRepository = new TraineeRepositoryImpl();
-
+        ReflectionTestUtils.setField(traineeRepository, "em", entityManager);
     }
 
     // Test 1: toggleActiveState - your main custom logic
     @Test
     void shouldToggleActiveFromTrueToFalse() {
 
-        when(entityManager.getTransaction()).thenReturn(transaction);
         // Given
         Trainee trainee = new Trainee();
         trainee.setActive(true);  // Start as active

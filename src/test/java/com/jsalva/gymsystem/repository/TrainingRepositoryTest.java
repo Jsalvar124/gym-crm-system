@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -31,6 +32,8 @@ public class TrainingRepositoryTest {
     @BeforeEach
     void setUp(){
         trainingRepository = new TrainingRepositoryImpl();
+        ReflectionTestUtils.setField(trainingRepository, "em", entityManager);
+
     }
 
     @Test

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class TrainerRepositoryTest {
     @BeforeEach
     void setUp() {
         trainerRepository = new TrainerRepositoryImpl();
+        ReflectionTestUtils.setField(trainerRepository, "em", entityManager);
 
     }
 
@@ -40,7 +42,6 @@ public class TrainerRepositoryTest {
     @Test
     void shouldToggleActiveFromTrueToFalse() {
 
-        when(entityManager.getTransaction()).thenReturn(transaction);
         // Given
         Trainer trainer = new Trainer();
         trainer.setActive(true);  // Start as active
