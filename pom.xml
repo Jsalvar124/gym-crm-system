@@ -65,13 +65,22 @@
         </dependency>
 
 
-        <!-- For jackson2http converter -->
+        <!-- For jackson2http converter JSON conversion -->
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.15.2</version>
         </dependency>
+
+        <!-- For servlet API -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
 
         <!-- Logging Dependencies -->
         <dependency>
