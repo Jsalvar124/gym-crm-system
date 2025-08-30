@@ -24,39 +24,6 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
     }
 
     @Override
-    public void toggleActiveState(Long id) {
-        try{
-            Trainer trainer = em.find(Trainer.class, id);
-            if(trainer != null){
-                boolean current = trainer.getActive();
-                trainer.setActive(!current);
-                em.merge(trainer);
-                logger.debug("Active status for id {} set to: {}",id, !current);
-            }else{
-                logger.info("Id {} not found", id);
-            }
-        } catch (Exception e) {
-            throw e;
-        }
-    }
-
-    @Override
-    public boolean validateCredentials(String username, String password) {
-        try {
-            Optional<Trainer> trainer = findByUsername(username);
-            if (trainer.isPresent()) {
-                String hashedPassword = trainer.get().getPassword();
-                return EncoderUtils.verifyPassword(password, hashedPassword);
-            } else {
-                return false; // Trainer not found, password is false.
-            }
-        } catch (SecurityException e){
-            logger.error("Error validating credentials");
-            throw e;
-        }
-    }
-
-    @Override
     public Optional<Trainer> findByUsername(String username) {
         try {
             TypedQuery<Trainer> typedQuery = em.createQuery("SELECT t FROM Trainer t WHERE t.username = :username", Trainer.class);

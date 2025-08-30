@@ -39,47 +39,48 @@ public class TraineeRepositoryTest {
         ReflectionTestUtils.setField(traineeRepository, "em", entityManager);
     }
 
-    // Test 1: toggleActiveState - your main custom logic
-    @Test
-    void shouldToggleActiveFromTrueToFalse() {
-
-        // Given
-        Trainee trainee = new Trainee();
-        trainee.setActive(true);  // Start as active
-
-        when(entityManager.find(Trainee.class, 1L)).thenReturn(trainee);
-
-        // When
-        traineeRepository.toggleActiveState(1L);
-
-        // Then
-        assertFalse(trainee.getActive());  // Should now be inactive
-    }
-
-    // Test 2: validateCredentials - critical for security
-    @Test
-    void shouldReturnTrueWhenCredentialsAreCorrect() {
-        // Given
-        String username = "John.Doe";
-        String password = "newPassword";
-        String hashedPassword = "$2a$10$fA54/oCBsoUF15NuL1WOs.hA5CjP1v/M8USdioI7saEKe5njhjqAS";
-
-        Trainee trainee = new Trainee();
-        trainee.setPassword(hashedPassword);
-
-        // Mock the exact EntityManager calls from findByUsername
-        TypedQuery<Trainee> query = mock(TypedQuery.class);
-        when(entityManager.createQuery("SELECT t FROM Trainee t WHERE t.username = :username", Trainee.class))
-                .thenReturn(query);
-        when(query.setParameter("username", username)).thenReturn(query);
-        when(query.getSingleResult()).thenReturn(trainee);
-
-        // When
-        boolean result = traineeRepository.validateCredentials(username, password);
-
-        // Then
-        assertTrue(result);
-    }
+    // TODO MOVE TO SERVICE TEST
+//    // Test 1: toggleActiveState - your main custom logic
+//    @Test
+//    void shouldToggleActiveFromTrueToFalse() {
+//
+//        // Given
+//        Trainee trainee = new Trainee();
+//        trainee.setActive(true);  // Start as active
+//
+//        when(entityManager.find(Trainee.class, 1L)).thenReturn(trainee);
+//
+//        // When
+//        traineeRepository.toggleActiveState(1L);
+//
+//        // Then
+//        assertFalse(trainee.getActive());  // Should now be inactive
+//    }
+//
+//    // Test 2: validateCredentials - critical for security
+//    @Test
+//    void shouldReturnTrueWhenCredentialsAreCorrect() {
+//        // Given
+//        String username = "John.Doe";
+//        String password = "newPassword";
+//        String hashedPassword = "$2a$10$fA54/oCBsoUF15NuL1WOs.hA5CjP1v/M8USdioI7saEKe5njhjqAS";
+//
+//        Trainee trainee = new Trainee();
+//        trainee.setPassword(hashedPassword);
+//
+//        // Mock the exact EntityManager calls from findByUsername
+//        TypedQuery<Trainee> query = mock(TypedQuery.class);
+//        when(entityManager.createQuery("SELECT t FROM Trainee t WHERE t.username = :username", Trainee.class))
+//                .thenReturn(query);
+//        when(query.setParameter("username", username)).thenReturn(query);
+//        when(query.getSingleResult()).thenReturn(trainee);
+//
+//        // When
+//        boolean result = traineeRepository.validateCredentials(username, password);
+//
+//        // Then
+//        assertTrue(result);
+//    }
     // Test 3: generateUniqueUsername - business logic
     @Test
     void shouldGenerateUniqueUsername() {

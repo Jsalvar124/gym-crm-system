@@ -134,19 +134,34 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     @Transactional
     public void toggleActiveState(Long id) {
-        Optional<Trainee> traineeFound = traineeRepository.findById(id);
-        if(traineeFound.isEmpty()){
-            logger.error("Trainee not found");
-            throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
+        try{
+            Optional<Trainee> result = traineeRepository.findById(id);
+            if(result.isPresent()){
+                Trainee trainee = result.get();
+                boolean current = trainee.getActive();
+                trainee.setActive(!current); // Auto merge from dirty check.
+                logger.debug("Active status for id {} set to: {}",id, !current);
+            }else{
+                logger.error("Trainee not found");
+                throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
+            }
+        } catch (Exception e) {
+            logger.error("Error changing trainee's active status {}",e.getMessage());
+            throw e;
         }
-        logger.info("Trainee with id {} state was modified", id);
-        traineeRepository.toggleActiveState(id);
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean validateCredentials(String username, String password) {
-        return traineeRepository.validateCredentials(username,password);
+        try {
+            Trainee trainee = findByUsername(username);
+            String hashedPassword = trainee.getPassword();
+            return EncoderUtils.verifyPassword(password, hashedPassword);
+        } catch (SecurityException e){
+            logger.error("Error validating credentials");
+            throw e;
+        }
     }
 
     @Override

@@ -138,20 +138,34 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional
     public void toggleActiveState(Long id) {
-        Optional<Trainer> trainerFound = trainerRepository.findById(id);
-        if(trainerFound.isEmpty()){
-            logger.error("Trainer not found");
-            throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
+        try{
+            Optional<Trainer> result = trainerRepository.findById(id);
+            if(result.isPresent()){
+                Trainer trainer = result.get();
+                boolean current = trainer.getActive();
+                trainer.setActive(!current); // Auto merge from dirty check.
+                logger.debug("Active status for id {} set to: {}",id, !current);
+            }else{
+                logger.error("Trainer not found");
+                throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
+            }
+        } catch (Exception e) {
+            logger.error("Error changing trainer's active status {}",e.getMessage());
+            throw e;
         }
-        logger.info("Trainer with id {} state was modified", id);
-        trainerRepository.toggleActiveState(id);
-
     }
 
     @Override
     @Transactional(readOnly = true)
     public boolean validateCredentials(String username, String password) {
-        return trainerRepository.validateCredentials(username,password);
+        try {
+            Trainer trainer = findByUsername(username);
+            String hashedPassword = trainer.getPassword();
+            return EncoderUtils.verifyPassword(password, hashedPassword);
+        } catch (SecurityException e){
+            logger.error("Error validating credentials");
+            throw e;
+        }
     }
 
     @Override

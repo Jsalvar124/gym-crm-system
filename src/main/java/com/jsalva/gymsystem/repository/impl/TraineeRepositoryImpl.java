@@ -3,7 +3,6 @@ package com.jsalva.gymsystem.repository.impl;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.repository.TraineeRepository;
-import com.jsalva.gymsystem.utils.EncoderUtils;
 import jakarta.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,41 +22,6 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
 
     public TraineeRepositoryImpl() {
         super(Trainee.class);
-    }
-
-    @Override
-    public void toggleActiveState(Long id) {
-        try{
-            Trainee trainee = em.find(Trainee.class, id);
-            if(trainee != null){
-                boolean current = trainee.getActive();
-                trainee.setActive(!current);
-                em.merge(trainee);
-                logger.debug("Active status for id {} set to: {}",id, !current);
-            }else{
-                logger.warn("Id not found");
-            }
-        } catch (Exception e) {
-            logger.error("Error changing trainee's active status {}",e.getMessage());
-            throw e;
-        }
-    }
-
-
-    @Override
-    public boolean validateCredentials(String username, String password) {
-        try {
-            Optional<Trainee> trainee = findByUsername(username);
-            if (trainee.isPresent()) {
-                String hashedPassword = trainee.get().getPassword();
-                return EncoderUtils.verifyPassword(password, hashedPassword);
-            } else {
-                return false;
-            }
-        } catch (SecurityException e){
-            logger.error("Error validating credentials");
-            throw e;
-        }
     }
 
     @Override
