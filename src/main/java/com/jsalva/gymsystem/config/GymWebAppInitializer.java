@@ -20,6 +20,7 @@ public class GymWebAppInitializer implements WebApplicationInitializer {
         // Register your configuration classes
         context.register(AppConfig.class, WebConfig.class);
 
+
         //add ContextLoaderListner to the ServletContext which will be responsible to load the application context
         servletContext.addListener(new ContextLoaderListener(context));
 

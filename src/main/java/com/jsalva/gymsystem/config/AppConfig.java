@@ -27,8 +27,6 @@ public class AppConfig {
         return Persistence.createEntityManagerFactory("gym-persistence-unit");
     }
 
-    // Remove entity Manager bean, in order to use @PersistenceContext
-
     // Add Transaction Manager to use @Tansactional
     @Bean
     public JpaTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {

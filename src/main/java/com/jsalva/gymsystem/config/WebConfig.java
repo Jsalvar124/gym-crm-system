@@ -11,7 +11,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan(value = "com.jsalva.gymsystem")
+@ComponentScan(value = "com.jsalva.gymsystem.controller")
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
