@@ -2,19 +2,23 @@ package com.jsalva.gymsystem.config;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @Configuration
 @EnableTransactionManagement // Add enable Transaction Management
-@ComponentScan(value="com.jsalva.gymsystem")
+@ComponentScan(basePackages = {
+        "com.jsalva.gymsystem.service",
+        "com.jsalva.gymsystem.repository",
+        "com.jsalva.gymsystem.facade",
+        "com.jsalva.gymsystem.dao"
+        // Add other packages but NOT controller package
+})
 @PropertySource("classpath:application.properties")
 public class AppConfig {
     @Bean

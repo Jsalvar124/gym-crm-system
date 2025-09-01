@@ -76,7 +76,7 @@ public class GymFacadeImpl implements GymFacade {
     @Override
     public List<Trainer> getAllTrainers() {
         try {
-            requireAuthentication(); // Trainer or Trainee can access.
+//            requireAuthentication(); // Trainer or Trainee can access.
             return trainerService.getAllTrainers();
         }catch (Exception e){
             logger.error("Error fetching trainers: {}", e.getMessage());
