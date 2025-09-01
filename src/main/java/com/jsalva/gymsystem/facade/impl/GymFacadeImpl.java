@@ -1,5 +1,7 @@
 package com.jsalva.gymsystem.facade.impl;
 
+import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
+import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.entity.*;
 import com.jsalva.gymsystem.facade.GymFacade;
 import com.jsalva.gymsystem.service.TraineeService;
@@ -191,12 +193,8 @@ public class GymFacadeImpl implements GymFacade {
     // Trainee Methods
     // No authentication
     @Override
-    public void createTrainee(String firstName, String lastName, String address, LocalDate dateOfBirth) {
-        try {
-            traineeService.createTrainee(firstName, lastName, address, dateOfBirth);
-        } catch (Exception e) {
-            logger.error("Error in trainee creation: {}", e.getMessage());
-        }
+    public CreateTraineeResponseDto createTrainee(CreateTraineeRequestDto requestDto) {
+        return traineeService.createTrainee(requestDto);
     }
 
     @Override

@@ -1,5 +1,9 @@
 package com.jsalva.gymsystem.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -13,8 +17,18 @@ import java.util.List;
 @EnableWebMvc
 @ComponentScan(value = "com.jsalva.gymsystem.controller")
 public class WebConfig implements WebMvcConfigurer {
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule()); // This fixes LocalDate
+        mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); // Optional: write dates as strings
+        return mapper;
+    }
+
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(new MappingJackson2HttpMessageConverter());
+        MappingJackson2HttpMessageConverter converter =
+                new MappingJackson2HttpMessageConverter(objectMapper());
+        converters.add(converter);
     }
 }

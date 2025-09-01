@@ -1,5 +1,7 @@
 package com.jsalva.gymsystem.service.impl;
 
+import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
+import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.repository.TraineeRepository;
@@ -30,12 +32,12 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void createTrainee(String firstName, String lastName, String address, LocalDate dateOfBirth) {
+    public CreateTraineeResponseDto createTrainee(CreateTraineeRequestDto requestDto) {
         Trainee trainee = new Trainee();
-        trainee.setFirstName(firstName);
-        trainee.setLastName(lastName);
-        trainee.setAddress(address);
-        trainee.setDateOfBirth(dateOfBirth);
+        trainee.setFirstName(requestDto.firstName());
+        trainee.setLastName(requestDto.lastName());
+        trainee.setAddress(requestDto.address());
+        trainee.setDateOfBirth(requestDto.dateOfBirth());
 
         //Generate and set random Password
         String randomPassword = UserUtils.generateRandomPassword();
@@ -44,7 +46,7 @@ public class TraineeServiceImpl implements TraineeService {
         trainee.setPassword(hashedPassword);
 
         // Create unique username
-        String username = traineeRepository.generateUniqueUsername(firstName,lastName);
+        String username = traineeRepository.generateUniqueUsername(requestDto.firstName(), requestDto.lastName());
         logger.debug("generated username: {}", username);
         trainee.setUsername(username);
 
@@ -54,6 +56,9 @@ public class TraineeServiceImpl implements TraineeService {
         // save new trainee
         traineeRepository.create(trainee);
         logger.debug("Saved Trainee: {}", trainee);
+
+        // return dto
+        return new CreateTraineeResponseDto(username, randomPassword);
     }
 
     @Override

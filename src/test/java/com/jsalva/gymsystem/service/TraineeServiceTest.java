@@ -1,5 +1,6 @@
 package com.jsalva.gymsystem.service;
 
+import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.repository.TraineeRepository;
 import com.jsalva.gymsystem.service.impl.TraineeServiceImpl;
@@ -40,7 +41,7 @@ public class TraineeServiceTest {
         when(traineeRepository.create(any(Trainee.class))).thenReturn(new Trainee());
 
         // When
-        traineeService.createTrainee(firstName, lastName, address, date);
+        traineeService.createTrainee(new CreateTraineeRequestDto(firstName, lastName, date, address));
 
         // Then
         verify(traineeRepository).generateUniqueUsername(firstName, lastName);
@@ -58,7 +59,7 @@ public class TraineeServiceTest {
         when(traineeRepository.generateUniqueUsername(firstName, lastName)).thenReturn("Jane.Smith");
 
         // When
-        traineeService.createTrainee(firstName, lastName, address, date);
+        traineeService.createTrainee(new CreateTraineeRequestDto(firstName, lastName, date, address));
 
         // Then - verify the trainee passed to create() has correct properties
         verify(traineeRepository).create(argThat(trainee ->

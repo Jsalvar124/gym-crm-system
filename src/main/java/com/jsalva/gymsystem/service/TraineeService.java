@@ -1,5 +1,7 @@
 package com.jsalva.gymsystem.service;
 
+import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
+import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 
@@ -8,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface TraineeService {
-    void createTrainee(String firstName, String lastName, String address, LocalDate dateOfBirth);
+    CreateTraineeResponseDto createTrainee(CreateTraineeRequestDto requestDto);
     List<Trainee> getAllTrainees();
     Trainee getTraineeById(Long id);
     void updateTrainee(Long userId, String firstName, String lastName, String newPassword, Boolean isActive, String address, LocalDate dateOfBirth);
