@@ -3,9 +3,8 @@ package com.jsalva.gymsystem.facade.impl;
 import com.jsalva.gymsystem.dto.request.ChangePasswordRequestDto;
 import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
-import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
-import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
-import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
+import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
+import com.jsalva.gymsystem.dto.response.*;
 import com.jsalva.gymsystem.entity.*;
 import com.jsalva.gymsystem.facade.GymFacade;
 import com.jsalva.gymsystem.service.AuthService;
@@ -102,7 +101,7 @@ public class GymFacadeImpl implements GymFacade {
 
 
     @Override
-    public Trainer findTrainerByUsername(String username) {
+    public TrainerResponseDto findTrainerByUsername(String username) {
         try {
             return trainerService.findByUsername(username);
         }catch (IllegalArgumentException e){
@@ -125,7 +124,7 @@ public class GymFacadeImpl implements GymFacade {
     @Override
     public Set<Trainee> getTraineeListForTrainer(Long id) {
         try {
-            return trainerService.getTraineeSetForTriner(id);
+            return trainerService.getTraineeSetForTrainer(id);
         } catch (Exception e) {
             logger.error("Error finding trainee's set for trainer with id {}", id);
         }
@@ -232,9 +231,9 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingTypeEnum trainingType, LocalDate trainingDate, Integer duration) {
+    public void createTraining(CreateTrainingRequestDto requestDto) {
         try {
-            trainingService.createTraining(trainerId, traineeId, trainingName, trainingType, trainingDate, duration);
+            trainingService.createTraining(requestDto);
         } catch (IllegalArgumentException e) {
             logger.error("Error in training creation: {}", e.getMessage());
         }

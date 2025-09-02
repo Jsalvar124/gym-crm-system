@@ -1,5 +1,6 @@
 package com.jsalva.gymsystem.service.impl;
 
+import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
 import com.jsalva.gymsystem.entity.*;
 import com.jsalva.gymsystem.repository.TrainingRepository;
 import com.jsalva.gymsystem.service.TraineeService;
@@ -37,21 +38,23 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     @Transactional
-    public void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingTypeEnum trainingType, LocalDate trainingDate, Integer duration) {
+    public void createTraining(CreateTrainingRequestDto requestDto) {
         // Check that both trainer and trainee exist.
-        Trainer trainer = trainerService.getTrainerById(trainerId);
+        Trainer trainer = trainerService.findEntityByUsername(requestDto.trainerUsername());
         if(trainer == null){
             logger.error("Error creating training, Trainer id not found");
-            throw new IllegalArgumentException("Trainer with Id " + trainerId + " not found.");
+            throw new IllegalArgumentException("Trainer with username " + requestDto.trainerUsername() + " not found.");
         }
 
-        Trainee trainee = traineeService.getTraineeById(traineeId);
+        Trainee trainee = traineeService.findEntityByUsername(requestDto.traineeUsername()
+        );
         if(trainee == null){
             logger.error("Error creating training, Trainee id not found");
-            throw new IllegalArgumentException("Trainee with Id " + traineeId + " not found.");
+            throw new IllegalArgumentException("Trainee with username " + requestDto.traineeUsername() + " not found.");
         }
 
-        TrainingType type = trainingTypeService.findTrainingTypeByName(trainingType);
+        // get Training type from trainer specialization
+        TrainingType type = trainer.getSpecialization();
         if(type == null){
             logger.error("Error creating training, TrainingType not found");
             throw new IllegalArgumentException("TrainingType not found.");
@@ -60,15 +63,14 @@ public class TrainingServiceImpl implements TrainingService {
         Training training = new Training.Builder()
                 .setTrainer(trainer)
                 .setTrainee(trainee)
-                .setTrainingName(trainingName)
+                .setTrainingName(requestDto.trainingName())
                 .setTrainingType(type)
-                .setTrainingDate(trainingDate)
-                .setDuration(duration)
+                .setTrainingDate(requestDto.trainingDate())
+                .setDuration(requestDto.trainingDuration())
                 .build();
 
         trainingRepository.create(training);
         logger.debug("Saved Training: {}", training);
-
     }
 
     @Override

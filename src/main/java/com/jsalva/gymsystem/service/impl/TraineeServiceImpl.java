@@ -166,14 +166,20 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     @Transactional(readOnly = true)
     public TraineeResponseDto findByUsername(String username) {
+        Trainee trainee = findEntityByUsername(username);
+        return traineeMapper.toResponseDto(trainee);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Trainee findEntityByUsername(String username) {
         Optional<Trainee> result = traineeRepository.findByUsername(username);
         if(result.isEmpty()){
             logger.error("Trainee with username {} not found", username);
             throw new IllegalArgumentException("Trainee with username " + username + " not found.");
         }
         logger.info("Trainee found: {}", result.get());
-        Trainee trainee = result.get();
-        return traineeMapper.toResponseDto(trainee);
+        return result.get();
     }
 
     @Override

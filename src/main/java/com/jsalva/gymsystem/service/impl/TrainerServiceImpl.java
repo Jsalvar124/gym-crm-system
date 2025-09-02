@@ -2,9 +2,11 @@ package com.jsalva.gymsystem.service.impl;
 import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
+import com.jsalva.gymsystem.dto.response.TrainerResponseDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.TrainingType;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
+import com.jsalva.gymsystem.mapper.TrainerMapper;
 import com.jsalva.gymsystem.repository.TrainerRepository;
 import com.jsalva.gymsystem.service.TrainerService;
 import com.jsalva.gymsystem.service.TrainingTypeService;
@@ -29,9 +31,12 @@ public class TrainerServiceImpl implements TrainerService {
 
     private final TrainingTypeService trainingTypeService;
 
-    public TrainerServiceImpl(TrainerRepository trainerRepository, TrainingTypeService trainingTypeService) {
+    private final TrainerMapper trainerMapper;
+
+    public TrainerServiceImpl(TrainerRepository trainerRepository, TrainingTypeService trainingTypeService, TrainerMapper trainerMapper) {
         this.trainerRepository = trainerRepository;
         this.trainingTypeService = trainingTypeService;
+        this.trainerMapper = trainerMapper;
     }
 
     @Override
@@ -165,7 +170,7 @@ public class TrainerServiceImpl implements TrainerService {
     @Transactional(readOnly = true)
     public boolean validateCredentials(String username, String password) {
         try {
-            Trainer trainer = findByUsername(username);
+            Trainer trainer = findEntityByUsername(username);
             String hashedPassword = trainer.getPassword();
             return EncoderUtils.verifyPassword(password, hashedPassword);
         } catch (SecurityException e){
@@ -176,7 +181,13 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional(readOnly = true)
-    public Trainer findByUsername(String username) {
+    public TrainerResponseDto findByUsername(String username) {
+        Trainer trainer = findEntityByUsername(username);
+        return trainerMapper.toResponseDto(trainer);
+    }
+
+    @Override
+    public Trainer findEntityByUsername(String username) {
         Optional<Trainer> trainer = trainerRepository.findByUsername(username);
         if(trainer.isEmpty()){
             logger.error("Trainer with username {} not found", username);
@@ -198,7 +209,7 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional(readOnly = true)
-    public Set<Trainee> getTraineeSetForTriner(Long id) {
+    public Set<Trainee> getTraineeSetForTrainer(Long id) {
         try{
             Optional<Trainer> trainer = trainerRepository.findById(id);
             if(trainer.isEmpty()){

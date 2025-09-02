@@ -18,6 +18,7 @@ public interface TraineeService {
     void deleteTrainee(Long id);
     void toggleActiveState(Long id);
     TraineeResponseDto findByUsername(String username);
+    Trainee findEntityByUsername(String username);
     void updatePassword(Long id, String newPassword);
     void deleteTraineeByUsername(String username);
     List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername);

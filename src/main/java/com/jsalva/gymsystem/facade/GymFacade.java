@@ -3,9 +3,11 @@ package com.jsalva.gymsystem.facade;
 import com.jsalva.gymsystem.dto.request.ChangePasswordRequestDto;
 import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
+import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
+import com.jsalva.gymsystem.dto.response.TrainerResponseDto;
 import com.jsalva.gymsystem.entity.*;
 
 import java.time.LocalDate;
@@ -25,7 +27,7 @@ GymFacade {
     Trainer getTrainerById(Long id);
     void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive);
     void toggleTrainerActiveState(Long id);
-    Trainer findTrainerByUsername(String username);
+    TrainerResponseDto findTrainerByUsername(String username);
     void updateTrainerPassword(Long id, String newPassword);
     Set<Trainee> getTraineeListForTrainer(Long id);
 
@@ -43,7 +45,7 @@ GymFacade {
     Set<Trainer> getTrainerListForTrainee(Long id);
 
     //Training
-    void createTraining(Long trainerId, Long traineeId, String trainingName, TrainingTypeEnum trainingType, LocalDate trainingDate, Integer duration);
+    void createTraining(CreateTrainingRequestDto requestDto);
     List<Training> getAllTrainings();
     Training getTrainingById(Long id);
     List<Trainer> getTrainerListByTraineeUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate);
