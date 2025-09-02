@@ -19,13 +19,13 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody @Valid LoginRequestDto loginRequestDto){
+    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginRequestDto loginRequestDto){
         String token = gymFacade.login(loginRequestDto.username(), loginRequestDto.password());
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(Map.of("Token", token)); //TODO
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequestDto requestDto){
+    public ResponseEntity<Void> changePassword(@RequestBody @Valid ChangePasswordRequestDto requestDto){
         gymFacade.updateUserPassword(requestDto);
         return ResponseEntity.ok().build();
     }

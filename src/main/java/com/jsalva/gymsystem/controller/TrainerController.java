@@ -22,7 +22,6 @@ public class TrainerController {
 
     public TrainerController(GymFacade gymFacade) {
         this.gymFacade = gymFacade;
-        System.out.println("TrainerController created successfully!"); // Add this
     }
 
     @GetMapping("/test")
