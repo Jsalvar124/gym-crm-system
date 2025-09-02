@@ -1,9 +1,12 @@
 package com.jsalva.gymsystem.service.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
+import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
+import com.jsalva.gymsystem.mapper.TraineeMapper;
 import com.jsalva.gymsystem.repository.TraineeRepository;
 import com.jsalva.gymsystem.service.TraineeService;
 import com.jsalva.gymsystem.utils.EncoderUtils;
@@ -25,8 +28,11 @@ public class TraineeServiceImpl implements TraineeService {
 
     private final TraineeRepository traineeRepository;
 
-    public TraineeServiceImpl(TraineeRepository traineeRepository) {
+    private final TraineeMapper traineeMapper;
+
+    public TraineeServiceImpl(TraineeRepository traineeRepository, TraineeMapper traineeMapper) {
         this.traineeRepository = traineeRepository;
+        this.traineeMapper = traineeMapper;
     }
 
 
@@ -156,29 +162,18 @@ public class TraineeServiceImpl implements TraineeService {
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public boolean validateCredentials(String username, String password) {
-        try {
-            Trainee trainee = findByUsername(username);
-            String hashedPassword = trainee.getPassword();
-            return EncoderUtils.verifyPassword(password, hashedPassword);
-        } catch (SecurityException e){
-            logger.error("Error validating credentials");
-            throw e;
-        }
-    }
 
     @Override
     @Transactional(readOnly = true)
-    public Trainee findByUsername(String username) {
-        Optional<Trainee> trainee = traineeRepository.findByUsername(username);
-        if(trainee.isEmpty()){
+    public TraineeResponseDto findByUsername(String username) {
+        Optional<Trainee> result = traineeRepository.findByUsername(username);
+        if(result.isEmpty()){
             logger.error("Trainee with username {} not found", username);
             throw new IllegalArgumentException("Trainee with username " + username + " not found.");
         }
-        logger.info("Trainee found: {}", trainee.get());
-        return trainee.get();
+        logger.info("Trainee found: {}", result.get());
+        Trainee trainee = result.get();
+        return traineeMapper.toResponseDto(trainee);
     }
 
     @Override

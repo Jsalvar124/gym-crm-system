@@ -1,9 +1,11 @@
 package com.jsalva.gymsystem.facade.impl;
 
+import com.jsalva.gymsystem.dto.request.ChangePasswordRequestDto;
 import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
+import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
 import com.jsalva.gymsystem.entity.*;
 import com.jsalva.gymsystem.facade.GymFacade;
 import com.jsalva.gymsystem.service.AuthService;
@@ -94,7 +96,8 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public void logout() {
+    public void updateUserPassword(ChangePasswordRequestDto requestDto) {
+        authService.updatePassword(requestDto.username(), requestDto.oldPassword(), requestDto.newPassword());
     }
 
 
@@ -181,7 +184,7 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public Trainee findTraineeByUsername(String username) {
+    public TraineeResponseDto findTraineeByUsername(String username) {
         try {
             return traineeService.findByUsername(username);
         }catch (IllegalArgumentException e){

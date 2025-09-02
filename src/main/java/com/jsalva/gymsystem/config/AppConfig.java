@@ -16,7 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
         "com.jsalva.gymsystem.service",
         "com.jsalva.gymsystem.repository",
         "com.jsalva.gymsystem.facade",
-        "com.jsalva.gymsystem.dao"
+        "com.jsalva.gymsystem.dao",
+        "com.jsalva.gymsystem.mapper"
         // Add other packages but NOT controller package
 })
 @PropertySource("classpath:application.properties")
