@@ -1,6 +1,7 @@
 package com.jsalva.gymsystem.controller;
 
 import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
+import com.jsalva.gymsystem.dto.request.UpdateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
 import com.jsalva.gymsystem.facade.GymFacade;
@@ -19,6 +20,12 @@ public class TraineeController {
     @PostMapping
     public ResponseEntity<CreateTraineeResponseDto> createTrainee(@RequestBody CreateTraineeRequestDto requestDto){
         CreateTraineeResponseDto responseDto = gymFacade.createTrainee(requestDto);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PutMapping
+    public ResponseEntity<TraineeResponseDto> updateTrainee(@RequestBody UpdateTraineeRequestDto requestDto){
+        TraineeResponseDto responseDto = gymFacade.updateTrainee(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 

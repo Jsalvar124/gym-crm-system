@@ -1,9 +1,6 @@
 package com.jsalva.gymsystem.facade.impl;
 
-import com.jsalva.gymsystem.dto.request.ChangePasswordRequestDto;
-import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
-import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
-import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
+import com.jsalva.gymsystem.dto.request.*;
 import com.jsalva.gymsystem.dto.response.*;
 import com.jsalva.gymsystem.entity.*;
 import com.jsalva.gymsystem.facade.GymFacade;
@@ -153,14 +150,16 @@ public class GymFacadeImpl implements GymFacade {
         } catch (IllegalArgumentException e) {
             logger.error("Error fetching trainee: {}", e.getMessage());
             return null;
-        }    }
+        }
+    }
 
     @Override
-    public void updateTrainee(Long userId, String firstName, String lastName, String newPassword, Boolean isActive, String address, LocalDate dateOfBirth) {
+    public TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto) {
         try {
-            traineeService.updateTrainee(userId, firstName, lastName, newPassword, isActive, address, dateOfBirth);
+            return traineeService.updateTrainee(requestDto);
         } catch (IllegalArgumentException e) {
             logger.error("Error in trainee update: {}", e.getMessage());
+            return null;
         }
     }
 

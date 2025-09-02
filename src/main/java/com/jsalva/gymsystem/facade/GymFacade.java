@@ -1,9 +1,6 @@
 package com.jsalva.gymsystem.facade;
 
-import com.jsalva.gymsystem.dto.request.ChangePasswordRequestDto;
-import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
-import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
-import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
+import com.jsalva.gymsystem.dto.request.*;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
@@ -31,11 +28,12 @@ GymFacade {
     void updateTrainerPassword(Long id, String newPassword);
     Set<Trainee> getTraineeListForTrainer(Long id);
 
+
     //Trainee
     CreateTraineeResponseDto createTrainee(CreateTraineeRequestDto requestDto);
     List<Trainee> getAllTrainees();
     Trainee getTraineeById(Long id);
-    void updateTrainee(Long userId, String firstName, String lastName, String newPassword, Boolean isActive, String address, LocalDate dateOfBirth);
+    TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto);
     void deleteTrainee(Long id);
     void toggleTraineeActiveState(Long id);
     TraineeResponseDto findTraineeByUsername(String username);
@@ -43,6 +41,7 @@ GymFacade {
     void deleteTraineeByUsername(String username);
     List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername);
     Set<Trainer> getTrainerListForTrainee(Long id);
+
 
     //Training
     void createTraining(CreateTrainingRequestDto requestDto);

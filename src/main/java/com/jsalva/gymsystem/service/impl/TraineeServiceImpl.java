@@ -2,6 +2,7 @@ package com.jsalva.gymsystem.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
+import com.jsalva.gymsystem.dto.request.UpdateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
 import com.jsalva.gymsystem.entity.Trainee;
@@ -85,15 +86,13 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void updateTrainee(Long userId, String firstName, String lastName, String newPassword, Boolean isActive, String address, LocalDate dateOfBirth) {
-        // Verify the ID exists
-        Optional<Trainee> result = traineeRepository.findById(userId);
-        if(result.isEmpty()){
-            logger.error("Trainee for update not found");
-            throw new IllegalArgumentException("Trainee with Id " + userId + " not found.");
-        }
-        Trainee trainee = result.get();
+    public TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto) {
+        // Verify the username exists for a given Trainee
+        Trainee trainee = findEntityByUsername(requestDto.username());
         // Check if firstname or lastname changed and reassign username accordingly.
+        String firstName = requestDto.firstName();
+        String lastName = requestDto.lastName();
+
         if(firstName!=null && !firstName.equals(trainee.getFirstName()) || lastName != null && !lastName.equals(trainee.getLastName())){
             String username = traineeRepository.generateUniqueUsername(firstName,lastName);
             trainee.setUsername(username);
@@ -104,22 +103,20 @@ public class TraineeServiceImpl implements TraineeService {
         if(lastName != null){
             trainee.setLastName(lastName);
         }
-        if(newPassword != null){
-            updatePassword(userId, newPassword);
+        if(requestDto.isActive() != null){
+            trainee.setActive(requestDto.isActive());
         }
-        if(isActive != null){
-            trainee.setActive(isActive);
+        if(requestDto.dateOfBirth() != null){
+            trainee.setDateOfBirth(requestDto.dateOfBirth());
         }
-        if(dateOfBirth != null){
-            trainee.setDateOfBirth(dateOfBirth);
-        }
-        if(address != null){
-            trainee.setAddress(address);
+        if(requestDto.address() != null){
+            trainee.setAddress(requestDto.address());
         }
 
         // Save in storage
         traineeRepository.update(trainee);
-        logger.debug("Updated Trainee: {}", getTraineeById(userId)); // Retrieve from storage.
+        logger.debug("Updated Trainee: {}", requestDto.username());
+        return traineeMapper.toResponseDto(trainee);
     }
 
     @Override
