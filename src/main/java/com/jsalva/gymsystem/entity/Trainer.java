@@ -30,9 +30,8 @@ public class Trainer extends User{
         return specialization;
     }
 
-    public Trainer setSpecialization(TrainingType specialization) {
+    public void setSpecialization(TrainingType specialization) {
         this.specialization = specialization;
-        return this;
     }
 
     @Override

@@ -149,7 +149,7 @@ public class TraineeServiceImpl implements TraineeService {
             Optional<Trainee> result = traineeRepository.findById(id);
             if(result.isPresent()){
                 Trainee trainee = result.get();
-                boolean current = trainee.getActive();
+                Boolean current = trainee.isActive();
                 trainee.setActive(!current); // Auto merge from dirty check.
                 logger.debug("Active status for id {} set to: {}",id, !current);
             }else{

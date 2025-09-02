@@ -5,7 +5,6 @@ import org.hibernate.Hibernate;
 
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -34,18 +33,16 @@ public class Trainee extends User{
         return address;
     }
 
-    public Trainee setAddress(String address) {
+    public void setAddress(String address) {
         this.address = address;
-        return this;
     }
 
     public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public Trainee setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
-        return this;
     }
 
     public Set<Trainer> getTrainers() {

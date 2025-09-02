@@ -148,7 +148,7 @@ public class TrainerServiceImpl implements TrainerService {
             Optional<Trainer> result = trainerRepository.findById(id);
             if(result.isPresent()){
                 Trainer trainer = result.get();
-                boolean current = trainer.getActive();
+                Boolean current = trainer.isActive();
                 trainer.setActive(!current); // Auto merge from dirty check.
                 logger.debug("Active status for id {} set to: {}",id, !current);
             }else{

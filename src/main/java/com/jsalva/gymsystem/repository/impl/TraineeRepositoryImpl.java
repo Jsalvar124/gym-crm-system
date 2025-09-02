@@ -31,7 +31,7 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
             typedQuery.setParameter("username", username);
             return Optional.of(typedQuery.getSingleResult());
         } catch (NoResultException e){
-            logger.error("No results found!");
+            logger.error("Trainee not found");
             return Optional.empty();
         }
     }

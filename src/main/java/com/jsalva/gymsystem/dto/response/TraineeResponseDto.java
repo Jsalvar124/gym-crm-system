@@ -8,7 +8,7 @@ public record TraineeResponseDto(
         String lastName,
         LocalDate dateOfBirth,
         String address,
-        boolean isActive,
+        Boolean active,
         List<TrainerSummaryDto> trainers
 ) {
 }
