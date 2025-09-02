@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface
 GymFacade {
-    boolean login(String username, String password);
+    String login(String username, String password);
     void logout();
 
     //Trainer
