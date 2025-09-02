@@ -1,7 +1,9 @@
 package com.jsalva.gymsystem.facade;
 
 import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
+import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
+import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
 import com.jsalva.gymsystem.entity.*;
 
 import java.time.LocalDate;
@@ -14,7 +16,7 @@ GymFacade {
     void logout();
 
     //Trainer
-    void createTrainer(String firstName, String lastName, TrainingTypeEnum trainingType);
+    CreateTrainerResponseDto createTrainer(CreateTrainerRequestDto requestDto);
     List<Trainer> getAllTrainers();
     Trainer getTrainerById(Long id);
     void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive);

@@ -1,11 +1,14 @@
 package com.jsalva.gymsystem.controller;
 
+import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
+import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
+import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
+import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.facade.GymFacade;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,10 +23,10 @@ public class TrainerController {
         System.out.println("TrainerController created successfully!"); // Add this
     }
 
-    @GetMapping
-    public ResponseEntity<List<Trainer>> getAllTrainers() {
-        List<Trainer> trainers = gymFacade.getAllTrainers();
-        return ResponseEntity.ok(trainers);
+    @PostMapping
+    public ResponseEntity<CreateTrainerResponseDto> createTrainer(@RequestBody @Valid CreateTrainerRequestDto requestDto){
+        CreateTrainerResponseDto responseDto = gymFacade.createTrainer(requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/test")

@@ -109,6 +109,19 @@
             <version>2.16.1</version>
         </dependency>
 
+        <!-- For Validation in controllers and records -->
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.expressly</groupId>
+            <artifactId>expressly</artifactId>
+            <version>5.0.0</version>
+        </dependency>
+
         <!-- Logging Dependencies -->
         <dependency>
             <groupId>org.slf4j</groupId>

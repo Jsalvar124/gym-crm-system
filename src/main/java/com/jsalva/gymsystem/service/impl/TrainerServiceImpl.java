@@ -1,4 +1,7 @@
 package com.jsalva.gymsystem.service.impl;
+import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
+import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
+import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.TrainingType;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
@@ -33,8 +36,8 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional
-    public void createTrainer(String firstName, String lastName, TrainingTypeEnum trainingType) {
-        TrainingType type = trainingTypeService.findTrainingTypeByName(trainingType);
+    public CreateTrainerResponseDto createTrainer(CreateTrainerRequestDto requestDto) {
+        TrainingType type = trainingTypeService.findTrainingTypeByName(requestDto.specialization());
 
         if(type==null){
             logger.error("Invalid training type");
@@ -43,12 +46,12 @@ public class TrainerServiceImpl implements TrainerService {
 
         // Create Trainer instance and set basic information.
         Trainer trainer = new Trainer();
-        trainer.setFirstName(firstName);
-        trainer.setLastName(lastName);
+        trainer.setFirstName(requestDto.firstName());
+        trainer.setLastName(requestDto.lastName());
         trainer.setSpecialization(type);
 
         //Create Username as FirstName.LastnameXX, verify if any homonyms exist, if so add serial number as suffix
-        String uniqueUsername = trainerRepository.generateUniqueUsername(firstName,lastName);
+        String uniqueUsername = trainerRepository.generateUniqueUsername(requestDto.firstName(),requestDto.lastName());
         logger.debug("generated username: {}", uniqueUsername);
         trainer.setUsername(uniqueUsername);
 
@@ -64,6 +67,9 @@ public class TrainerServiceImpl implements TrainerService {
         // Save trainer
         trainerRepository.create(trainer);
         logger.debug("Saved Trainer: {}", trainer);
+
+        // Return Dto
+        return new CreateTrainerResponseDto(uniqueUsername, randomPassword);
     }
 
     @Override

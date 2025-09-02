@@ -1,5 +1,6 @@
 package com.jsalva.gymsystem.service;
 
+import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.entity.TrainingType;
@@ -47,7 +48,7 @@ public class TrainerServiceTest {
         when(trainerRepository.create(any(Trainer.class))).thenReturn(new Trainer());
 
         // When
-        trainerService.createTrainer(firstName, lastName, trainingType);
+        trainerService.createTrainer(new CreateTrainerRequestDto(firstName, lastName, trainingType));
 
         // Then
         verify(trainingTypeService).findTrainingTypeByName(trainingType);
@@ -69,7 +70,7 @@ public class TrainerServiceTest {
         when(trainerRepository.generateUniqueUsername(firstName, lastName)).thenReturn("Jane.Smith");
 
         // When
-        trainerService.createTrainer(firstName, lastName, trainingType);
+        trainerService.createTrainer(new CreateTrainerRequestDto(firstName, lastName, trainingType));
 
         // Then - verify the trainer passed to create() has correct properties
         verify(trainerRepository).create(argThat(trainer ->

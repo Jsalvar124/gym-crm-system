@@ -1,17 +1,16 @@
 package com.jsalva.gymsystem.dto.request;
 
+import com.jsalva.gymsystem.entity.TrainingTypeEnum;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.NotNull;
 
-import java.time.LocalDate;
 
-public record CreateTraineeRequestDto(
+public record CreateTrainerRequestDto(
         @NotBlank(message = "First name is required")
         String firstName,
         @NotBlank(message = "Last name is required")
         String lastName,
-        @Past(message = "Date of birth must be in the past")
-        LocalDate dateOfBirth,
-        String address
+        @NotNull(message = "Specialization is required")
+        TrainingTypeEnum specialization
 ) {
 }

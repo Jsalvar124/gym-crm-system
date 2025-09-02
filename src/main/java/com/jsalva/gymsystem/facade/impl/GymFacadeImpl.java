@@ -1,7 +1,9 @@
 package com.jsalva.gymsystem.facade.impl;
 
 import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
+import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
+import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
 import com.jsalva.gymsystem.entity.*;
 import com.jsalva.gymsystem.facade.GymFacade;
 import com.jsalva.gymsystem.service.TraineeService;
@@ -67,12 +69,8 @@ public class GymFacadeImpl implements GymFacade {
 
     // No authentication needed.
     @Override
-    public void createTrainer(String firstName, String lastName, TrainingTypeEnum trainingType) {
-        try {
-            trainerService.createTrainer(firstName,lastName,trainingType);
-        }catch (IllegalArgumentException e){
-            logger.error("Error in trainer creation: {}", e.getMessage());
-        }
+    public CreateTrainerResponseDto createTrainer(CreateTrainerRequestDto requestDto) {
+        return trainerService.createTrainer(requestDto);
     }
 
     @Override
