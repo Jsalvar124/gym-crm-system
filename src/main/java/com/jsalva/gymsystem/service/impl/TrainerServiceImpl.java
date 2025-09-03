@@ -144,18 +144,11 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional
-    public void toggleActiveState(Long id) {
+    public void updateActiveState(String username, Boolean isActive) {
         try{
-            Optional<Trainer> result = trainerRepository.findById(id);
-            if(result.isPresent()){
-                Trainer trainer = result.get();
-                Boolean current = trainer.isActive();
-                trainer.setActive(!current); // Auto merge from dirty check.
-                logger.debug("Active status for id {} set to: {}",id, !current);
-            }else{
-                logger.error("Trainer not found");
-                throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
-            }
+            Trainer trainer = findEntityByUsername(username); // Find Trainer, now Managed entity
+            trainer.setActive(isActive); // Auto merge from dirty check.
+            logger.debug("Active status for username {} set to: {}",username, isActive);
         } catch (Exception e) {
             logger.error("Error changing trainer's active status {}",e.getMessage());
             throw e;

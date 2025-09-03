@@ -23,7 +23,7 @@ GymFacade {
     List<Trainer> getAllTrainers();
     Trainer getTrainerById(Long id);
     TrainerResponseDto updateTrainer(UpdateTrainerRequestDto requestDto);
-    void toggleTrainerActiveState(Long id);
+    void updateTrainerActiveState(String username, Boolean isActive);
     TrainerResponseDto findTrainerByUsername(String username);
     void updateTrainerPassword(Long id, String newPassword);
     Set<Trainee> getTraineeListForTrainer(Long id);
@@ -35,7 +35,7 @@ GymFacade {
     Trainee getTraineeById(Long id);
     TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto);
     void deleteTrainee(Long id);
-    void toggleTraineeActiveState(Long id);
+    void updateTraineeActiveState(String username, Boolean isActive);
     TraineeResponseDto findTraineeByUsername(String username);
     void updateTraineePassword(Long id, String newPassword);
     void deleteTraineeByUsername(String username);

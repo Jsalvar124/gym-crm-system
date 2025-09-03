@@ -141,18 +141,11 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional
-    public void toggleActiveState(Long id) {
+    public void updateActiveState(String username, Boolean isActive) {
         try{
-            Optional<Trainee> result = traineeRepository.findById(id);
-            if(result.isPresent()){
-                Trainee trainee = result.get();
-                Boolean current = trainee.isActive();
-                trainee.setActive(!current); // Auto merge from dirty check.
-                logger.debug("Active status for id {} set to: {}",id, !current);
-            }else{
-                logger.error("Trainee not found");
-                throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
-            }
+            Trainee trainee = findEntityByUsername(username);
+            trainee.setActive(isActive); // Auto merge from dirty check.
+            logger.debug("Active status for username {} set to: {}",username, isActive);
         } catch (Exception e) {
             logger.error("Error changing trainee's active status {}",e.getMessage());
             throw e;

@@ -1,7 +1,6 @@
 package com.jsalva.gymsystem.repository;
 
 import com.jsalva.gymsystem.entity.User;
-import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 

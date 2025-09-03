@@ -17,7 +17,7 @@ public interface TraineeService {
     Trainee getTraineeById(Long id);
     TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto);
     void deleteTrainee(Long id);
-    void toggleActiveState(Long id);
+    void updateActiveState(String username, Boolean isActive);
     TraineeResponseDto findByUsername(String username);
     Trainee findEntityByUsername(String username);
     void updatePassword(Long id, String newPassword);

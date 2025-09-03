@@ -8,6 +8,8 @@ import com.jsalva.gymsystem.facade.GymFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/trainees")
 public class TraineeController {
@@ -42,5 +44,12 @@ public class TraineeController {
     public ResponseEntity<Void> deleteTrainee(@PathVariable("username") String username){
         gymFacade.deleteTraineeByUsername(username);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{username}/active")
+    public ResponseEntity<Map<String, String>> updateTraineeActiveState(@PathVariable("username") String username, @RequestBody Map<String, Boolean> requestBody){
+        Boolean isActive = requestBody.get("isActive");
+        gymFacade.updateTraineeActiveState(username, isActive);
+        return ResponseEntity.ok().build();
     }
 }

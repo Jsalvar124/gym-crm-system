@@ -72,9 +72,9 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public void toggleTrainerActiveState(Long id) {
+    public void updateTrainerActiveState(String username, Boolean isActive) {
         try {
-            trainerService.toggleActiveState(id);
+            trainerService.updateActiveState(username, isActive);
         }catch (IllegalArgumentException e){
             logger.error("Error changing trainer's active status: {}", e.getMessage());
         }
@@ -174,9 +174,9 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public void toggleTraineeActiveState(Long id) {
+    public void updateTraineeActiveState(String username, Boolean isActive) {
         try {
-            traineeService.toggleActiveState(id);
+            traineeService.updateActiveState(username, isActive);
         }catch (IllegalArgumentException e){
             logger.error("Error changing trainee's active status: {}", e.getMessage());
         }

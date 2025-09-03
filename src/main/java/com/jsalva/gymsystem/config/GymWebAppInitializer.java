@@ -15,27 +15,16 @@ public class GymWebAppInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         // Create Spring application context
-//        AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+        AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 
         // Register your configuration classes
-//        context.register(AppConfig.class, WebConfig.class);
+        context.register(AppConfig.class, WebConfig.class);
 
-        //add ContextLoaderListner to the ServletContext which will be responsible to load the application context
-//        servletContext.addListener(new ContextLoaderListener(context));
-
-
-        // 1. ROOT context (business logic) - AppConfig only
-        AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
-        rootContext.register(AppConfig.class, WebConfig.class);
-
-        servletContext.addListener(new ContextLoaderListener(rootContext));
-
-        // 2. SERVLET context (web layer) - WebConfig only
-//        AnnotationConfigWebApplicationContext webContext = new AnnotationConfigWebApplicationContext();
-//        webContext.register(WebConfig.class); // Only WebConfig here!
+        // Add ContextLoaderListner to the ServletContext which will be responsible to load the application context
+        servletContext.addListener(new ContextLoaderListener(context));
 
         // Create and register DispatcherServlet
-        ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher",  new DispatcherServlet(rootContext));
+        ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher",  new DispatcherServlet(context));
 
         dispatcher.setLoadOnStartup(1);
         dispatcher.addMapping("/api/*");

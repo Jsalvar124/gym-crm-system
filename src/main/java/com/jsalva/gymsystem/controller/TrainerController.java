@@ -10,7 +10,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -48,8 +48,11 @@ public class TrainerController {
         return ResponseEntity.ok(responseDto);
     }
 
-
-
-
+    @PatchMapping("/{username}/active")
+    public ResponseEntity<Map<String, String>> updateTrainerActiveState(@PathVariable("username") String username, @RequestBody Map<String, Boolean> requestBody){
+        Boolean isActive = requestBody.get("isActive");
+        gymFacade.updateTrainerActiveState(username, isActive);
+        return ResponseEntity.ok().build();
+    }
 
 }

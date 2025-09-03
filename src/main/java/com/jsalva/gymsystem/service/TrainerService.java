@@ -17,7 +17,7 @@ public interface TrainerService {
     Trainer getTrainerById(Long id);
     TrainerResponseDto updateTrainer(UpdateTrainerRequestDto requestDto);
     void deleteTrainer(Long id);
-    void toggleActiveState(Long id);
+    void updateActiveState(String username, Boolean isActive);
     boolean validateCredentials(String username, String password);
     TrainerResponseDto findByUsername(String username);
     Trainer findEntityByUsername(String username);
