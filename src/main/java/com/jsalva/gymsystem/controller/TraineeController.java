@@ -34,4 +34,10 @@ public class TraineeController {
         TraineeResponseDto responseDto = gymFacade.findTraineeByUsername(username);
         return ResponseEntity.ok(responseDto);
     }
+
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Void> deleteTrainee(@PathVariable("username") String username){
+        gymFacade.deleteTraineeByUsername(username);
+        return ResponseEntity.noContent().build();
+    }
 }
