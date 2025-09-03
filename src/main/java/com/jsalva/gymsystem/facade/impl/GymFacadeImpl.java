@@ -62,12 +62,13 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive) {
+    public TrainerResponseDto updateTrainer(UpdateTrainerRequestDto requestDto) {
         try {
-            trainerService.updateTrainer(userId, firstName, lastName ,trainingType, newPassword, isActive);
+            return trainerService.updateTrainer(requestDto);
         }catch (IllegalArgumentException e){
             logger.error("Error in trainer update: {}", e.getMessage());
         }
+        return null;
     }
 
     @Override

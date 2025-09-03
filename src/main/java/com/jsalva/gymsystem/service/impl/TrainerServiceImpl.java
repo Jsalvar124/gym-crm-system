@@ -1,7 +1,9 @@
 package com.jsalva.gymsystem.service.impl;
 import com.jsalva.gymsystem.dto.request.CreateTrainerRequestDto;
+import com.jsalva.gymsystem.dto.request.UpdateTrainerRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
+import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TrainerResponseDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.TrainingType;
@@ -96,41 +98,35 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional
-    public void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive) {
-        // Verify that the id exists.
-        Optional<Trainer> result = trainerRepository.findById(userId);
-        if(result.isEmpty()){
-            logger.error("Trainer for update not found");
-            throw new IllegalArgumentException("Trainer with Id " + userId + " not found.");
-        }
-        Trainer trainer = result.get();
+    public TrainerResponseDto updateTrainer(UpdateTrainerRequestDto requestDto) {
+        // Verify that the username exists.
+        Trainer trainer = findEntityByUsername(requestDto.username());
         // if either lastname or firstname change, reasign username.
+        String firstName = requestDto.firstName();
+        String lastName = requestDto.lastName();
         if(firstName!=null && !firstName.equals(trainer.getFirstName()) || lastName != null && !lastName.equals(trainer.getLastName())){
             String first = firstName==null? trainer.getFirstName(): firstName;
             String last = lastName==null? trainer.getLastName(): lastName;
             String username = trainerRepository.generateUniqueUsername(first,last);
             trainer.setUsername(username);
         }
-
         if(firstName != null){
             trainer.setFirstName(firstName);
         }
         if(lastName != null){
             trainer.setLastName(lastName);
         }
-
-        if(trainingType != null){
-            trainer.setSpecialization(trainingType);
+        TrainingType specialization = trainingTypeService.findTrainingTypeByName(requestDto.specialization());
+        if(specialization != null){
+            trainer.setSpecialization(specialization);
         }
-        if(newPassword != null){
-            updatePassword(userId, newPassword);
-        }
-        if(isActive != null){
-            trainer.setActive(isActive);
+        if(requestDto.isActive() != null){
+            trainer.setActive(requestDto.isActive());
         }
         // Save in storage
         trainerRepository.update(trainer);
-        logger.debug("Updated Trainer: {}", getTrainerById(userId));
+        logger.debug("Updated Trainer: {}", requestDto.username());
+        return trainerMapper.toResponseDto(trainer);
     }
 
     @Override

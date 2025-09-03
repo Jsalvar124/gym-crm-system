@@ -23,8 +23,11 @@ public class TraineeController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @PutMapping
-    public ResponseEntity<TraineeResponseDto> updateTrainee(@RequestBody UpdateTraineeRequestDto requestDto){
+    @PutMapping("/{username}")
+    public ResponseEntity<TraineeResponseDto> updateTrainee(@PathVariable("username") String username, @RequestBody UpdateTraineeRequestDto requestDto){
+        if(!username.equals(requestDto.username())){
+            return ResponseEntity.badRequest().build();
+        }
         TraineeResponseDto responseDto = gymFacade.updateTrainee(requestDto);
         return ResponseEntity.ok(responseDto);
     }

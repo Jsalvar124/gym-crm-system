@@ -22,7 +22,7 @@ GymFacade {
     CreateTrainerResponseDto createTrainer(CreateTrainerRequestDto requestDto);
     List<Trainer> getAllTrainers();
     Trainer getTrainerById(Long id);
-    void updateTrainer(Long userId, String firstName, String lastName, TrainingType trainingType, String newPassword, Boolean isActive);
+    TrainerResponseDto updateTrainer(UpdateTrainerRequestDto requestDto);
     void toggleTrainerActiveState(Long id);
     TrainerResponseDto findTrainerByUsername(String username);
     void updateTrainerPassword(Long id, String newPassword);
