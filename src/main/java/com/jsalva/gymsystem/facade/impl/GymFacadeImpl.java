@@ -4,10 +4,7 @@ import com.jsalva.gymsystem.dto.request.*;
 import com.jsalva.gymsystem.dto.response.*;
 import com.jsalva.gymsystem.entity.*;
 import com.jsalva.gymsystem.facade.GymFacade;
-import com.jsalva.gymsystem.service.AuthService;
-import com.jsalva.gymsystem.service.TraineeService;
-import com.jsalva.gymsystem.service.TrainerService;
-import com.jsalva.gymsystem.service.TrainingService;
+import com.jsalva.gymsystem.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -25,12 +22,15 @@ public class GymFacadeImpl implements GymFacade {
 
     private final TrainingService trainingService;
 
+    private final TrainingTypeService trainingTypeService;
+
     private final AuthService authService;
 
-    public GymFacadeImpl(TrainerService trainerService, TraineeService traineeService, TrainingService trainingService, AuthService authService) {
+    public GymFacadeImpl(TrainerService trainerService, TraineeService traineeService, TrainingService trainingService, TrainingTypeService trainingTypeService, AuthService authService) {
         this.trainerService = trainerService;
         this.traineeService = traineeService;
         this.trainingService = trainingService;
+        this.trainingTypeService = trainingTypeService;
         this.authService = authService;
     }
 
@@ -275,6 +275,16 @@ public class GymFacadeImpl implements GymFacade {
             return trainingService.getTraineeListByTrainerUsernameOrDateSpan(username, fromDate, toDate);
         } catch (IllegalArgumentException e) {
             logger.error("Error fetching traiee's list for trainer: {} {}",username, e.getMessage());
+            return null;
+        }
+    }
+
+    @Override
+    public List<TrainingTypeResponseDto> getAllTrainingTypes() {
+        try {
+            return trainingTypeService.getAllTrainingTypes();
+        } catch (IllegalArgumentException e) {
+            logger.error("Error fetching training types: {}", e.getMessage());
             return null;
         }
     }

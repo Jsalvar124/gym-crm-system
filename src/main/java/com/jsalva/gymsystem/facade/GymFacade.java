@@ -1,10 +1,7 @@
 package com.jsalva.gymsystem.facade;
 
 import com.jsalva.gymsystem.dto.request.*;
-import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
-import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
-import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
-import com.jsalva.gymsystem.dto.response.TrainerResponseDto;
+import com.jsalva.gymsystem.dto.response.*;
 import com.jsalva.gymsystem.entity.*;
 
 import java.time.LocalDate;
@@ -18,7 +15,7 @@ GymFacade {
     void updateUserPassword(ChangePasswordRequestDto requestDto);
 
 
-    //Trainer
+    // Trainer
     CreateTrainerResponseDto createTrainer(CreateTrainerRequestDto requestDto);
     List<Trainer> getAllTrainers();
     Trainer getTrainerById(Long id);
@@ -29,7 +26,7 @@ GymFacade {
     Set<Trainee> getTraineeListForTrainer(Long id);
 
 
-    //Trainee
+    // Trainee
     CreateTraineeResponseDto createTrainee(CreateTraineeRequestDto requestDto);
     List<Trainee> getAllTrainees();
     Trainee getTraineeById(Long id);
@@ -43,11 +40,13 @@ GymFacade {
     Set<Trainer> getTrainerListForTrainee(Long id);
 
 
-    //Training
+    // Training
     void createTraining(CreateTrainingRequestDto requestDto);
     List<Training> getAllTrainings();
     Training getTrainingById(Long id);
     List<Trainer> getTrainerListByTraineeUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate);
     List<Trainee> getTraineeListByTrainerUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate);
 
+    // Training Types
+    List<TrainingTypeResponseDto> getAllTrainingTypes();
 }
