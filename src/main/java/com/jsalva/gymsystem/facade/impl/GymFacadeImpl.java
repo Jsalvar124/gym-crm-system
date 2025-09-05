@@ -8,7 +8,6 @@ import com.jsalva.gymsystem.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +42,6 @@ public class GymFacadeImpl implements GymFacade {
     @Override
     public List<Trainer> getAllTrainers() {
         try {
-//            requireAuthentication(); // Trainer or Trainee can access.
             return trainerService.getAllTrainers();
         }catch (Exception e){
             logger.error("Error fetching trainers: {}", e.getMessage());

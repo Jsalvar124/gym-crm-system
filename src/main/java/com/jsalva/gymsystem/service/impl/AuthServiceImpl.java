@@ -11,7 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -19,8 +22,23 @@ public class AuthServiceImpl implements AuthService {
 
     private UserRepository userRepository;
 
+    private final Map<String, SessionInfo> activeSessions = new ConcurrentHashMap<>();
+
     public AuthServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    private static class SessionInfo {
+        private final String username;
+        private final String userType;
+
+        public SessionInfo(String username, String userType) {
+            this.username = username;
+            this.userType = userType;
+        }
+
+        public String getUsername() { return username; }
+        public String getUserType() { return userType; }
     }
 
     @Override
@@ -36,12 +54,87 @@ public class AuthServiceImpl implements AuthService {
             } else {
                 userType = "USER";
             }
-            logger.info("USER TYPE: {}", userType);
 
-            return validateCredentials(user, password)?"VERIFIED CREDENTIALS!":"INVALID CREDENTIALS!";
+            // Validate credentials
+            if (validateCredentials(user, password)) {
+                // Generate session ID and store session info
+                String sessionId = UUID.randomUUID().toString();
+                activeSessions.put(sessionId, new SessionInfo(username, userType));
+
+                logger.info("Login successful - Session created for user: {} as {}", username, userType);
+                return sessionId;
+            } else {
+                throw new SecurityException("Invalid credentials");
+            }
         } catch (RuntimeException e){
-            logger.error("Error validating credentials");
+            logger.error("Error validating credentials for username {}", username);
             throw e;
+        }
+    }
+
+    @Override
+    public void logout(String sessionId) {
+        SessionInfo removedSession = activeSessions.remove(sessionId);
+
+        if (removedSession != null) {
+            logger.info("Logout successful for user: {}", removedSession.getUsername());
+        } else {
+            logger.warn("Logout attempted with invalid session ID");
+        }
+    }
+
+    @Override
+    public boolean isValidSession(String sessionId) {
+        return sessionId != null && activeSessions.containsKey(sessionId);
+    }
+
+    @Override
+    public String getUsernameFromSession(String sessionId) {
+        SessionInfo session = activeSessions.get(sessionId);
+        return session != null ? session.getUsername() : null;
+    }
+
+    @Override
+    public String getUserTypeFromSession(String sessionId) {
+        SessionInfo session = activeSessions.get(sessionId);
+        return session != null ? session.getUserType() : null;
+    }
+
+    @Override
+    public void validateLogin(String sessionId) {
+        if(!isValidSession(sessionId)){
+            throw new SecurityException("Invalid session - please login");
+        }
+    }
+
+    @Override
+    public void validateTrainerAuth(String sessionId) {
+        validateLogin(sessionId);
+        if(!getUserTypeFromSession(sessionId).equals("TRAINER")){
+            throw new SecurityException("Access denied - trainer role required");
+        }
+    }
+
+    @Override
+    public void validateOwnerAuth(String sessionId, String targetUsername) {
+        validateLogin(sessionId);
+        String sessionUsername = getUsernameFromSession(sessionId);
+        if(sessionUsername == null || !sessionUsername.equals(targetUsername)){
+            throw new SecurityException("Unauthorized - you can only modify your own profile");
+        }
+    }
+
+    @Override
+    public void validateTrainerOrOwnerAuth(String sessionId, String targetUsername) {
+        validateLogin(sessionId);
+        String sessionUsername = getUsernameFromSession(sessionId);
+        System.out.println(sessionUsername);
+        String sessionUserType = getUserTypeFromSession(sessionId);
+        System.out.println(sessionUserType);
+
+        if((sessionUsername == null || !sessionUsername.equals(targetUsername)) && (sessionUserType == null || !sessionUserType.equals("TRAINER"))){
+            logger.error("Unauthorized - you can only modify your own profile");
+            throw new SecurityException("Unauthorized - trainer or owner resource only");
         }
     }
 
