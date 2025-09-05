@@ -4,6 +4,7 @@ import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.request.UpdateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
+import com.jsalva.gymsystem.dto.response.TrainerSummaryDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 
@@ -22,6 +23,6 @@ public interface TraineeService {
     Trainee findEntityByUsername(String username);
     void updatePassword(Long id, String newPassword);
     void deleteTraineeByUsername(String username);
-    List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername);
+    List<TrainerSummaryDto> findUnassignedTrainersByTrainee(String traineeUsername);
     Set<Trainer> getTrainersSetForTrainee(Long id);
 }

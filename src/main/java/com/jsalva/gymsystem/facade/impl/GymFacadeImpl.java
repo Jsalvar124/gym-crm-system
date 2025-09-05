@@ -211,7 +211,7 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername) {
+    public List<TrainerSummaryDto> findUnassignedTrainersByTrainee(String traineeUsername) {
         try{
             return traineeService.findUnassignedTrainersByTrainee(traineeUsername);
         }catch (Exception e){

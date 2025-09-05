@@ -80,6 +80,7 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
             logger.error("Username does not exist");
             return List.of();
         }
+        // ADDING ONLY ACTIVE TRAINERS FILTER
         TypedQuery<Trainer> typedQuery = em.createQuery(
                 """
                       SELECT t FROM Trainer t
@@ -87,6 +88,7 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
                         SELECT DISTINCT tr.trainer FROM Training tr
                         WHERE tr.trainee.username = :traineeUsername
                         )
+                      AND t.isActive = true
                    """, Trainer.class);
         typedQuery.setParameter("traineeUsername", traineeUsername);
         return typedQuery.getResultList();

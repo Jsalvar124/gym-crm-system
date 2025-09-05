@@ -6,6 +6,7 @@ import com.jsalva.gymsystem.dto.request.UpdateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeTrainingListResponseDto;
+import com.jsalva.gymsystem.dto.response.TrainerSummaryDto;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
 import com.jsalva.gymsystem.facade.GymFacade;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -64,8 +65,15 @@ public class TraineeController {
                                                                                                @RequestParam(value="fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                                                @RequestParam(value="toDate", required = false) LocalDate toDate,
                                                                                                @RequestParam(value="trainerUsername",required = false) String trainerUsername,
-                                                                                               @RequestParam(value="trainingType", required = false) TrainingTypeEnum trainingType){
+                                                                                               @RequestParam(value="trainingType", required = false) TrainingTypeEnum trainingType) {
         TraineeTrainingListRequestDto requestDto = new TraineeTrainingListRequestDto(traineeUsername, fromDate, toDate, trainerUsername, trainingType);
         return ResponseEntity.ok(gymFacade.getTraineeTrainings(requestDto));
     }
+
+    @GetMapping("{username}/unasigned-trainers")
+    public ResponseEntity<List<TrainerSummaryDto>> getUnassignedTrainers(@PathVariable("username") String username){
+        return ResponseEntity.ok(gymFacade.findUnassignedTrainersByTrainee(username));
+    }
+
+
 }

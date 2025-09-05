@@ -5,9 +5,11 @@ import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.request.UpdateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
+import com.jsalva.gymsystem.dto.response.TrainerSummaryDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.mapper.TraineeMapper;
+import com.jsalva.gymsystem.mapper.TrainerMapper;
 import com.jsalva.gymsystem.repository.TraineeRepository;
 import com.jsalva.gymsystem.service.TraineeService;
 import com.jsalva.gymsystem.utils.EncoderUtils;
@@ -31,9 +33,13 @@ public class TraineeServiceImpl implements TraineeService {
 
     private final TraineeMapper traineeMapper;
 
-    public TraineeServiceImpl(TraineeRepository traineeRepository, TraineeMapper traineeMapper) {
+    private final TrainerMapper trainerMapper;
+
+
+    public TraineeServiceImpl(TraineeRepository traineeRepository, TraineeMapper traineeMapper, TrainerMapper trainerMapper) {
         this.traineeRepository = traineeRepository;
         this.traineeMapper = traineeMapper;
+        this.trainerMapper = trainerMapper;
     }
 
 
@@ -196,8 +202,9 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername) {
-        return traineeRepository.findUnassignedTrainersByTrainee(traineeUsername);
+    public List<TrainerSummaryDto> findUnassignedTrainersByTrainee(String traineeUsername) {
+        List<Trainer> trainers = traineeRepository.findUnassignedTrainersByTrainee(traineeUsername);
+        return trainerMapper.toSummaryDtoList(trainers);
     }
 
     @Override

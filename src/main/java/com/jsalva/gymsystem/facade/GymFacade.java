@@ -35,7 +35,7 @@ GymFacade {
     TraineeResponseDto findTraineeByUsername(String username);
     void updateTraineePassword(Long id, String newPassword);
     void deleteTraineeByUsername(String username);
-    List<Trainer> findUnassignedTrainersByTrainee(String traineeUsername);
+    List<TrainerSummaryDto> findUnassignedTrainersByTrainee(String traineeUsername);
     Set<Trainer> getTrainerListForTrainee(Long id);
 
 
