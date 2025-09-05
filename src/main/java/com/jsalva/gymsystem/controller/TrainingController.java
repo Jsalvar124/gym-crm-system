@@ -22,4 +22,6 @@ public class TrainingController {
         gymFacade.createTraining(requestDto);
         return ResponseEntity.ok().build();
     }
+
+    // TODO PUT Training
 }

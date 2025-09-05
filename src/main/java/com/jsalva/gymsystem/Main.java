@@ -21,7 +21,7 @@ public class Main {
             String contextPath = "";
             String docBase = new File(".").getAbsolutePath();
 
-            // This will automatically find and use your WebApplicationInitializer!
+            // This will automatically find and use WebApplicationInitializer
             tomcat.addWebapp(contextPath, docBase);
 
             tomcat.start();

@@ -1,7 +1,12 @@
 package com.jsalva.gymsystem.service.impl;
 
 import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
+import com.jsalva.gymsystem.dto.request.TraineeTrainingListRequestDto;
+import com.jsalva.gymsystem.dto.request.TrainerTrainingListRequestDto;
+import com.jsalva.gymsystem.dto.response.TraineeTrainingListResponseDto;
+import com.jsalva.gymsystem.dto.response.TrainerTrainingListResponseDto;
 import com.jsalva.gymsystem.entity.*;
+import com.jsalva.gymsystem.mapper.TrainingMapper;
 import com.jsalva.gymsystem.repository.TrainingRepository;
 import com.jsalva.gymsystem.service.TraineeService;
 import com.jsalva.gymsystem.service.TrainerService;
@@ -27,12 +32,15 @@ public class TrainingServiceImpl implements TrainingService {
 
     private final TrainerService trainerService;
 
+    private final TrainingMapper trainingMapper;
+
     private final TrainingTypeService trainingTypeService;
 
-    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeService traineeService, TrainerService trainerService, TrainingTypeService trainingTypeService) {
+    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeService traineeService, TrainerService trainerService, TrainingMapper trainingMapper, TrainingTypeService trainingTypeService) {
         this.trainingRepository = trainingRepository;
         this.traineeService = traineeService;
         this.trainerService = trainerService;
+        this.trainingMapper = trainingMapper;
         this.trainingTypeService = trainingTypeService;
     }
 
@@ -92,13 +100,25 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Trainer> getTrainerListByTraineeUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
-        return trainingRepository.getTrainerListByTraineeUsernameOrDateSpan(username,fromDate,toDate);
+    public List<TrainerTrainingListResponseDto> getTrainersTrainingListByTraineeUsernameOrDateSpan(TrainerTrainingListRequestDto requestDto) {
+        String trainerUsername = requestDto.trainerUsername();
+        LocalDate fromDate = requestDto.fromDate();
+        LocalDate toDate = requestDto.toDate();
+        String traineeUsername = requestDto.traineeUsername();
+        List<Training> trainings = trainingRepository.getTrainersTrainingListByTraineeUsernameOrDateSpan(trainerUsername, fromDate, toDate, traineeUsername);
+
+        return trainingMapper.toTrainerResponseDtoList(trainings);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Trainee> getTraineeListByTrainerUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
-        return trainingRepository.getTraineeListByTrainerUsernameOrDateSpan(username,fromDate,toDate);
+    public List<TraineeTrainingListResponseDto> getTraineesTrainingListByTrainerUsernameOrDateSpan(TraineeTrainingListRequestDto requestDto) {
+        String traineeUsername = requestDto.traineeUsername();
+        LocalDate fromDate = requestDto.fromDate();
+        LocalDate toDate = requestDto.toDate();
+        String trainerUsername = requestDto.trainerUsername();
+        TrainingTypeEnum trainingType = requestDto.trainingType();
+        List<Training> trainings = trainingRepository.getTraineesTrainingListByTrainerUsernameOrDateSpan(traineeUsername, fromDate, toDate, trainerUsername, trainingType);
+        return trainingMapper.toTraineeResponseDtoList(trainings);
     }
 }

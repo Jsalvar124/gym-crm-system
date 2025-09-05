@@ -27,7 +27,7 @@ public class GymWebAppInitializer implements WebApplicationInitializer {
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher",  new DispatcherServlet(context));
 
         dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping("/api/*");
+        dispatcher.addMapping("/api/v1/*");
 
         //add specific encoding (e.g. UTF-8) via CharacterEncodingFilter
         FilterRegistration.Dynamic encodingFilter = servletContext.addFilter("encoding-filter", new CharacterEncodingFilter());

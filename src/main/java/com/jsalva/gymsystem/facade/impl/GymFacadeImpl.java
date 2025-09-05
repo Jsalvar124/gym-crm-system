@@ -260,23 +260,13 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public List<Trainer> getTrainerListByTraineeUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
-        try {
-            return trainingService.getTrainerListByTraineeUsernameOrDateSpan(username, fromDate, toDate);
-        } catch (IllegalArgumentException e) {
-            logger.error("Error fetching trainer's list for trainee: {} {}",username, e.getMessage());
-            return null;
-        }
+    public List<TrainerTrainingListResponseDto> getTrainerTrainings(TrainerTrainingListRequestDto requestDto) {
+        return trainingService.getTrainersTrainingListByTraineeUsernameOrDateSpan(requestDto);
     }
 
     @Override
-    public List<Trainee> getTraineeListByTrainerUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate) {
-        try {
-            return trainingService.getTraineeListByTrainerUsernameOrDateSpan(username, fromDate, toDate);
-        } catch (IllegalArgumentException e) {
-            logger.error("Error fetching traiee's list for trainer: {} {}",username, e.getMessage());
-            return null;
-        }
+    public List<TraineeTrainingListResponseDto> getTraineeTrainings(TraineeTrainingListRequestDto requestDto) {
+        return trainingService.getTraineesTrainingListByTrainerUsernameOrDateSpan(requestDto);
     }
 
     @Override

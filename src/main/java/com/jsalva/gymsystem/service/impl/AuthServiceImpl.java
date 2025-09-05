@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
         try{
             User user = findByUsername(username);
             String userType;
-            if (user instanceof Trainer) {
+            if (user instanceof Trainer) { // Polimorphic query
                 userType = "TRAINER";
             } else if (user instanceof Trainee) {
                 userType = "TRAINEE";

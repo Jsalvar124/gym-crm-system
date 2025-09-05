@@ -4,7 +4,6 @@ import com.jsalva.gymsystem.dto.request.*;
 import com.jsalva.gymsystem.dto.response.*;
 import com.jsalva.gymsystem.entity.*;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -44,8 +43,8 @@ GymFacade {
     void createTraining(CreateTrainingRequestDto requestDto);
     List<Training> getAllTrainings();
     Training getTrainingById(Long id);
-    List<Trainer> getTrainerListByTraineeUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate);
-    List<Trainee> getTraineeListByTrainerUsernameOrDateSpan(String username, LocalDate fromDate, LocalDate toDate);
+    List<TrainerTrainingListResponseDto> getTrainerTrainings(TrainerTrainingListRequestDto requestDto);
+    List<TraineeTrainingListResponseDto> getTraineeTrainings(TraineeTrainingListRequestDto requestDto);
 
     // Training Types
     List<TrainingTypeResponseDto> getAllTrainingTypes();
