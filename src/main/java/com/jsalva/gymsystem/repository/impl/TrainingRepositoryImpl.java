@@ -88,6 +88,9 @@ public class TrainingRepositoryImpl extends GenericRepositoryImpl<Training, Long
             if(toDate != null){
                 typedQuery.setParameter("toDate", toDate);
             }
+            if(trainingType != null){
+                typedQuery.setParameter("trainingType", trainingType);
+            }
             return typedQuery.getResultList();
         } catch (NoResultException e){
             System.out.println("No results for given trainer username and filters!");
