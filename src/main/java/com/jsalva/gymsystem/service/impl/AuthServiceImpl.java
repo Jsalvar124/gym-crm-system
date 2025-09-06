@@ -128,11 +128,13 @@ public class AuthServiceImpl implements AuthService {
     public void validateTrainerOrOwnerAuth(String sessionId, String targetUsername) {
         validateLogin(sessionId);
         String sessionUsername = getUsernameFromSession(sessionId);
-        System.out.println(sessionUsername);
         String sessionUserType = getUserTypeFromSession(sessionId);
-        System.out.println(sessionUserType);
 
-        if((sessionUsername == null || !sessionUsername.equals(targetUsername)) && (sessionUserType == null || !sessionUserType.equals("TRAINER"))){
+        boolean isOwner = sessionUsername != null && sessionUsername.equals(targetUsername);
+        boolean isTrainer = sessionUserType != null && sessionUserType.equals("TRAINER");
+
+
+        if(!isOwner && !isTrainer){
             logger.error("Unauthorized - you can only modify your own profile");
             throw new SecurityException("Unauthorized - trainer or owner resource only");
         }

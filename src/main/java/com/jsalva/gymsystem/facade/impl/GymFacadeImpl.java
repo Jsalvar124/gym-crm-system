@@ -268,6 +268,11 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
+    public TrainingResponseDto updateTraining(UpdateTrainingRequestDto requestDto) {
+        return trainingService.updateTraining(requestDto);
+    }
+
+    @Override
     public List<TrainingTypeResponseDto> getAllTrainingTypes() {
         try {
             return trainingTypeService.getAllTrainingTypes();

@@ -3,8 +3,10 @@ package com.jsalva.gymsystem.service.impl;
 import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
 import com.jsalva.gymsystem.dto.request.TraineeTrainingListRequestDto;
 import com.jsalva.gymsystem.dto.request.TrainerTrainingListRequestDto;
+import com.jsalva.gymsystem.dto.request.UpdateTrainingRequestDto;
 import com.jsalva.gymsystem.dto.response.TraineeTrainingListResponseDto;
 import com.jsalva.gymsystem.dto.response.TrainerTrainingListResponseDto;
+import com.jsalva.gymsystem.dto.response.TrainingResponseDto;
 import com.jsalva.gymsystem.entity.*;
 import com.jsalva.gymsystem.mapper.TrainingMapper;
 import com.jsalva.gymsystem.repository.TrainingRepository;
@@ -120,5 +122,10 @@ public class TrainingServiceImpl implements TrainingService {
         TrainingTypeEnum trainingType = requestDto.trainingType();
         List<Training> trainings = trainingRepository.getTraineesTrainingListByTrainerUsernameOrDateSpan(traineeUsername, fromDate, toDate, trainerUsername, trainingType);
         return trainingMapper.toTraineeResponseDtoList(trainings);
+    }
+
+    @Override
+    public TrainingResponseDto updateTraining(UpdateTrainingRequestDto requestDto) {
+        return null;
     }
 }
