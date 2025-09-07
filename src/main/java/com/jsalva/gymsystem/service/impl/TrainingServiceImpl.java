@@ -51,16 +51,15 @@ public class TrainingServiceImpl implements TrainingService {
     public void createTraining(CreateTrainingRequestDto requestDto) {
         // Check that both trainer and trainee exist.
         Trainer trainer = trainerService.findEntityByUsername(requestDto.trainerUsername());
-        if(trainer == null){
-            logger.error("Error creating training, Trainer id not found");
-            throw new IllegalArgumentException("Trainer with username " + requestDto.trainerUsername() + " not found.");
+        if(!trainer.isActive()){
+            logger.error("Error creating training, Trainer {} is inactive", trainer.getUsername());
+            throw new IllegalArgumentException("Inactive Trainer access attempt");
         }
 
-        Trainee trainee = traineeService.findEntityByUsername(requestDto.traineeUsername()
-        );
-        if(trainee == null){
-            logger.error("Error creating training, Trainee id not found");
-            throw new IllegalArgumentException("Trainee with username " + requestDto.traineeUsername() + " not found.");
+        Trainee trainee = traineeService.findEntityByUsername(requestDto.traineeUsername());
+        if(!trainee.isActive()){
+            logger.error("Error creating training, Trainee {} is inactive", trainee.getUsername());
+            throw new IllegalArgumentException("Inactive Trainee access attempt");
         }
 
         // get Training type from trainer specialization
@@ -134,14 +133,14 @@ public class TrainingServiceImpl implements TrainingService {
         Trainer trainer = trainerService.findEntityByUsername(requestDto.trainerUsername());
         if(!trainer.isActive()){
             logger.error("Error updating training with id {}, Trainer {} is inactive", id, trainer.getUsername());
-            throw new RuntimeException("Inactive Trainer access attempt");
+            throw new IllegalArgumentException("Inactive Trainer access attempt");
         }
         training.setTrainer(trainer);
 
         Trainee trainee = traineeService.findEntityByUsername(requestDto.traineeUsername());
         if(!trainee.isActive()){
             logger.error("Error updating training with id {}, Trainee {} is inactive", id, trainee.getUsername());
-            throw new RuntimeException("Inactive Trainee access attempt");
+            throw new IllegalArgumentException("Inactive Trainee access attempt");
         }
         training.setTrainee(trainee);
         training.setTrainingName(requestDto.trainingName());
