@@ -268,8 +268,8 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public TrainingResponseDto updateTraining(UpdateTrainingRequestDto requestDto) {
-        return trainingService.updateTraining(requestDto);
+    public TrainingResponseDto updateTraining(Long id, UpdateTrainingRequestDto requestDto) {
+        return trainingService.updateTraining(id, requestDto);
     }
 
     @Override

@@ -110,19 +110,12 @@ public class TrainerServiceImpl implements TrainerService {
             String username = trainerRepository.generateUniqueUsername(first,last);
             trainer.setUsername(username);
         }
-        if(firstName != null){
-            trainer.setFirstName(firstName);
-        }
-        if(lastName != null){
-            trainer.setLastName(lastName);
-        }
+        trainer.setFirstName(firstName);
+        trainer.setLastName(lastName);
         TrainingType specialization = trainingTypeService.findTrainingTypeByName(requestDto.specialization());
-        if(specialization != null){
-            trainer.setSpecialization(specialization);
-        }
-        if(requestDto.isActive() != null){
-            trainer.setActive(requestDto.isActive());
-        }
+        trainer.setSpecialization(specialization);
+        trainer.setActive(requestDto.isActive());
+
         // Save in storage
         trainerRepository.update(trainer);
         logger.debug("Updated Trainer: {}", requestDto.username());

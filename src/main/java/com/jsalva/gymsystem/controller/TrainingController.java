@@ -6,9 +6,12 @@ import com.jsalva.gymsystem.dto.request.UpdateTrainingRequestDto;
 import com.jsalva.gymsystem.dto.response.TrainingResponseDto;
 import com.jsalva.gymsystem.facade.GymFacade;
 import com.jsalva.gymsystem.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/trainings")
@@ -24,7 +27,7 @@ public class TrainingController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createTraining(@RequestBody CreateTrainingRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
+    public ResponseEntity<Void> createTraining(@Valid @RequestBody CreateTrainingRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
         try{
             authService.validateTrainerAuth(sessionId);
         }catch (SecurityException e){
@@ -34,16 +37,14 @@ public class TrainingController {
         return ResponseEntity.ok().build();
     }
 
-    // TODO PUT Training
-    @GetMapping("/{id}")
-    public ResponseEntity<TrainingResponseDto> updateTraining(@RequestBody UpdateTrainingRequestDto requestDto, @PathVariable Integer id, @RequestHeader("X-Session-Id") String sessionId) {
+    @PutMapping("/{id}")
+    public ResponseEntity<TrainingResponseDto> updateTraining(@Valid @RequestBody UpdateTrainingRequestDto requestDto, @PathVariable("id") Long id, @RequestHeader("X-Session-Id") String sessionId) {
         try {
             authService.validateTrainerAuth(sessionId);
         } catch (SecurityException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        TrainingResponseDto responseDto = gymFacade.updateTraining(requestDto);
-
-
+        TrainingResponseDto responseDto = gymFacade.updateTraining(id, requestDto);
+        return ResponseEntity.ok(responseDto);
     }
 }

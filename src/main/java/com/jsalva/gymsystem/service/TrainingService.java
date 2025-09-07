@@ -18,5 +18,5 @@ public interface TrainingService {
     Training getTrainingById(Long id);
     List<TrainerTrainingListResponseDto> getTrainersTrainingListByTraineeUsernameOrDateSpan(TrainerTrainingListRequestDto requestDto);
     List<TraineeTrainingListResponseDto> getTraineesTrainingListByTrainerUsernameOrDateSpan(TraineeTrainingListRequestDto requestDto);
-    TrainingResponseDto updateTraining(UpdateTrainingRequestDto requestDto);
+    TrainingResponseDto updateTraining(Long id, UpdateTrainingRequestDto requestDto);
 }

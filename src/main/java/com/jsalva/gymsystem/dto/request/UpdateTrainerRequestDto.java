@@ -13,7 +13,7 @@ public record UpdateTrainerRequestDto(
         String lastName,
         @NotNull(message = "Specialization is required")
         TrainingTypeEnum specialization,
-        @NotBlank(message = "Status is required")
+        @NotNull(message = "Status is required")
         Boolean isActive
 ) {
 

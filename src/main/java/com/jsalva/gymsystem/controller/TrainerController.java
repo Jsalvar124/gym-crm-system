@@ -43,7 +43,7 @@ public class TrainerController {
     }
 
     @PutMapping("/{username}")
-    public ResponseEntity<TrainerResponseDto> updateTrainer(@PathVariable("username") String username, @RequestBody UpdateTrainerRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
+    public ResponseEntity<TrainerResponseDto> updateTrainer(@PathVariable("username") String username,@Valid @RequestBody UpdateTrainerRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
         if(!username.equals(requestDto.username())){
             return ResponseEntity.badRequest().build();
         }

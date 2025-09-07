@@ -125,7 +125,29 @@ public class TrainingServiceImpl implements TrainingService {
     }
 
     @Override
-    public TrainingResponseDto updateTraining(UpdateTrainingRequestDto requestDto) {
-        return null;
+    @Transactional
+    public TrainingResponseDto updateTraining(Long id, UpdateTrainingRequestDto requestDto) {
+        // Check if training exists, get managed entity
+        Training training = getTrainingById(id);
+
+        // Check if trainer and trainee exist and are active
+        Trainer trainer = trainerService.findEntityByUsername(requestDto.trainerUsername());
+        if(!trainer.isActive()){
+            logger.error("Error updating training with id {}, Trainer {} is inactive", id, trainer.getUsername());
+            throw new RuntimeException("Inactive Trainer access attempt");
+        }
+        training.setTrainer(trainer);
+
+        Trainee trainee = traineeService.findEntityByUsername(requestDto.traineeUsername());
+        if(!trainee.isActive()){
+            logger.error("Error updating training with id {}, Trainee {} is inactive", id, trainee.getUsername());
+            throw new RuntimeException("Inactive Trainee access attempt");
+        }
+        training.setTrainee(trainee);
+        training.setTrainingName(requestDto.trainingName());
+        training.setTrainingDate(requestDto.trainingDate());
+        training.setDuration(requestDto.trainingDuration());
+        logger.info("Training updated successfully");
+        return trainingMapper.toTrainingResponseDto(training);
     }
 }

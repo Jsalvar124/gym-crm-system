@@ -10,6 +10,7 @@ import com.jsalva.gymsystem.dto.response.TrainerSummaryDto;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
 import com.jsalva.gymsystem.facade.GymFacade;
 import com.jsalva.gymsystem.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,13 +35,13 @@ public class TraineeController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateTraineeResponseDto> createTrainee(@RequestBody CreateTraineeRequestDto requestDto){
+    public ResponseEntity<CreateTraineeResponseDto> createTrainee(@Valid @RequestBody CreateTraineeRequestDto requestDto){
         CreateTraineeResponseDto responseDto = gymFacade.createTrainee(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/{username}")
-    public ResponseEntity<TraineeResponseDto> updateTrainee(@PathVariable("username") String username, @RequestBody UpdateTraineeRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
+    public ResponseEntity<TraineeResponseDto> updateTrainee(@PathVariable("username") String username, @Valid @RequestBody UpdateTraineeRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
         if(!username.equals(requestDto.username())){
             return ResponseEntity.badRequest().build();
         }
