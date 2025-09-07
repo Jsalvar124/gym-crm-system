@@ -51,6 +51,7 @@ public class TraineeServiceImpl implements TraineeService {
         trainee.setLastName(requestDto.lastName());
         trainee.setAddress(requestDto.address());
         trainee.setDateOfBirth(requestDto.dateOfBirth());
+        trainee.setEmail(requestDto.email());
 
         //Generate and set random Password
         String randomPassword = UserUtils.generateRandomPassword();

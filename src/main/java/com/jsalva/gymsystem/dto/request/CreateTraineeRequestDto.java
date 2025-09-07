@@ -1,5 +1,6 @@
 package com.jsalva.gymsystem.dto.request;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 
@@ -12,6 +13,8 @@ public record CreateTraineeRequestDto(
         String lastName,
         @Past(message = "Date of birth must be in the past")
         LocalDate dateOfBirth,
+        @Email(message = "Invalid email format")
+        String email,
         String address
 ) {
 }

@@ -19,8 +19,18 @@ public class User {
     private String password;
     @Column(name = "is_active", nullable = false)
     private Boolean isActive;
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
 
     public User() {
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Long getId() {

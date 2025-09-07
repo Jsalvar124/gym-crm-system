@@ -56,15 +56,14 @@ public class TrainerServiceImpl implements TrainerService {
         trainer.setFirstName(requestDto.firstName());
         trainer.setLastName(requestDto.lastName());
         trainer.setSpecialization(type);
+        trainer.setEmail(requestDto.email());
 
         //Create Username as FirstName.LastnameXX, verify if any homonyms exist, if so add serial number as suffix
         String uniqueUsername = trainerRepository.generateUniqueUsername(requestDto.firstName(),requestDto.lastName());
-        logger.debug("generated username: {}", uniqueUsername);
         trainer.setUsername(uniqueUsername);
 
         //Generate and set random Password
         String randomPassword = UserUtils.generateRandomPassword();
-        logger.debug("generated Password: {}", randomPassword);
         String hashedPassword = EncoderUtils.encryptPassword(randomPassword);
         trainer.setPassword(hashedPassword);
 

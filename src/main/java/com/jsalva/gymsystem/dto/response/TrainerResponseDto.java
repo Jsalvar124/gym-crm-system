@@ -10,6 +10,7 @@ public record TrainerResponseDto(
         String lastName,
         TrainingTypeEnum specialization,
         Boolean active,
+        String email,
         List<TraineeSummaryDto> trainees
 ) {
 }

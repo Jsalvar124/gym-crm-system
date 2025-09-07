@@ -105,7 +105,7 @@ public class TraineeController {
         return ResponseEntity.ok(gymFacade.getTraineeTrainings(requestDto));
     }
 
-    @GetMapping("{username}/unasigned-trainers")
+    @GetMapping("{username}/unassigned-trainers")
     public ResponseEntity<List<TrainerSummaryDto>> getUnassignedTrainers(@PathVariable("username") String username, @RequestHeader("X-Session-Id") String sessionId){
         try {
             authService.validateTrainerOrOwnerAuth(sessionId, username);

@@ -6,6 +6,7 @@ public record TrainerSummaryDto(
         String username,
         String firstName,
         String lastName,
-        TrainingTypeEnum specialization
-) {
+        TrainingTypeEnum specialization,
+        String email
+        ) {
 }

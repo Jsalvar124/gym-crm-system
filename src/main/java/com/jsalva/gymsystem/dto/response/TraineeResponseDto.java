@@ -10,6 +10,7 @@ public record TraineeResponseDto(
         LocalDate dateOfBirth,
         String address,
         Boolean active,
+        String email,
         List<TrainerSummaryDto> trainers
 ) {
 }
