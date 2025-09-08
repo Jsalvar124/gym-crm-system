@@ -18,7 +18,7 @@ public class GymWebAppInitializer implements WebApplicationInitializer {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 
         // Register your configuration classes
-        context.register(AppConfig.class, WebConfig.class);
+        context.register(AppConfig.class, WebConfig.class, OpenApiConfig.class);
 
         // Add ContextLoaderListner to the ServletContext which will be responsible to load the application context
         servletContext.addListener(new ContextLoaderListener(context));
@@ -27,7 +27,7 @@ public class GymWebAppInitializer implements WebApplicationInitializer {
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet("dispatcher",  new DispatcherServlet(context));
 
         dispatcher.setLoadOnStartup(1);
-        dispatcher.addMapping("/api/v1/*");
+        dispatcher.addMapping("/");
 
         //add specific encoding (e.g. UTF-8) via CharacterEncodingFilter
         FilterRegistration.Dynamic encodingFilter = servletContext.addFilter("encoding-filter", new CharacterEncodingFilter());
@@ -35,5 +35,8 @@ public class GymWebAppInitializer implements WebApplicationInitializer {
         encodingFilter.setInitParameter("forceEncoding", "true");
         encodingFilter.addMappingForUrlPatterns(null, true, "/*");
     }
+
+
+
 }
 
