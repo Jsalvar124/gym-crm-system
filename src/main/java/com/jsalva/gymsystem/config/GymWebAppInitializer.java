@@ -18,7 +18,7 @@ public class GymWebAppInitializer implements WebApplicationInitializer {
         AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
 
         // Register your configuration classes
-        context.register(AppConfig.class, WebConfig.class, OpenApiConfig.class);
+        context.register(AppConfig.class, WebConfig.class, OpenApiConfig.class); // added OpenApi on register.
 
         // Add ContextLoaderListner to the ServletContext which will be responsible to load the application context
         servletContext.addListener(new ContextLoaderListener(context));

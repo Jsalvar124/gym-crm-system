@@ -46,6 +46,7 @@ public class WebConfig implements WebMvcConfigurer {
         converters.add(converter);
     }
 
+    // For Swagger
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/swagger-ui/**")
