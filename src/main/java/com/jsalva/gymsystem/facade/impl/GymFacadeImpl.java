@@ -82,7 +82,7 @@ public class GymFacadeImpl implements GymFacade {
     public String login(String username, String password) {
         try {
             String result = authService.login(username,password); // This will be a token
-            logger.info("RESULT {}",result);
+            logger.info("Session Id {}",result);
             return result;
         }catch (SecurityException e){
             logger.error("Error in login: {}", e.getMessage());

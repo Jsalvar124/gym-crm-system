@@ -8,6 +8,7 @@ import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeTrainingListResponseDto;
 import com.jsalva.gymsystem.dto.response.TrainerSummaryDto;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
+import com.jsalva.gymsystem.exception.BadRequestException;
 import com.jsalva.gymsystem.facade.GymFacade;
 import com.jsalva.gymsystem.service.AuthService;
 import jakarta.validation.Valid;
@@ -42,47 +43,31 @@ public class TraineeController {
 
     @PutMapping("/{username}")
     public ResponseEntity<TraineeResponseDto> updateTrainee(@PathVariable("username") String username, @Valid @RequestBody UpdateTraineeRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
-        if(!username.equals(requestDto.username())){
-            return ResponseEntity.badRequest().build();
+        if(!username.equals(requestDto.username())) {
+            throw new BadRequestException("Path username does not match request body username");
         }
-        try {
-            authService.validateOwnerAuth(sessionId, username);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        authService.validateOwnerAuth(sessionId, username);
         TraineeResponseDto responseDto = gymFacade.updateTrainee(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/{username}")
     public ResponseEntity<TraineeResponseDto> getTraineeByUsername(@PathVariable("username") String username, @RequestHeader("X-Session-Id") String sessionId){
-        try {
-            authService.validateTrainerOrOwnerAuth(sessionId, username);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        authService.validateTrainerOrOwnerAuth(sessionId, username);
         TraineeResponseDto responseDto = gymFacade.findTraineeByUsername(username);
         return ResponseEntity.ok(responseDto);
     }
 
     @DeleteMapping("/{username}")
     public ResponseEntity<Void> deleteTrainee(@PathVariable("username") String username, @RequestHeader("X-Session-Id") String sessionId){
-        try {
-            authService.validateTrainerAuth(sessionId); // Only a trainer can delete a trainee
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        authService.validateTrainerAuth(sessionId); // Only a trainer can delete a trainee
         gymFacade.deleteTraineeByUsername(username);
         return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{username}/state")
     public ResponseEntity<Map<String, String>> updateTraineeActiveState(@PathVariable("username") String username, @RequestBody Map<String, Boolean> requestBody, @RequestHeader("X-Session-Id") String sessionId){
-        try {
-            authService.validateTrainerOrOwnerAuth(sessionId, username); // Only Trainers or the trainee owner can soft delete.
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        authService.validateTrainerOrOwnerAuth(sessionId, username); // Only Trainers or the trainee owner can soft delete.
         Boolean isActive = requestBody.get("isActive");
         gymFacade.updateTraineeActiveState(username, isActive);
         return ResponseEntity.ok().build();
@@ -96,22 +81,14 @@ public class TraineeController {
                                                                                                @RequestParam(value="trainingType", required = false) TrainingTypeEnum trainingType,
                                                                                                @RequestHeader("X-Session-Id") String sessionId) {
 
-        try {
-            authService.validateTrainerOrOwnerAuth(sessionId, traineeUsername);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        authService.validateTrainerOrOwnerAuth(sessionId, traineeUsername);
         TraineeTrainingListRequestDto requestDto = new TraineeTrainingListRequestDto(traineeUsername, fromDate, toDate, trainerUsername, trainingType);
         return ResponseEntity.ok(gymFacade.getTraineeTrainings(requestDto));
     }
 
     @GetMapping("{username}/unassigned-trainers")
     public ResponseEntity<List<TrainerSummaryDto>> getUnassignedTrainers(@PathVariable("username") String username, @RequestHeader("X-Session-Id") String sessionId){
-        try {
-            authService.validateTrainerOrOwnerAuth(sessionId, username);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        authService.validateTrainerOrOwnerAuth(sessionId, username);
         return ResponseEntity.ok(gymFacade.findUnassignedTrainersByTrainee(username));
     }
 
