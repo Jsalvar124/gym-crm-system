@@ -171,7 +171,7 @@ public class AuthServiceImpl implements AuthService {
             throw e;
         }
     }
-    // Oveload, to avoid calling findByUsername multiple times
+    // Overload, to avoid calling findByUsername multiple times
     @Transactional(readOnly = true)
     public boolean validateCredentials(User user, String password) {
         String hashedPassword = user.getPassword();
