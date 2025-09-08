@@ -15,7 +15,6 @@ import com.jsalva.gymsystem.repository.TrainingRepository;
 import com.jsalva.gymsystem.service.TraineeService;
 import com.jsalva.gymsystem.service.TrainerService;
 import com.jsalva.gymsystem.service.TrainingService;
-import com.jsalva.gymsystem.service.TrainingTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -38,14 +37,11 @@ public class TrainingServiceImpl implements TrainingService {
 
     private final TrainingMapper trainingMapper;
 
-    private final TrainingTypeService trainingTypeService;
-
-    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeService traineeService, TrainerService trainerService, TrainingMapper trainingMapper, TrainingTypeService trainingTypeService) {
+    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeService traineeService, TrainerService trainerService, TrainingMapper trainingMapper) {
         this.trainingRepository = trainingRepository;
         this.traineeService = traineeService;
         this.trainerService = trainerService;
         this.trainingMapper = trainingMapper;
-        this.trainingTypeService = trainingTypeService;
     }
 
     @Override
@@ -135,14 +131,20 @@ public class TrainingServiceImpl implements TrainingService {
         Trainer trainer = trainerService.findEntityByUsername(requestDto.trainerUsername());
         if(!trainer.isActive()){
             logger.error("Error updating training with id {}, Trainer {} is inactive", id, trainer.getUsername());
-            throw new UnprocessableEntityException("Inactive Trainer access attempt");
+            throw new UnprocessableEntityException(String.format(
+                    "Error updating training with id %d, Trainer %s is inactive",
+                    id, trainer.getUsername()
+            ));
         }
         training.setTrainer(trainer);
 
         Trainee trainee = traineeService.findEntityByUsername(requestDto.traineeUsername());
         if(!trainee.isActive()){
             logger.error("Error updating training with id {}, Trainee {} is inactive", id, trainee.getUsername());
-            throw new UnprocessableEntityException("Inactive Trainee access attempt");
+            throw new UnprocessableEntityException(String.format(
+                    "Error updating training with id %d, Trainee %s is inactive",
+                    id, trainee.getUsername()
+            ));
         }
         training.setTrainee(trainee);
         training.setTrainingName(requestDto.trainingName());
