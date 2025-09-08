@@ -13,6 +13,7 @@ public record CreateTraineeRequestDto(
         String lastName,
         @Past(message = "Date of birth must be in the past")
         LocalDate dateOfBirth,
+        @NotBlank(message = "Email is required")
         @Email(message = "Invalid email format")
         String email,
         String address

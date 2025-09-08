@@ -8,6 +8,7 @@ import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TrainerSummaryDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
+import com.jsalva.gymsystem.exception.ResourceNotFoundException;
 import com.jsalva.gymsystem.mapper.TraineeMapper;
 import com.jsalva.gymsystem.mapper.TrainerMapper;
 import com.jsalva.gymsystem.repository.TraineeRepository;
@@ -55,13 +56,11 @@ public class TraineeServiceImpl implements TraineeService {
 
         //Generate and set random Password
         String randomPassword = UserUtils.generateRandomPassword();
-        logger.debug("generated Password: {}", randomPassword);
         String hashedPassword = EncoderUtils.encryptPassword(randomPassword);
         trainee.setPassword(hashedPassword);
 
         // Create unique username
         String username = traineeRepository.generateUniqueUsername(requestDto.firstName(), requestDto.lastName());
-        logger.debug("generated username: {}", username);
         trainee.setUsername(username);
 
         //Default isActive boolean set to true.
@@ -69,7 +68,7 @@ public class TraineeServiceImpl implements TraineeService {
 
         // save new trainee
         traineeRepository.create(trainee);
-        logger.debug("Saved Trainee: {}", trainee);
+        logger.info("Saved Trainee: {}", trainee.getUsername());
 
         // return dto
         return new CreateTraineeResponseDto(username, randomPassword);
@@ -149,14 +148,9 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     @Transactional
     public void updateActiveState(String username, Boolean isActive) {
-        try{
-            Trainee trainee = findEntityByUsername(username);
-            trainee.setActive(isActive); // Auto merge from dirty check.
-            logger.debug("Active status for username {} set to: {}",username, isActive);
-        } catch (Exception e) {
-            logger.error("Error changing trainee's active status {}",e.getMessage());
-            throw e;
-        }
+        Trainee trainee = findEntityByUsername(username);
+        trainee.setActive(isActive); // Auto merge from dirty check.
+        logger.debug("Active status for username {} set to: {}",username, isActive);
     }
 
 
@@ -172,22 +166,17 @@ public class TraineeServiceImpl implements TraineeService {
     public Trainee findEntityByUsername(String username) {
         Optional<Trainee> result = traineeRepository.findByUsername(username);
         if(result.isEmpty()){
-            logger.error("Trainee with username {} not found", username);
-            throw new IllegalArgumentException("Trainee with username " + username + " not found.");
+            throw new ResourceNotFoundException("Trainee with username " + username + " not found.");
         }
-        logger.info("Trainee found: {}", result.get());
+        logger.info("Trainee found: {}", result.get().getUsername());
         return result.get();
     }
 
     @Override
     @Transactional
     public void updatePassword(Long id, String newPassword) {
-        try{
-            logger.info("Trying to update Trainee's password with id {}", id);
-            traineeRepository.updatePassword(id, newPassword);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        logger.info("Trying to update Trainee's password with id {}", id);
+        traineeRepository.updatePassword(id, newPassword);
     }
 
     @Override

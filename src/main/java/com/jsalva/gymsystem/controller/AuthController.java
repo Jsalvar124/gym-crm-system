@@ -25,7 +25,7 @@ public class AuthController {
     }
 
     @PutMapping("/users/password")
-    public ResponseEntity<Void> changePassword(@RequestBody @Valid ChangePasswordRequestDto requestDto){
+    public ResponseEntity<Void> changePassword(@Valid @RequestBody ChangePasswordRequestDto requestDto){
         gymFacade.updateUserPassword(requestDto);
         return ResponseEntity.ok().build();
     }

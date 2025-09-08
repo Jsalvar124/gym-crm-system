@@ -72,7 +72,7 @@ public class TrainerServiceImpl implements TrainerService {
 
         // Save trainer
         trainerRepository.create(trainer);
-        logger.debug("Saved Trainer: {}", trainer);
+        logger.debug("Saved Trainer: {}", trainer.getUsername());
 
         // Return Dto
         return new CreateTrainerResponseDto(uniqueUsername, randomPassword);
@@ -137,14 +137,9 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional
     public void updateActiveState(String username, Boolean isActive) {
-        try{
-            Trainer trainer = findEntityByUsername(username); // Find Trainer, now Managed entity
-            trainer.setActive(isActive); // Auto merge from dirty check.
-            logger.debug("Active status for username {} set to: {}",username, isActive);
-        } catch (Exception e) {
-            logger.error("Error changing trainer's active status {}",e.getMessage());
-            throw e;
-        }
+        Trainer trainer = findEntityByUsername(username); // Find Trainer, now Managed entity
+        trainer.setActive(isActive); // Auto merge from dirty check.
+        logger.debug("Active status for username {} set to: {}",username, isActive);
     }
 
     @Override

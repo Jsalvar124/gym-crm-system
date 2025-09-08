@@ -13,6 +13,7 @@ public record CreateTrainerRequestDto(
         String lastName,
         @NotNull(message = "Specialization is required")
         TrainingTypeEnum specialization,
+        @NotBlank(message = "Email is required")
         @Email(message = "Invalid email format")
         String email
 ) {

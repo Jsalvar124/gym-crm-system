@@ -13,7 +13,6 @@ import com.jsalva.gymsystem.facade.GymFacade;
 import com.jsalva.gymsystem.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

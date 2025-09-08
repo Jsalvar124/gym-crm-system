@@ -1,6 +1,7 @@
 package com.jsalva.gymsystem.dto.request;
 
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -14,7 +15,10 @@ public record UpdateTrainerRequestDto(
         @NotNull(message = "Specialization is required")
         TrainingTypeEnum specialization,
         @NotNull(message = "Status is required")
-        Boolean isActive
+        Boolean isActive,
+        @NotBlank(message = "Email is required")
+        @Email(message = "Invalid email format")
+        String email
 ) {
 
 }

@@ -2,6 +2,7 @@ package com.jsalva.gymsystem.repository.impl;
 
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
+import com.jsalva.gymsystem.exception.ResourceNotFoundException;
 import com.jsalva.gymsystem.repository.TraineeRepository;
 import jakarta.persistence.*;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
                 em.merge(trainee);
             } else {
                 logger.warn("Trainer with id {} not found.", id);
+                throw new ResourceNotFoundException("Trainer with id " + id + " not found");
             }
         } catch (Exception e) {
             throw e;

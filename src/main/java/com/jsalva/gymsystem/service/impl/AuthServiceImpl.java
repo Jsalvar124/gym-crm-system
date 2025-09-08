@@ -48,26 +48,31 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public String login(String username, String password) {
-        User user = findByUsername(username);
-        String userType;
-        if (user instanceof Trainer) { // Polimorphic query
-            userType = "TRAINER";
-        } else if (user instanceof Trainee) {
-            userType = "TRAINEE";
-        } else {
-            userType = "USER";
-        }
+        try{
+            User user = findByUsername(username);
+            String userType;
+            if (user instanceof Trainer) { // Polimorphic query
+                userType = "TRAINER";
+            } else if (user instanceof Trainee) {
+                userType = "TRAINEE";
+            } else {
+                userType = "USER";
+            }
 
-        // Validate credentials
-        if (validateCredentials(user, password)) {
-            // Generate session ID and store session info
-            String sessionId = UUID.randomUUID().toString();
-            activeSessions.put(sessionId, new SessionInfo(username, userType));
+            // Validate credentials
+            if (validateCredentials(user, password)) {
+                // Generate session ID and store session info
+                String sessionId = UUID.randomUUID().toString();
+                activeSessions.put(sessionId, new SessionInfo(username, userType));
 
-            logger.info("Login successful - Session created for user: {} as {}", username, userType);
-            return sessionId;
-        } else {
-            throw new InvalidCredentialsException("Invalid credentials for username "+ username);
+                logger.info("Login successful - Session created for user: {} as {}", username, userType);
+                return sessionId;
+            } else {
+                throw new InvalidCredentialsException("Invalid credentials for username "+ username);
+            }
+        } catch (ResourceNotFoundException e) {
+            logger.warn("Login failed - user {} not found", username);
+            throw new InvalidCredentialsException("Invalid credentials"); // mask as 401
         }
     }
 
