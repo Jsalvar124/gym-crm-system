@@ -7,6 +7,5 @@ import java.util.Optional;
 
 public interface TrainerRepository extends GenericRepository<Trainer, Long>{
     Optional<Trainer> findByUsername(String username);
-    void updatePassword(Long id, String newPassword);
     String generateUniqueUsername(String firstName, String lastName);
 }

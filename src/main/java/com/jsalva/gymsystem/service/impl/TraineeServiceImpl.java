@@ -12,6 +12,7 @@ import com.jsalva.gymsystem.exception.ResourceNotFoundException;
 import com.jsalva.gymsystem.mapper.TraineeMapper;
 import com.jsalva.gymsystem.mapper.TrainerMapper;
 import com.jsalva.gymsystem.repository.TraineeRepository;
+import com.jsalva.gymsystem.repository.UserRepository;
 import com.jsalva.gymsystem.service.TraineeService;
 import com.jsalva.gymsystem.utils.EncoderUtils;
 import com.jsalva.gymsystem.utils.UserUtils;
@@ -35,7 +36,6 @@ public class TraineeServiceImpl implements TraineeService {
     private final TraineeMapper traineeMapper;
 
     private final TrainerMapper trainerMapper;
-
 
     public TraineeServiceImpl(TraineeRepository traineeRepository, TraineeMapper traineeMapper, TrainerMapper trainerMapper) {
         this.traineeRepository = traineeRepository;
@@ -170,13 +170,6 @@ public class TraineeServiceImpl implements TraineeService {
         }
         logger.info("Trainee found: {}", result.get().getUsername());
         return result.get();
-    }
-
-    @Override
-    @Transactional
-    public void updatePassword(Long id, String newPassword) {
-        logger.info("Trying to update Trainee's password with id {}", id);
-        traineeRepository.updatePassword(id, newPassword);
     }
 
     @Override

@@ -30,26 +30,10 @@ public class TraineeRepositoryImpl extends GenericRepositoryImpl<Trainee, Long> 
         try {
             TypedQuery<Trainee> typedQuery = em.createQuery("SELECT t FROM Trainee t WHERE t.username = :username", Trainee.class);
             typedQuery.setParameter("username", username);
-            return Optional.of(typedQuery.getSingleResult());
+            return Optional.ofNullable(typedQuery.getSingleResult());
         } catch (NoResultException e){
             logger.error("Trainee not found");
             return Optional.empty();
-        }
-    }
-
-    @Override
-    public void updatePassword(Long id, String newPassword) {
-        try {
-            Trainee trainee = em.find(Trainee.class, id);
-            if (trainee != null) {
-                trainee.setPassword(newPassword);
-                em.merge(trainee);
-            } else {
-                logger.warn("Trainer with id {} not found.", id);
-                throw new ResourceNotFoundException("Trainer with id " + id + " not found");
-            }
-        } catch (Exception e) {
-            throw e;
         }
     }
 

@@ -21,7 +21,6 @@ GymFacade {
     TrainerResponseDto updateTrainer(UpdateTrainerRequestDto requestDto);
     void updateTrainerActiveState(String username, Boolean isActive);
     TrainerResponseDto findTrainerByUsername(String username);
-    void updateTrainerPassword(Long id, String newPassword);
     Set<Trainee> getTraineeListForTrainer(Long id);
 
 
@@ -33,7 +32,6 @@ GymFacade {
     void deleteTrainee(Long id);
     void updateTraineeActiveState(String username, Boolean isActive);
     TraineeResponseDto findTraineeByUsername(String username);
-    void updateTraineePassword(Long id, String newPassword);
     void deleteTraineeByUsername(String username);
     List<TrainerSummaryDto> findUnassignedTrainersByTrainee(String traineeUsername);
     Set<Trainer> getTrainerListForTrainee(Long id);

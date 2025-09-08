@@ -2,6 +2,7 @@ package com.jsalva.gymsystem.repository.impl;
 
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.User;
+import com.jsalva.gymsystem.exception.ResourceNotFoundException;
 import com.jsalva.gymsystem.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -47,6 +48,5 @@ public class UserRepositoryImpl implements UserRepository {
             return Optional.empty();
         }
     }
-
 
 }

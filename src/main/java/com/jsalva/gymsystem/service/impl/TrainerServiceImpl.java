@@ -144,19 +144,6 @@ public class TrainerServiceImpl implements TrainerService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean validateCredentials(String username, String password) {
-        try {
-            Trainer trainer = findEntityByUsername(username);
-            String hashedPassword = trainer.getPassword();
-            return EncoderUtils.verifyPassword(password, hashedPassword);
-        } catch (SecurityException e){
-            logger.error("Error validating credentials");
-            throw e;
-        }
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public TrainerResponseDto findByUsername(String username) {
         Trainer trainer = findEntityByUsername(username);
         return trainerMapper.toResponseDto(trainer);
@@ -171,16 +158,6 @@ public class TrainerServiceImpl implements TrainerService {
         }
         logger.info("Trainer with username {} found", username);
         return trainer.get();
-    }
-
-    @Override
-    @Transactional
-    public void updatePassword(Long id, String newPassword) {
-        try{
-            trainerRepository.updatePassword(id, newPassword);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     @Override

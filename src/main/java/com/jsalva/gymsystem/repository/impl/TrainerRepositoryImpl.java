@@ -1,6 +1,8 @@
 package com.jsalva.gymsystem.repository.impl;
 
+import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
+import com.jsalva.gymsystem.exception.ResourceNotFoundException;
 import com.jsalva.gymsystem.repository.TrainerRepository;
 import com.jsalva.gymsystem.utils.EncoderUtils;
 import jakarta.persistence.*;
@@ -32,22 +34,6 @@ public class TrainerRepositoryImpl extends GenericRepositoryImpl<Trainer, Long> 
         } catch (NoResultException e){
             logger.error("No results found!");
             return Optional.empty();
-        }
-    }
-
-    @Override
-    public void updatePassword(Long id, String newPassword) {
-        try {
-            Trainer trainer = em.find(Trainer.class, id);
-            if (trainer != null) {
-                String hashedPassword = EncoderUtils.encryptPassword(newPassword);
-                trainer.setPassword(hashedPassword);
-                em.merge(trainer);
-            } else {
-                logger.warn("Trainer with id {} not found.", id);
-            }
-        } catch (Exception e) {
-            throw e;
         }
     }
 

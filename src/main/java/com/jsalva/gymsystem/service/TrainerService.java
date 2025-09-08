@@ -18,10 +18,8 @@ public interface TrainerService {
     TrainerResponseDto updateTrainer(UpdateTrainerRequestDto requestDto);
     void deleteTrainer(Long id);
     void updateActiveState(String username, Boolean isActive);
-    boolean validateCredentials(String username, String password);
     TrainerResponseDto findByUsername(String username);
     Trainer findEntityByUsername(String username);
-    void updatePassword(Long id, String newPassword);
     Set<Trainee> getTraineeSetForTrainer(Long id);
 
 }

@@ -107,17 +107,6 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public void updateTrainerPassword(Long id, String newPassword) {
-        try{
-            trainerService.updatePassword(id, newPassword);
-            logger.info("Trainer's password with id {} updated", id);
-
-        }catch (Exception e){
-            logger.error("Error updating trainer's password with id {} ", id);
-        }
-    }
-
-    @Override
     public Set<Trainee> getTraineeListForTrainer(Long id) {
         try {
             return trainerService.getTraineeSetForTrainer(id);
@@ -187,15 +176,6 @@ public class GymFacadeImpl implements GymFacade {
         }catch (IllegalArgumentException e){
             logger.error("Error looking for trainee with username {}, {}",username, e.getMessage());
             return null;
-        }
-    }
-
-    @Override
-    public void updateTraineePassword(Long id, String newPassword) {
-        try{
-            traineeService.updatePassword(id, newPassword);
-        }catch (Exception e){
-            logger.error("Error updating trainee's password with id {} ", id);
         }
     }
 
