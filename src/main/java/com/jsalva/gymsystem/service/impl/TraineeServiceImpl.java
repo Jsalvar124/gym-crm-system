@@ -85,7 +85,7 @@ public class TraineeServiceImpl implements TraineeService {
     public Trainee getTraineeById(Long id) {
         Optional<Trainee> trainee = traineeRepository.findById(id);
         if(trainee.isEmpty()){
-            throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
+            throw new ResourceNotFoundException("Trainee with Id " + id + " not found.");
         }
         return trainee.get();
     }
@@ -131,7 +131,7 @@ public class TraineeServiceImpl implements TraineeService {
         Optional<Trainee> result = traineeRepository.findById(id);
         if(result.isEmpty()){
             logger.error("Trainee for deletion not found");
-            throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
+            throw new ResourceNotFoundException("Trainee with Id " + id + " not found.");
         }
         logger.info("Deleting trainee with id {}", id);
         // Clean up many-to-many relationships BEFORE deletion, since Trainee is the owner of the relation.
@@ -197,7 +197,7 @@ public class TraineeServiceImpl implements TraineeService {
             Optional<Trainee> trainee = traineeRepository.findById(id);
             if(trainee.isEmpty()){
                 logger.error("Trainee id not found");
-                throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
+                throw new ResourceNotFoundException("Trainee with Id " + id + " not found.");
             }
             return trainee.get().getTrainers();
         } catch (IllegalArgumentException e) {

@@ -28,22 +28,14 @@ public class TrainingController {
 
     @PostMapping
     public ResponseEntity<Void> createTraining(@Valid @RequestBody CreateTrainingRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
-        try{
-            authService.validateTrainerAuth(sessionId);
-        }catch (SecurityException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        authService.validateTrainerAuth(sessionId);
         gymFacade.createTraining(requestDto);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TrainingResponseDto> updateTraining(@Valid @RequestBody UpdateTrainingRequestDto requestDto, @PathVariable("id") Long id, @RequestHeader("X-Session-Id") String sessionId) {
-        try {
-            authService.validateTrainerAuth(sessionId);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        authService.validateTrainerAuth(sessionId);
         TrainingResponseDto responseDto = gymFacade.updateTraining(id, requestDto);
         return ResponseEntity.ok(responseDto);
     }

@@ -8,6 +8,7 @@ import com.jsalva.gymsystem.dto.response.TrainerResponseDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.TrainingType;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
+import com.jsalva.gymsystem.exception.ResourceNotFoundException;
 import com.jsalva.gymsystem.mapper.TrainerMapper;
 import com.jsalva.gymsystem.repository.TrainerRepository;
 import com.jsalva.gymsystem.service.TrainerService;
@@ -90,7 +91,7 @@ public class TrainerServiceImpl implements TrainerService {
         Optional<Trainer> trainer = trainerRepository.findById(id);
         if(trainer.isEmpty()){
             logger.error("Trainer id not found");
-            throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
+            throw new ResourceNotFoundException("Trainer with Id " + id + " not found.");
         }
         return trainer.get();
     }
@@ -128,7 +129,7 @@ public class TrainerServiceImpl implements TrainerService {
         Optional<Trainer> trainerFound = trainerRepository.findById(id);
         if(trainerFound.isEmpty()){
             logger.error("Trainer for deletion not found");
-            throw new IllegalArgumentException("Trainer with Id " + id + " not found.");
+            throw new ResourceNotFoundException("Trainer with Id " + id + " not found.");
         }
         logger.info("Deleting trainer with id {}", id);
         trainerRepository.delete(id);
@@ -154,7 +155,7 @@ public class TrainerServiceImpl implements TrainerService {
         Optional<Trainer> trainer = trainerRepository.findByUsername(username);
         if(trainer.isEmpty()){
             logger.error("Trainer with username {} not found", username);
-            throw new IllegalArgumentException("Trainer with username " + username + " not found.");
+            throw new ResourceNotFoundException("Trainer with username " + username + " not found.");
         }
         logger.info("Trainer with username {} found", username);
         return trainer.get();
@@ -163,15 +164,11 @@ public class TrainerServiceImpl implements TrainerService {
     @Override
     @Transactional(readOnly = true)
     public Set<Trainee> getTraineeSetForTrainer(Long id) {
-        try{
-            Optional<Trainer> trainer = trainerRepository.findById(id);
-            if(trainer.isEmpty()){
-                logger.error("Trainee id not found");
-                throw new IllegalArgumentException("Trainee with Id " + id + " not found.");
-            }
-            return trainer.get().getTrainees();
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
+        Optional<Trainer> trainer = trainerRepository.findById(id);
+        if(trainer.isEmpty()){
+            logger.error("Trainee id not found");
+            throw new ResourceNotFoundException("Trainee with Id " + id + " not found.");
         }
+        return trainer.get().getTrainees();
     }
 }

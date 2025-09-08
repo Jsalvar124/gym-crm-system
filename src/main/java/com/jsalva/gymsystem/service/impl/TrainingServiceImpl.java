@@ -8,6 +8,8 @@ import com.jsalva.gymsystem.dto.response.TraineeTrainingListResponseDto;
 import com.jsalva.gymsystem.dto.response.TrainerTrainingListResponseDto;
 import com.jsalva.gymsystem.dto.response.TrainingResponseDto;
 import com.jsalva.gymsystem.entity.*;
+import com.jsalva.gymsystem.exception.ResourceNotFoundException;
+import com.jsalva.gymsystem.exception.UnprocessableEntityException;
 import com.jsalva.gymsystem.mapper.TrainingMapper;
 import com.jsalva.gymsystem.repository.TrainingRepository;
 import com.jsalva.gymsystem.service.TraineeService;
@@ -53,20 +55,20 @@ public class TrainingServiceImpl implements TrainingService {
         Trainer trainer = trainerService.findEntityByUsername(requestDto.trainerUsername());
         if(!trainer.isActive()){
             logger.error("Error creating training, Trainer {} is inactive", trainer.getUsername());
-            throw new IllegalArgumentException("Inactive Trainer access attempt");
+            throw new UnprocessableEntityException("Error creating training, Trainer " + trainer.getUsername() + " is inactive");
         }
 
         Trainee trainee = traineeService.findEntityByUsername(requestDto.traineeUsername());
         if(!trainee.isActive()){
             logger.error("Error creating training, Trainee {} is inactive", trainee.getUsername());
-            throw new IllegalArgumentException("Inactive Trainee access attempt");
+            throw new UnprocessableEntityException("Error creating training, Trainee " + trainee.getUsername() + " is inactive");
         }
 
         // get Training type from trainer specialization
         TrainingType type = trainer.getSpecialization();
         if(type == null){
             logger.error("Error creating training, TrainingType not found");
-            throw new IllegalArgumentException("TrainingType not found.");
+            throw new ResourceNotFoundException("TrainingType not found.");
         }
         // If both exist, proceed
         Training training = new Training.Builder()
@@ -94,7 +96,7 @@ public class TrainingServiceImpl implements TrainingService {
         Optional<Training> training = trainingRepository.findById(id);
         if(training.isEmpty()){
             logger.error("Training id not found");
-            throw new IllegalArgumentException("Training with Id " + id + " not found.");
+            throw new ResourceNotFoundException("Training with Id " + id + " not found.");
         }
         return training.get();
     }
@@ -133,14 +135,14 @@ public class TrainingServiceImpl implements TrainingService {
         Trainer trainer = trainerService.findEntityByUsername(requestDto.trainerUsername());
         if(!trainer.isActive()){
             logger.error("Error updating training with id {}, Trainer {} is inactive", id, trainer.getUsername());
-            throw new IllegalArgumentException("Inactive Trainer access attempt");
+            throw new UnprocessableEntityException("Inactive Trainer access attempt");
         }
         training.setTrainer(trainer);
 
         Trainee trainee = traineeService.findEntityByUsername(requestDto.traineeUsername());
         if(!trainee.isActive()){
             logger.error("Error updating training with id {}, Trainee {} is inactive", id, trainee.getUsername());
-            throw new IllegalArgumentException("Inactive Trainee access attempt");
+            throw new UnprocessableEntityException("Inactive Trainee access attempt");
         }
         training.setTrainee(trainee);
         training.setTrainingName(requestDto.trainingName());

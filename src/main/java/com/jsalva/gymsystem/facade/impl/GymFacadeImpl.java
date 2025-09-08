@@ -41,53 +41,29 @@ public class GymFacadeImpl implements GymFacade {
 
     @Override
     public List<Trainer> getAllTrainers() {
-        try {
-            return trainerService.getAllTrainers();
-        }catch (Exception e){
-            logger.error("Error fetching trainers: {}", e.getMessage());
-        }
-        return null;
+        return trainerService.getAllTrainers();
     }
 
     @Override
     public Trainer getTrainerById(Long id) {
-        try {
-            return trainerService.getTrainerById(id);
-        }catch (IllegalArgumentException e){
-            logger.error("Error fetching trainer: {}", e.getMessage());
-        }
-        return null;
+        return trainerService.getTrainerById(id);
     }
 
     @Override
     public TrainerResponseDto updateTrainer(UpdateTrainerRequestDto requestDto) {
-        try {
-            return trainerService.updateTrainer(requestDto);
-        }catch (IllegalArgumentException e){
-            logger.error("Error in trainer update: {}", e.getMessage());
-        }
-        return null;
+        return trainerService.updateTrainer(requestDto);
     }
 
     @Override
     public void updateTrainerActiveState(String username, Boolean isActive) {
-        try {
-            trainerService.updateActiveState(username, isActive);
-        }catch (IllegalArgumentException e){
-            logger.error("Error changing trainer's active status: {}", e.getMessage());
-        }
+        trainerService.updateActiveState(username, isActive);
     }
 
     @Override
     public String login(String username, String password) {
-        try {
-            String result = authService.login(username,password); // This will be a token
-            logger.info("Session Id {}",result);
-            return result;
-        }catch (SecurityException e){
-            logger.error("Error in login: {}", e.getMessage());
-        }
-        return "";
+        String result = authService.login(username,password); // This will be a token
+        logger.info("Session Id {}",result);
+        return result;
     }
 
     @Override
@@ -98,22 +74,13 @@ public class GymFacadeImpl implements GymFacade {
 
     @Override
     public TrainerResponseDto findTrainerByUsername(String username) {
-        try {
-            return trainerService.findByUsername(username);
-        }catch (IllegalArgumentException e){
-            logger.error("Error looking for trainer with username {}, {}",username, e.getMessage());
-            return null;
-        }
+        return trainerService.findByUsername(username);
     }
 
     @Override
     public Set<Trainee> getTraineeListForTrainer(Long id) {
-        try {
-            return trainerService.getTraineeSetForTrainer(id);
-        } catch (Exception e) {
-            logger.error("Error finding trainee's set for trainer with id {}", id);
-        }
-        return Set.of();    }
+        return trainerService.getTraineeSetForTrainer(id);
+}
 
     // Trainee Methods
     // No authentication
@@ -124,117 +91,62 @@ public class GymFacadeImpl implements GymFacade {
 
     @Override
     public List<Trainee> getAllTrainees() {
-        try {
-            return traineeService.getAllTrainees();
-        } catch (Exception e) {
-            logger.error("Error fetching trainees: {}", e.getMessage());
-            return List.of();
-        }    }
+        return traineeService.getAllTrainees();
+    }
 
     @Override
     public Trainee getTraineeById(Long id) {
-        try {
-            return traineeService.getTraineeById(id);
-        } catch (IllegalArgumentException e) {
-            logger.error("Error fetching trainee: {}", e.getMessage());
-            return null;
-        }
+        return traineeService.getTraineeById(id);
     }
 
     @Override
     public TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto) {
-        try {
-            return traineeService.updateTrainee(requestDto);
-        } catch (IllegalArgumentException e) {
-            logger.error("Error in trainee update: {}", e.getMessage());
-            return null;
-        }
+        return traineeService.updateTrainee(requestDto);
     }
 
     @Override
     public void deleteTrainee(Long id) {
-        try {
-            traineeService.deleteTrainee(id);
-        } catch (IllegalArgumentException e) {
-            logger.error("Error deleting trainee: {}", e.getMessage());
-        }
+        traineeService.deleteTrainee(id);
     }
 
     @Override
     public void updateTraineeActiveState(String username, Boolean isActive) {
-        try {
-            traineeService.updateActiveState(username, isActive);
-        }catch (IllegalArgumentException e){
-            logger.error("Error changing trainee's active status: {}", e.getMessage());
-        }
+        traineeService.updateActiveState(username, isActive);
     }
 
     @Override
     public TraineeResponseDto findTraineeByUsername(String username) {
-        try {
-            return traineeService.findByUsername(username);
-        }catch (IllegalArgumentException e){
-            logger.error("Error looking for trainee with username {}, {}",username, e.getMessage());
-            return null;
-        }
+        return traineeService.findByUsername(username);
     }
 
     @Override
     public void deleteTraineeByUsername(String username) {
-        try{
-            traineeService.deleteTraineeByUsername(username);
-        }catch (Exception e){
-            logger.error("Error deleting trainee with username {}", username);
-        }
+        traineeService.deleteTraineeByUsername(username);
     }
 
     @Override
     public List<TrainerSummaryDto> findUnassignedTrainersByTrainee(String traineeUsername) {
-        try{
-            return traineeService.findUnassignedTrainersByTrainee(traineeUsername);
-        }catch (Exception e){
-            logger.error("Error finding unassigned trainers for trainee with username {}", traineeUsername);
-        }
-        return List.of();
+        return traineeService.findUnassignedTrainersByTrainee(traineeUsername);
     }
 
     @Override
     public Set<Trainer> getTrainerListForTrainee(Long id) {
-        try {
-            return traineeService.getTrainersSetForTrainee(id);
-        } catch (Exception e) {
-            logger.error("Error finding trainers set for trainee with id {}", id);
-        }
-        return Set.of();
+        return traineeService.getTrainersSetForTrainee(id);
     }
 
     @Override
     public void createTraining(CreateTrainingRequestDto requestDto) {
-        try {
-            trainingService.createTraining(requestDto);
-        } catch (IllegalArgumentException e) {
-            logger.error("Error in training creation: {}", e.getMessage());
-        }
+        trainingService.createTraining(requestDto);
     }
 
     @Override
     public List<Training> getAllTrainings() {
-        try {
-            return trainingService.getAllTrainings();
-        } catch (Exception e) {
-            logger.error("Error fetching trainings: {}", e.getMessage());
-            return List.of();
-        }
+        return trainingService.getAllTrainings();
     }
 
     @Override
     public Training getTrainingById(Long id) {
-        try {
-            return trainingService.getTrainingById(id);
-        } catch (IllegalArgumentException e) {
-            logger.error("Error fetching training: {}", e.getMessage());
-            return null;
-        }
+        return trainingService.getTrainingById(id);
     }
 
     @Override
@@ -254,12 +166,7 @@ public class GymFacadeImpl implements GymFacade {
 
     @Override
     public List<TrainingTypeResponseDto> getAllTrainingTypes() {
-        try {
-            return trainingTypeService.getAllTrainingTypes();
-        } catch (IllegalArgumentException e) {
-            logger.error("Error fetching training types: {}", e.getMessage());
-            return null;
-        }
+        return trainingTypeService.getAllTrainingTypes();
     }
 
 }

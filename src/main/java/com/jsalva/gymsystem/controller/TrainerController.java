@@ -6,11 +6,11 @@ import com.jsalva.gymsystem.dto.request.UpdateTrainerRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTrainerResponseDto;
 import com.jsalva.gymsystem.dto.response.TrainerResponseDto;
 import com.jsalva.gymsystem.dto.response.TrainerTrainingListResponseDto;
+import com.jsalva.gymsystem.exception.BadRequestException;
 import com.jsalva.gymsystem.facade.GymFacade;
 import com.jsalva.gymsystem.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,36 +44,24 @@ public class TrainerController {
 
     @PutMapping("/{username}")
     public ResponseEntity<TrainerResponseDto> updateTrainer(@PathVariable("username") String username,@Valid @RequestBody UpdateTrainerRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
-        if(!username.equals(requestDto.username())){
-            return ResponseEntity.badRequest().build();
+        if(!username.equals(requestDto.username())) {
+            throw new BadRequestException("Path username does not match request body username");
         }
-        try {
-            authService.validateOwnerAuth(sessionId, username);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        authService.validateOwnerAuth(sessionId, username);
         TrainerResponseDto responseDto = gymFacade.updateTrainer(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     @GetMapping("/{username}")
     public ResponseEntity<TrainerResponseDto> getTrainerByUsername(@PathVariable("username") String username, @RequestHeader("X-Session-Id") String sessionId){
-        try {
-            authService.validateTrainerAuth(sessionId);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        authService.validateTrainerAuth(sessionId);
         TrainerResponseDto responseDto = gymFacade.findTrainerByUsername(username);
         return ResponseEntity.ok(responseDto);
     }
 
     @PatchMapping("/{username}/state")
     public ResponseEntity<Map<String, String>> updateTrainerActiveState(@PathVariable("username") String username, @RequestBody Map<String, Boolean> requestBody, @RequestHeader("X-Session-Id") String sessionId){
-        try {
-            authService.validateTrainerAuth(sessionId);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        authService.validateTrainerAuth(sessionId);
         Boolean isActive = requestBody.get("isActive");
         gymFacade.updateTrainerActiveState(username, isActive);
         return ResponseEntity.ok().build();
@@ -85,11 +73,7 @@ public class TrainerController {
                                                                                                @RequestParam(value="toDate", required = false) LocalDate toDate,
                                                                                                @RequestParam(value="traineeUsername",required = false) String traineeUsername,
                                                                                                @RequestHeader("X-Session-Id") String sessionId){
-        try {
-            authService.validateTrainerAuth(sessionId);
-        } catch (SecurityException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        authService.validateTrainerAuth(sessionId);
         TrainerTrainingListRequestDto requestDto = new TrainerTrainingListRequestDto(trainerUsername, fromDate, toDate, traineeUsername);
         return ResponseEntity.ok(gymFacade.getTrainerTrainings(requestDto));
     }

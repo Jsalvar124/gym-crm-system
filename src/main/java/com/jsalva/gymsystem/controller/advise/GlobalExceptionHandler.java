@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -56,6 +57,11 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.UNAUTHORIZED, ex);
     }
 
+    @ExceptionHandler(UnprocessableEntityException.class)
+    public ResponseEntity<Object> handleUnprocessableEntity(UnprocessableEntityException ex) {
+        return buildResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY, ex);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, Object>> handleValidationException(MethodArgumentNotValidException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
@@ -78,4 +84,18 @@ public class GlobalExceptionHandler {
         body.put("message", "Supported methods: " + String.join(", ", ex.getSupportedMethods()));
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(body);
     }
+
+    // --- Handle missing headers globally ---
+    @ExceptionHandler(MissingRequestHeaderException.class)
+    public ResponseEntity<Object> handleMissingHeader(MissingRequestHeaderException ex) {
+        String headerName = ex.getHeaderName();
+        return buildResponseEntity(HttpStatus.BAD_REQUEST, ex);
+    }
+
+    // --- Fallback handler for unexpected errors ---
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleGeneral(Exception ex) {
+        return buildResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR, ex);
+    }
+
 }
