@@ -19,9 +19,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid LoginRequestDto loginRequestDto){
-        String token = gymFacade.login(loginRequestDto.username(), loginRequestDto.password());
-        return ResponseEntity.ok(Map.of("Token", token)); //TODO
+    public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequestDto loginRequestDto){
+        String sessionId = gymFacade.login(loginRequestDto.username(), loginRequestDto.password());
+        return ResponseEntity.ok(Map.of("sessionId", sessionId));
     }
 
     @PutMapping("/users/password")

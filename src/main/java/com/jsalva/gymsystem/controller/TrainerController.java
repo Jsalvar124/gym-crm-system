@@ -37,7 +37,7 @@ public class TrainerController {
     }
 
     @PostMapping
-    public ResponseEntity<CreateTrainerResponseDto> createTrainer(@RequestBody @Valid CreateTrainerRequestDto requestDto){
+    public ResponseEntity<CreateTrainerResponseDto> createTrainer(@Valid @RequestBody CreateTrainerRequestDto requestDto){
         CreateTrainerResponseDto responseDto = gymFacade.createTrainer(requestDto);
         return ResponseEntity.ok(responseDto);
     }
