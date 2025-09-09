@@ -39,11 +39,20 @@ public class WebConfig implements WebMvcConfigurer {
         return mapper;
     }
 
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        MappingJackson2HttpMessageConverter converter =
+//                new MappingJackson2HttpMessageConverter(objectMapper());
+//        converters.add(converter);
+//    }
+
     @Override
-    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        MappingJackson2HttpMessageConverter converter =
-                new MappingJackson2HttpMessageConverter(objectMapper());
-        converters.add(converter);
+    public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
+        for (HttpMessageConverter<?> converter : converters) {
+            if (converter instanceof MappingJackson2HttpMessageConverter jacksonConverter) {
+                jacksonConverter.setObjectMapper(objectMapper());
+            }
+        }
     }
 
     // For Swagger
