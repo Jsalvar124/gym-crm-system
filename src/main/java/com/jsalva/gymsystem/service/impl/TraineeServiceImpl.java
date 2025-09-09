@@ -103,15 +103,9 @@ public class TraineeServiceImpl implements TraineeService {
             String username = traineeRepository.generateUniqueUsername(firstName,lastName);
             trainee.setUsername(username);
         }
-        if(firstName != null){
-            trainee.setFirstName(firstName);
-        }
-        if(lastName != null){
-            trainee.setLastName(lastName);
-        }
-        if(requestDto.isActive() != null){
-            trainee.setActive(requestDto.isActive());
-        }
+        trainee.setFirstName(firstName);
+        trainee.setLastName(lastName);
+        trainee.setActive(requestDto.isActive());
         if(requestDto.dateOfBirth() != null){
             trainee.setDateOfBirth(requestDto.dateOfBirth());
         }

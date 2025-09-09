@@ -4,10 +4,7 @@ import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.User;
 import com.jsalva.gymsystem.exception.ResourceNotFoundException;
 import com.jsalva.gymsystem.repository.UserRepository;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -47,6 +44,16 @@ public class UserRepositoryImpl implements UserRepository {
             logger.error("No active users found for username {}", username);
             return Optional.empty();
         }
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        String jpql = "SELECT COUNT(u) FROM User WHERE u.email = :email";
+        Long count = em.createQuery(jpql, Long.class)
+                .setParameter("email", email)
+                .getSingleResult();
+        return count > 0;
+
     }
 
 }
