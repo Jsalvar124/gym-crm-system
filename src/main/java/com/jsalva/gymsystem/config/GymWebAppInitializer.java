@@ -1,6 +1,7 @@
 package com.jsalva.gymsystem.config;
 
-import com.jsalva.gymsystem.logger.LoggingFilter;
+import com.jsalva.gymsystem.filter.LoggingFilter;
+import com.jsalva.gymsystem.filter.TransactionIdFilter;
 import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -36,13 +37,16 @@ public class GymWebAppInitializer implements WebApplicationInitializer {
         encodingFilter.setInitParameter("forceEncoding", "true");
         encodingFilter.addMappingForUrlPatterns(null, true, "/*");
 
-        // Logging filter registration
+        // Loggin filter for transaction Id (Goes First)
+        FilterRegistration.Dynamic txFilter =
+                servletContext.addFilter("transactionIdFilter", new TransactionIdFilter());
+        txFilter.addMappingForUrlPatterns(null, true, "/*");
+
+        // Logging filter registration for request and response
         FilterRegistration.Dynamic loggingFilter =
                 servletContext.addFilter("logging-filter", new LoggingFilter());
         loggingFilter.addMappingForUrlPatterns(null, true, "/*");
     }
-
-
 
 }
 
