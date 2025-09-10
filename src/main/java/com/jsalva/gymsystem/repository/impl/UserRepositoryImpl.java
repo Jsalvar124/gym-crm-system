@@ -48,12 +48,11 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean existsByEmail(String email) {
-        String jpql = "SELECT COUNT(u) FROM User WHERE u.email = :email";
+        String jpql = "SELECT COUNT(u) FROM User u WHERE u.email = :email";
         Long count = em.createQuery(jpql, Long.class)
                 .setParameter("email", email)
                 .getSingleResult();
         return count > 0;
-
     }
 
 }

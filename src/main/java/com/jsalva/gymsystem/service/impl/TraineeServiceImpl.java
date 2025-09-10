@@ -9,6 +9,7 @@ import com.jsalva.gymsystem.dto.response.TrainerSummaryDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.exception.ResourceNotFoundException;
+import com.jsalva.gymsystem.exception.UnprocessableEntityException;
 import com.jsalva.gymsystem.mapper.TraineeMapper;
 import com.jsalva.gymsystem.mapper.TrainerMapper;
 import com.jsalva.gymsystem.repository.TraineeRepository;
@@ -37,16 +38,24 @@ public class TraineeServiceImpl implements TraineeService {
 
     private final TrainerMapper trainerMapper;
 
-    public TraineeServiceImpl(TraineeRepository traineeRepository, TraineeMapper traineeMapper, TrainerMapper trainerMapper) {
+    private final UserRepository userRepository;
+
+    public TraineeServiceImpl(TraineeRepository traineeRepository, TraineeMapper traineeMapper, TrainerMapper trainerMapper, UserRepository userRepository) {
         this.traineeRepository = traineeRepository;
         this.traineeMapper = traineeMapper;
         this.trainerMapper = trainerMapper;
+        this.userRepository = userRepository;
     }
 
 
     @Override
     @Transactional
     public CreateTraineeResponseDto createTrainee(CreateTraineeRequestDto requestDto) {
+        if(userRepository.existsByEmail(requestDto.email())){
+            logger.error("Error creating trainee - email {} already exists", requestDto.email());
+            throw new UnprocessableEntityException("Unprocessable request - email already exists");
+        }
+
         Trainee trainee = new Trainee();
         trainee.setFirstName(requestDto.firstName());
         trainee.setLastName(requestDto.lastName());
@@ -93,6 +102,12 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     @Transactional
     public TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto) {
+        // Verify no repeated emails
+        if(userRepository.existsByEmail(requestDto.email())){
+            logger.error("Error updating trainee - email {} already exists", requestDto.email());
+            throw new UnprocessableEntityException("Unprocessable request - email already exists");
+        }
+
         // Verify the username exists for a given Trainee
         Trainee trainee = findEntityByUsername(requestDto.username());
         // Check if firstname or lastname changed and reassign username accordingly.
@@ -106,11 +121,17 @@ public class TraineeServiceImpl implements TraineeService {
         trainee.setFirstName(firstName);
         trainee.setLastName(lastName);
         trainee.setActive(requestDto.isActive());
+
+        // Modify if not null
         if(requestDto.dateOfBirth() != null){
             trainee.setDateOfBirth(requestDto.dateOfBirth());
         }
         if(requestDto.address() != null){
             trainee.setAddress(requestDto.address());
+        }
+        // Set if email has changed
+        if(!requestDto.email().equals(trainee.getEmail())){
+            trainee.setEmail(requestDto.email());
         }
 
         // Save in storage

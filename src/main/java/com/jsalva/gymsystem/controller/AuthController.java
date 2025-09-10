@@ -39,6 +39,9 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "405", description = "Method Not Allowed - only POST is supported",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class)))
@@ -66,6 +69,9 @@ public class AuthController {
                             schema = @Schema(implementation = ErrorResponseDto.class)
                     )
             ),
+            @ApiResponse(responseCode = "405", description = "Method Not Allowed - only PUT is supported",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "500", description = "Internal Server Error",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class)

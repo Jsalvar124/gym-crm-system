@@ -33,7 +33,7 @@ public class LoggingFilter implements Filter {
             logRequest(wrappedRequest);
             logResponse(wrappedResponse);
 
-            // VERY IMPORTANT: copy content back to real response
+            // Copy content back to real response
             wrappedResponse.copyBodyToResponse();
         }
     }

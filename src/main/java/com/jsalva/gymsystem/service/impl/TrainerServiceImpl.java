@@ -9,8 +9,10 @@ import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.TrainingType;
 import com.jsalva.gymsystem.entity.TrainingTypeEnum;
 import com.jsalva.gymsystem.exception.ResourceNotFoundException;
+import com.jsalva.gymsystem.exception.UnprocessableEntityException;
 import com.jsalva.gymsystem.mapper.TrainerMapper;
 import com.jsalva.gymsystem.repository.TrainerRepository;
+import com.jsalva.gymsystem.repository.UserRepository;
 import com.jsalva.gymsystem.service.TrainerService;
 import com.jsalva.gymsystem.service.TrainingTypeService;
 import com.jsalva.gymsystem.utils.UserUtils;
@@ -36,10 +38,13 @@ public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerMapper trainerMapper;
 
-    public TrainerServiceImpl(TrainerRepository trainerRepository, TrainingTypeService trainingTypeService, TrainerMapper trainerMapper) {
+    private final UserRepository userRepository;
+
+    public TrainerServiceImpl(TrainerRepository trainerRepository, TrainingTypeService trainingTypeService, TrainerMapper trainerMapper, UserRepository userRepository) {
         this.trainerRepository = trainerRepository;
         this.trainingTypeService = trainingTypeService;
         this.trainerMapper = trainerMapper;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -47,11 +52,10 @@ public class TrainerServiceImpl implements TrainerService {
     public CreateTrainerResponseDto createTrainer(CreateTrainerRequestDto requestDto) {
         TrainingType type = trainingTypeService.findTrainingTypeByName(requestDto.specialization());
 
-        if(type==null){
-            logger.error("Invalid training type");
-            throw new RuntimeException();
+        if(userRepository.existsByEmail(requestDto.email())){
+            logger.error("Error creating trainer - email {} already exists", requestDto.email());
+            throw new UnprocessableEntityException("Unprocessable request - email already exists");
         }
-
         // Create Trainer instance and set basic information.
         Trainer trainer = new Trainer();
         trainer.setFirstName(requestDto.firstName());
@@ -101,6 +105,12 @@ public class TrainerServiceImpl implements TrainerService {
     public TrainerResponseDto updateTrainer(UpdateTrainerRequestDto requestDto) {
         // Verify that the username exists.
         Trainer trainer = findEntityByUsername(requestDto.username());
+        //Verify update email does not exist
+        if(userRepository.existsByEmail(requestDto.email())){
+            logger.error("Error updating trainer - email {} already exists", requestDto.email());
+            throw new UnprocessableEntityException("Unprocessable request - email already exists");
+        }
+
         // if either lastname or firstname change, reasign username.
         String firstName = requestDto.firstName();
         String lastName = requestDto.lastName();
@@ -115,6 +125,11 @@ public class TrainerServiceImpl implements TrainerService {
         TrainingType specialization = trainingTypeService.findTrainingTypeByName(requestDto.specialization());
         trainer.setSpecialization(specialization);
         trainer.setActive(requestDto.isActive());
+
+        // Set email if it's different
+        if(!requestDto.email().equals(trainer.getEmail())){
+            trainer.setEmail(requestDto.email());
+        }
 
         // Save in storage
         trainerRepository.update(trainer);
