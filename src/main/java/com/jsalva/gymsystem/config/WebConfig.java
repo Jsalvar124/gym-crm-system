@@ -32,6 +32,7 @@ public class WebConfig implements WebMvcConfigurer {
         return validator();  // This tells Spring MVC to use your validator
     }
 
+    // Add prefix to all controllers but swagger
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
         configurer.addPathPrefix("/api/v1", c -> c.isAnnotationPresent(RestController.class));

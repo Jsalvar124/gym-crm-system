@@ -42,8 +42,8 @@ public class TraineeController {
     @Operation(
             summary = "Create a new trainee",
             description = "Creates a new trainee with the provided details. "
-                    + "The trainee's username is auto-generated. "
-                    + "Returns the created trainee data and sets the `Location` header "
+                    + "The trainee's username and password are auto-generated. "
+                    + "Returns the created trainee credentials and sets the `Location` header "
                     + "to the new resource's URI."
     )
     @ApiResponses({
@@ -63,7 +63,6 @@ public class TraineeController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
-
     @PostMapping
     public ResponseEntity<CreateTraineeResponseDto> createTrainee(@Valid @RequestBody CreateTraineeRequestDto requestDto){
         CreateTraineeResponseDto responseDto = gymFacade.createTrainee(requestDto);
@@ -86,7 +85,7 @@ public class TraineeController {
             @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing session ID",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
-            @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be trainer)",
+            @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be the owner)",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "404", description = "Not Found - trainee with specified username not found",
@@ -213,7 +212,7 @@ public class TraineeController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "List of trainings retrieved successfully",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = TraineeTrainingListResponseDto.class))),
+                            array = @ArraySchema(schema = @Schema(implementation = TraineeTrainingListResponseDto.class)))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),

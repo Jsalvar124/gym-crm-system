@@ -102,15 +102,15 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     @Transactional
     public TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto) {
-        // Verify no repeated emails
-        if(userRepository.existsByEmail(requestDto.email())){
-            logger.error("Error updating trainee - email {} already exists", requestDto.email());
-            throw new UnprocessableEntityException("Unprocessable request - email already exists");
-        }
-
         // Verify the username exists for a given Trainee
         Trainee trainee = findEntityByUsername(requestDto.username());
         // Check if firstname or lastname changed and reassign username accordingly.
+
+        // Verify no repeated emails
+        if(!requestDto.email().equals(trainee.getEmail()) && userRepository.existsByEmail(requestDto.email())){
+            logger.error("Error updating trainee - email {} already exists", requestDto.email());
+            throw new UnprocessableEntityException("Unprocessable request - email already exists");
+        }
         String firstName = requestDto.firstName();
         String lastName = requestDto.lastName();
 

@@ -106,7 +106,7 @@ public class TrainerServiceImpl implements TrainerService {
         // Verify that the username exists.
         Trainer trainer = findEntityByUsername(requestDto.username());
         //Verify update email does not exist
-        if(userRepository.existsByEmail(requestDto.email())){
+        if(!requestDto.email().equals(trainer.getEmail()) && userRepository.existsByEmail(requestDto.email())){
             logger.error("Error updating trainer - email {} already exists", requestDto.email());
             throw new UnprocessableEntityException("Unprocessable request - email already exists");
         }
