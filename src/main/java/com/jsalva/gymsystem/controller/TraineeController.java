@@ -66,7 +66,7 @@ public class TraineeController {
     @PostMapping
     public ResponseEntity<CreateTraineeResponseDto> createTrainee(@Valid @RequestBody CreateTraineeRequestDto requestDto){
         CreateTraineeResponseDto responseDto = gymFacade.createTrainee(requestDto);
-        URI location = URI.create("/trainees/"+ responseDto.username());
+        URI location = URI.create("/api/v1/trainees/"+ responseDto.username());
         return ResponseEntity.created(location).body(responseDto);
     }
 

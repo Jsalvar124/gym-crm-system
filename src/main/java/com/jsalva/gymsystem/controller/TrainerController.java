@@ -19,6 +19,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,8 @@ public class TrainerController {
     @PostMapping
     public ResponseEntity<CreateTrainerResponseDto> createTrainer(@Valid @RequestBody CreateTrainerRequestDto requestDto){
         CreateTrainerResponseDto responseDto = gymFacade.createTrainer(requestDto);
-        return ResponseEntity.ok(responseDto);
+        URI location = URI.create("/api/v1/trainers/" + responseDto.username());
+        return ResponseEntity.created(location).body(responseDto);
     }
 
     @Operation(

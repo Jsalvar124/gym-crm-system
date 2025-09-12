@@ -3,7 +3,6 @@ package com.jsalva.gymsystem.controller;
 
 import com.jsalva.gymsystem.controller.advise.GlobalExceptionHandler;
 import com.jsalva.gymsystem.exception.InvalidCredentialsException;
-import com.jsalva.gymsystem.exception.UnauthorizedException;
 import com.jsalva.gymsystem.facade.GymFacade;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +25,7 @@ public class AuthControllerTest {
     void setup() {
         gymFacade = Mockito.mock(GymFacade.class);
         AuthController authController = new AuthController(gymFacade);
-        mockMvc = MockMvcBuilders.standaloneSetup(new AuthController(gymFacade))
+        mockMvc = MockMvcBuilders.standaloneSetup(authController)
                 .setControllerAdvice(new GlobalExceptionHandler()) // add this
                 .build();
 
