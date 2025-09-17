@@ -76,7 +76,7 @@ public class TrainingServiceImpl implements TrainingService {
                 .setDuration(requestDto.trainingDuration())
                 .build();
 
-        trainingRepository.create(training);
+        trainingRepository.save(training);
         logger.debug("Saved Training: {}", training);
     }
 
@@ -104,7 +104,7 @@ public class TrainingServiceImpl implements TrainingService {
         LocalDate fromDate = requestDto.fromDate();
         LocalDate toDate = requestDto.toDate();
         String traineeUsername = requestDto.traineeUsername();
-        List<Training> trainings = trainingRepository.getTrainersTrainingListByTraineeUsernameOrDateSpan(trainerUsername, fromDate, toDate, traineeUsername);
+        List<Training> trainings = trainingRepository.findTrainerTrainings(trainerUsername, fromDate, toDate, traineeUsername);
 
         return trainingMapper.toTrainerResponseDtoList(trainings);
     }
@@ -117,7 +117,7 @@ public class TrainingServiceImpl implements TrainingService {
         LocalDate toDate = requestDto.toDate();
         String trainerUsername = requestDto.trainerUsername();
         TrainingTypeEnum trainingType = requestDto.trainingType();
-        List<Training> trainings = trainingRepository.getTraineesTrainingListByTrainerUsernameOrDateSpan(traineeUsername, fromDate, toDate, trainerUsername, trainingType);
+        List<Training> trainings = trainingRepository.findTraineeTrainings(traineeUsername, fromDate, toDate, trainerUsername, trainingType);
         return trainingMapper.toTraineeResponseDtoList(trainings);
     }
 
