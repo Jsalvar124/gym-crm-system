@@ -32,7 +32,7 @@ public class TrainingTypeServiceImpl implements TrainingTypeService {
     @Override
     @Transactional(readOnly = true)
     public TrainingType findTrainingTypeByName(TrainingTypeEnum typeEnum) {
-        Optional<TrainingType> trainingType = trainingTypeRepository.findTrainingTypeByName(typeEnum);
+        Optional<TrainingType> trainingType = trainingTypeRepository.findTrainingTypeByTrainingTypeName(typeEnum);
         if(trainingType.isEmpty()){
             logger.error("Training type with name {} not found", typeEnum.name());
             throw new IllegalArgumentException("Training type with name " + typeEnum.name() + " not found.");
