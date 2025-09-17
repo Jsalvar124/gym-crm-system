@@ -5,10 +5,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.UUID;
-
+@Component
+@Order(1)
 public class TransactionIdFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(TransactionIdFilter.class);

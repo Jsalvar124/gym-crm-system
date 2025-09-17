@@ -1,37 +1,18 @@
 package com.jsalva.gymsystem;
 
-import com.jsalva.gymsystem.entity.*;
-import org.apache.catalina.startup.Tomcat;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.io.File;
-
+@SpringBootApplication
 public class Main {
-    public static void main(String[] args) {
 
+    public static void main(String[] args) {
         System.out.println("--------------------------------------------------------------------------");
         System.out.println("GYM - CRM - SYSTEM -------------------------------------------------------");
         System.out.println("--------------------------------------------------------------------------");
-        try {
 
-            Tomcat tomcat = new Tomcat();
-            tomcat.setPort(8080);
+        SpringApplication.run(Main.class, args);
 
-            tomcat.getConnector();
-
-            String contextPath = "";
-            String docBase = new File(".").getAbsolutePath();
-
-            // This will automatically find and use WebApplicationInitializer
-            tomcat.addWebapp(contextPath, docBase);
-
-            tomcat.start();
-
-            System.out.println("GYM - REST - API STARTED ON: http://localhost:8080" + contextPath);
-            tomcat.getServer().await();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }finally {
-            System.out.println("Gym System Closed!");
-        }
+        System.out.println("GYM - REST - API STARTED ON: http://localhost:8080");
     }
 }
