@@ -16,10 +16,8 @@ public interface TrainerService {
     List<Trainer> getAllTrainers();
     Trainer getTrainerById(Long id);
     TrainerResponseDto updateTrainer(UpdateTrainerRequestDto requestDto);
-    void deleteTrainer(Long id);
     void updateActiveState(String username, Boolean isActive);
     TrainerResponseDto findByUsername(String username);
     Trainer findEntityByUsername(String username);
     Set<Trainee> getTraineeSetForTrainer(Long id);
-
 }

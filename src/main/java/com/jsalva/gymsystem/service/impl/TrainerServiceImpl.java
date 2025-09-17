@@ -15,6 +15,7 @@ import com.jsalva.gymsystem.repository.TrainerRepository;
 import com.jsalva.gymsystem.repository.UserRepository;
 import com.jsalva.gymsystem.service.TrainerService;
 import com.jsalva.gymsystem.service.TrainingTypeService;
+import com.jsalva.gymsystem.service.UserService;
 import com.jsalva.gymsystem.utils.UserUtils;
 import com.jsalva.gymsystem.utils.EncoderUtils;
 import org.slf4j.Logger;
@@ -38,13 +39,13 @@ public class TrainerServiceImpl implements TrainerService {
 
     private final TrainerMapper trainerMapper;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public TrainerServiceImpl(TrainerRepository trainerRepository, TrainingTypeService trainingTypeService, TrainerMapper trainerMapper, UserRepository userRepository) {
+    public TrainerServiceImpl(TrainerRepository trainerRepository, TrainingTypeService trainingTypeService, TrainerMapper trainerMapper, UserService userService) {
         this.trainerRepository = trainerRepository;
         this.trainingTypeService = trainingTypeService;
         this.trainerMapper = trainerMapper;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -52,7 +53,7 @@ public class TrainerServiceImpl implements TrainerService {
     public CreateTrainerResponseDto createTrainer(CreateTrainerRequestDto requestDto) {
         TrainingType type = trainingTypeService.findTrainingTypeByName(requestDto.specialization());
 
-        if(userRepository.existsByEmail(requestDto.email())){
+        if(userService.existsByEmail(requestDto.email())){
             logger.error("Error creating trainer - email {} already exists", requestDto.email());
             throw new UnprocessableEntityException("Unprocessable request - email already exists");
         }
@@ -64,7 +65,7 @@ public class TrainerServiceImpl implements TrainerService {
         trainer.setEmail(requestDto.email());
 
         //Create Username as FirstName.LastnameXX, verify if any homonyms exist, if so add serial number as suffix
-        String uniqueUsername = trainerRepository.generateUniqueUsername(requestDto.firstName(),requestDto.lastName());
+        String uniqueUsername = userService.generateUniqueUsername(requestDto.firstName(),requestDto.lastName());
         trainer.setUsername(uniqueUsername);
 
         //Generate and set random Password
@@ -76,7 +77,7 @@ public class TrainerServiceImpl implements TrainerService {
         trainer.setActive(true);
 
         // Save trainer
-        trainerRepository.create(trainer);
+        trainerRepository.save(trainer);
         logger.debug("Saved Trainer: {}", trainer.getUsername());
 
         // Return Dto
@@ -106,7 +107,7 @@ public class TrainerServiceImpl implements TrainerService {
         // Verify that the username exists.
         Trainer trainer = findEntityByUsername(requestDto.username());
         //Verify update email does not exist
-        if(!requestDto.email().equals(trainer.getEmail()) && userRepository.existsByEmail(requestDto.email())){
+        if(!requestDto.email().equals(trainer.getEmail()) && userService.existsByEmail(requestDto.email())){
             logger.error("Error updating trainer - email {} already exists", requestDto.email());
             throw new UnprocessableEntityException("Unprocessable request - email already exists");
         }
@@ -117,7 +118,7 @@ public class TrainerServiceImpl implements TrainerService {
         if(firstName!=null && !firstName.equals(trainer.getFirstName()) || lastName != null && !lastName.equals(trainer.getLastName())){
             String first = firstName==null? trainer.getFirstName(): firstName;
             String last = lastName==null? trainer.getLastName(): lastName;
-            String username = trainerRepository.generateUniqueUsername(first,last);
+            String username = userService.generateUniqueUsername(first,last);
             trainer.setUsername(username);
         }
         trainer.setFirstName(firstName);
@@ -132,22 +133,9 @@ public class TrainerServiceImpl implements TrainerService {
         }
 
         // Save in storage
-        trainerRepository.update(trainer);
+        trainerRepository.save(trainer);
         logger.debug("Updated Trainer: {}", requestDto.username());
         return trainerMapper.toResponseDto(trainer);
-    }
-
-    @Override
-    @Transactional
-    public void deleteTrainer(Long id) {
-        // Verify that the id exists.
-        Optional<Trainer> trainerFound = trainerRepository.findById(id);
-        if(trainerFound.isEmpty()){
-            logger.error("Trainer for deletion not found");
-            throw new ResourceNotFoundException("Trainer with Id " + id + " not found.");
-        }
-        logger.info("Deleting trainer with id {}", id);
-        trainerRepository.delete(id);
     }
 
     @Override

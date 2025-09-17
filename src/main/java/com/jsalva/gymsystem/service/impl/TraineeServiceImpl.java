@@ -15,6 +15,7 @@ import com.jsalva.gymsystem.mapper.TrainerMapper;
 import com.jsalva.gymsystem.repository.TraineeRepository;
 import com.jsalva.gymsystem.repository.UserRepository;
 import com.jsalva.gymsystem.service.TraineeService;
+import com.jsalva.gymsystem.service.TrainerService;
 import com.jsalva.gymsystem.service.UserService;
 import com.jsalva.gymsystem.utils.EncoderUtils;
 import com.jsalva.gymsystem.utils.UserUtils;
@@ -69,7 +70,7 @@ public class TraineeServiceImpl implements TraineeService {
         trainee.setPassword(hashedPassword);
 
         // Create unique username
-        String username = generateUniqueUsername(requestDto.firstName(), requestDto.lastName());
+        String username = userService.generateUniqueUsername(requestDto.firstName(), requestDto.lastName());
         trainee.setUsername(username);
 
         //Default isActive boolean set to true.
@@ -115,7 +116,7 @@ public class TraineeServiceImpl implements TraineeService {
         String lastName = requestDto.lastName();
 
         if(firstName!=null && !firstName.equals(trainee.getFirstName()) || lastName != null && !lastName.equals(trainee.getLastName())){
-            String username = generateUniqueUsername(firstName,lastName);
+            String username = userService.generateUniqueUsername(firstName, lastName);
             trainee.setUsername(username);
         }
         trainee.setFirstName(firstName);
@@ -170,16 +171,18 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     @Transactional
     public void deleteTraineeByUsername(String username) {
-        // Clean up relationships before deletion
-//        trainee.getTrainers().forEach(trainer ->
-//                trainer.getTrainees().remove(trainee));
-//        traineeRepository.delete(trainee);
-        try{
+        Optional<Trainee> result = traineeRepository.findByUsername(username);
+        if(!result.isPresent()){
+            logger.error("Error deleting Entity, Trainee with username {} not found", username);
+            throw new ResourceNotFoundException("Error deleting Entity, Trainee with username "+username +" not found");
+        }
+        Trainee trainee = result.get();
+        //         Clean up relationships before deletion
+        trainee.getTrainers().forEach(trainer -> trainer.getTrainees().remove(trainee));
+            traineeRepository.delete(trainee);
             logger.info("Trying to delete Trainee with username {}", username);
             traineeRepository.deleteByUsername(username);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            logger.info("Trainee deleted");
     }
 
     @Override
@@ -202,10 +205,6 @@ public class TraineeServiceImpl implements TraineeService {
         } catch (IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public String generateUniqueUsername(String firstName, String lastName) {
-        return userService.generateUniqueUsername(firstName,lastName);
     }
 
 

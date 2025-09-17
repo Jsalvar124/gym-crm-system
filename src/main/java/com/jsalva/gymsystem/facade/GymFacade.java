@@ -13,7 +13,6 @@ GymFacade {
     String login(String username, String password);
     void updateUserPassword(ChangePasswordRequestDto requestDto);
 
-
     // Trainer
     CreateTrainerResponseDto createTrainer(CreateTrainerRequestDto requestDto);
     List<Trainer> getAllTrainers();
@@ -22,7 +21,6 @@ GymFacade {
     void updateTrainerActiveState(String username, Boolean isActive);
     TrainerResponseDto findTrainerByUsername(String username);
     Set<Trainee> getTraineeListForTrainer(Long id);
-
 
     // Trainee
     CreateTraineeResponseDto createTrainee(CreateTraineeRequestDto requestDto);
@@ -34,7 +32,6 @@ GymFacade {
     void deleteTraineeByUsername(String username);
     List<TrainerSummaryDto> findUnassignedTrainersByTrainee(String traineeUsername);
     Set<Trainer> getTrainerListForTrainee(Long id);
-
 
     // Training
     void createTraining(CreateTrainingRequestDto requestDto);
