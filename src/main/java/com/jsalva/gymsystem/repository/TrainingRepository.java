@@ -17,8 +17,8 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
         SELECT t FROM Training t 
         WHERE t.trainer.username = :trainerUsername
         AND (:traineeUsername IS NULL OR t.trainee.username = :traineeUsername)
-        AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)
-        AND (:toDate IS NULL OR t.trainingDate <= :toDate)
+        AND (CAST(:fromDate AS date) IS NULL OR t.trainingDate >= :fromDate)
+        AND (CAST(:toDate AS date) IS NULL OR t.trainingDate <= :toDate)
     """)
     List<Training> findTrainerTrainings(
             @Param("trainerUsername") String trainerUsername,
@@ -31,8 +31,8 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
         SELECT t FROM Training t 
         WHERE t.trainee.username = :traineeUsername
         AND (:trainerUsername IS NULL OR t.trainer.username = :trainerUsername)
-        AND (:fromDate IS NULL OR t.trainingDate >= :fromDate)
-        AND (:toDate IS NULL OR t.trainingDate <= :toDate)
+        AND (CAST(:fromDate AS date) IS NULL OR t.trainingDate >= :fromDate)
+        AND (CAST(:toDate AS date) IS NULL OR t.trainingDate <= :toDate)
         AND (:trainingType IS NULL OR t.trainingType.trainingTypeName = :trainingType)
     """)
     List<Training> findTraineeTrainings(
