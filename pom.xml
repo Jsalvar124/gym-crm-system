@@ -48,10 +48,10 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- Spring Boot Security starter (for BCrypt) -->
+<!--        Bcrypt dependency-->
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
         </dependency>
 
         <!-- Spring Boot Test starter -->
@@ -269,12 +269,7 @@
 <!--            <version>5.6.5.Final</version>-->
 <!--        </dependency>-->
 
-<!--    Bcrypt dependency-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.security</groupId>-->
-<!--            <artifactId>spring-security-crypto</artifactId>-->
-<!--            <version>${spring.version}</version>-->
-<!--        </dependency>-->
+
 
 
 <!--        REST assured dependencies-->

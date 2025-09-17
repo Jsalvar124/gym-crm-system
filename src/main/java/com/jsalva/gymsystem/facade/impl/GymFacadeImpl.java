@@ -105,11 +105,6 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public void deleteTrainee(Long id) {
-        traineeService.deleteTrainee(id);
-    }
-
-    @Override
     public void updateTraineeActiveState(String username, Boolean isActive) {
         traineeService.updateActiveState(username, isActive);
     }

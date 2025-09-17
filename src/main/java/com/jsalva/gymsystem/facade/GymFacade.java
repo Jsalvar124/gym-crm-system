@@ -29,7 +29,6 @@ GymFacade {
     List<Trainee> getAllTrainees();
     Trainee getTraineeById(Long id);
     TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto);
-    void deleteTrainee(Long id);
     void updateTraineeActiveState(String username, Boolean isActive);
     TraineeResponseDto findTraineeByUsername(String username);
     void deleteTraineeByUsername(String username);

@@ -15,6 +15,7 @@ import com.jsalva.gymsystem.mapper.TrainerMapper;
 import com.jsalva.gymsystem.repository.TraineeRepository;
 import com.jsalva.gymsystem.repository.UserRepository;
 import com.jsalva.gymsystem.service.TraineeService;
+import com.jsalva.gymsystem.service.UserService;
 import com.jsalva.gymsystem.utils.EncoderUtils;
 import com.jsalva.gymsystem.utils.UserUtils;
 import org.slf4j.Logger;
@@ -38,20 +39,19 @@ public class TraineeServiceImpl implements TraineeService {
 
     private final TrainerMapper trainerMapper;
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public TraineeServiceImpl(TraineeRepository traineeRepository, TraineeMapper traineeMapper, TrainerMapper trainerMapper, UserRepository userRepository) {
+    public TraineeServiceImpl(TraineeRepository traineeRepository, TraineeMapper traineeMapper, TrainerMapper trainerMapper, UserService userService) {
         this.traineeRepository = traineeRepository;
         this.traineeMapper = traineeMapper;
         this.trainerMapper = trainerMapper;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
-
 
     @Override
     @Transactional
     public CreateTraineeResponseDto createTrainee(CreateTraineeRequestDto requestDto) {
-        if(userRepository.existsByEmail(requestDto.email())){
+        if(userService.existsByEmail(requestDto.email())){
             logger.error("Error creating trainee - email {} already exists", requestDto.email());
             throw new UnprocessableEntityException("Unprocessable request - email already exists");
         }
@@ -69,14 +69,14 @@ public class TraineeServiceImpl implements TraineeService {
         trainee.setPassword(hashedPassword);
 
         // Create unique username
-        String username = traineeRepository.generateUniqueUsername(requestDto.firstName(), requestDto.lastName());
+        String username = generateUniqueUsername(requestDto.firstName(), requestDto.lastName());
         trainee.setUsername(username);
 
         //Default isActive boolean set to true.
         trainee.setActive(true);
 
         // save new trainee
-        traineeRepository.create(trainee);
+        traineeRepository.save(trainee);
         logger.info("Saved Trainee: {}", trainee.getUsername());
 
         // return dto
@@ -107,7 +107,7 @@ public class TraineeServiceImpl implements TraineeService {
         // Check if firstname or lastname changed and reassign username accordingly.
 
         // Verify no repeated emails
-        if(!requestDto.email().equals(trainee.getEmail()) && userRepository.existsByEmail(requestDto.email())){
+        if(!requestDto.email().equals(trainee.getEmail()) && userService.existsByEmail(requestDto.email())){
             logger.error("Error updating trainee - email {} already exists", requestDto.email());
             throw new UnprocessableEntityException("Unprocessable request - email already exists");
         }
@@ -115,7 +115,7 @@ public class TraineeServiceImpl implements TraineeService {
         String lastName = requestDto.lastName();
 
         if(firstName!=null && !firstName.equals(trainee.getFirstName()) || lastName != null && !lastName.equals(trainee.getLastName())){
-            String username = traineeRepository.generateUniqueUsername(firstName,lastName);
+            String username = generateUniqueUsername(firstName,lastName);
             trainee.setUsername(username);
         }
         trainee.setFirstName(firstName);
@@ -135,29 +135,9 @@ public class TraineeServiceImpl implements TraineeService {
         }
 
         // Save in storage
-        traineeRepository.update(trainee);
+        traineeRepository.save(trainee);
         logger.debug("Updated Trainee: {}", requestDto.username());
         return traineeMapper.toResponseDto(trainee);
-    }
-
-    @Override
-    @Transactional
-    public void deleteTrainee(Long id) {
-        Optional<Trainee> result = traineeRepository.findById(id);
-        if(result.isEmpty()){
-            logger.error("Trainee for deletion not found");
-            throw new ResourceNotFoundException("Trainee with Id " + id + " not found.");
-        }
-        logger.info("Deleting trainee with id {}", id);
-        // Clean up many-to-many relationships BEFORE deletion, since Trainee is the owner of the relation.
-        Trainee trainee = result.get();
-        Set<Trainer> trainers = trainee.getTrainers();
-        for (Trainer trainer : trainers) {
-            trainer.getTrainees().remove(trainee); // Remove trainee from trainer's collection
-        }
-        trainee.getTrainers().clear(); // Clear trainee's trainer collection
-
-        traineeRepository.delete(id);
     }
 
     @Override
@@ -190,6 +170,10 @@ public class TraineeServiceImpl implements TraineeService {
     @Override
     @Transactional
     public void deleteTraineeByUsername(String username) {
+        // Clean up relationships before deletion
+//        trainee.getTrainers().forEach(trainer ->
+//                trainer.getTrainees().remove(trainee));
+//        traineeRepository.delete(trainee);
         try{
             logger.info("Trying to delete Trainee with username {}", username);
             traineeRepository.deleteByUsername(username);
@@ -219,4 +203,10 @@ public class TraineeServiceImpl implements TraineeService {
             throw new RuntimeException(e);
         }
     }
+
+    public String generateUniqueUsername(String firstName, String lastName) {
+        return userService.generateUniqueUsername(firstName,lastName);
+    }
+
+
 }
