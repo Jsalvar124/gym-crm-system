@@ -80,7 +80,7 @@ public class TrainingServiceTest {
         verify(trainerService).findEntityByUsername(trainerUsername);
         verify(traineeService).findEntityByUsername(traineeUsername);
 
-        verify(trainingRepository).create(argThat(training ->
+        verify(trainingRepository).save(argThat(training ->
                 training.getTrainer().equals(trainer) &&
                         training.getTrainee().equals(trainee) &&
                         training.getTrainingName().equals(trainingName) &&
@@ -116,7 +116,7 @@ public class TrainingServiceTest {
 
         assertTrue(exception.getMessage().contains("Trainer Juan.Perez is inactive"));
         verify(traineeService, never()).findEntityByUsername(anyString());
-        verify(trainingRepository, never()).create(any());
+        verify(trainingRepository, never()).save(any());
     }
 
     @Test
@@ -156,7 +156,7 @@ public class TrainingServiceTest {
         );
 
         assertTrue(exception.getMessage().contains("Trainee Ana.Gomez is inactive"));
-        verify(trainingRepository, never()).create(any());
+        verify(trainingRepository, never()).save(any());
     }
 
     @Test
@@ -185,7 +185,7 @@ public class TrainingServiceTest {
 
         assertTrue(exception.getMessage().contains("Trainer with username NonExistent.Trainer not found"));
         verify(traineeService, never()).findEntityByUsername(anyString());
-        verify(trainingRepository, never()).create(any());
+        verify(trainingRepository, never()).save(any());
     }
 
     @Test
@@ -222,6 +222,6 @@ public class TrainingServiceTest {
         );
 
         assertTrue(exception.getMessage().contains("Trainee with username NonExistent.Trainee not found"));
-        verify(trainingRepository, never()).create(any());
+        verify(trainingRepository, never()).save(any());
     }
 }
