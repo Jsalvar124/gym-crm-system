@@ -2,6 +2,8 @@ package com.jsalva.gymsystem.service;
 
 import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
 import com.jsalva.gymsystem.entity.Trainee;
+import com.jsalva.gymsystem.exception.ResourceNotFoundException;
+import com.jsalva.gymsystem.exception.UnprocessableEntityException;
 import com.jsalva.gymsystem.repository.TraineeRepository;
 import com.jsalva.gymsystem.service.impl.TraineeServiceImpl;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +14,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.verify;
@@ -80,4 +85,51 @@ public class TraineeServiceTest {
                         trainee.getPassword() != null
         ));
     }
+
+    @Test
+    void shouldThrowUnprocessableExceptionWhenEmailAlredyExists() {
+        // Given
+        CreateTraineeRequestDto request = new CreateTraineeRequestDto(
+                "John", "Doe",  LocalDate.now(), "john@test.com", "Address");
+        when(userService.existsByEmail("john@test.com")).thenReturn(true);
+
+        // When & Then
+        Exception ex = assertThrows(UnprocessableEntityException.class,
+                () -> traineeService.createTrainee(request));
+
+        assertEquals("Unprocessable request - email already exists", ex.getMessage());
+    }
+
+    // Test username generation logic
+    @Test
+    void shouldGenerateUsernameCorrectly() {
+        // Given
+        when(userService.generateUniqueUsername("John", "Doe"))
+                .thenReturn("John.Doe");
+
+        // When
+        String result = userService.generateUniqueUsername("John", "Doe");
+
+        // Then
+        assertEquals("John.Doe", result);
+        verify(userService).generateUniqueUsername("John", "Doe");
+    }
+
+    // Test exception handling
+    @Test
+    void shouldThrowResourceNotFoundExceptionWhenTraineeNotFound() {
+        // Given
+        when(traineeRepository.findByUsername("nonexistent"))
+                .thenReturn(Optional.empty());
+
+        // When & Then
+        Exception ex = assertThrows(ResourceNotFoundException.class,
+                () -> traineeService.findByUsername("nonexistent"));
+
+        assertEquals("Trainee with username nonexistent not found.", ex.getMessage());
+
+    }
+
+
+
 }

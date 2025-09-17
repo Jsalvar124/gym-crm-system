@@ -206,6 +206,4 @@ public class TraineeServiceImpl implements TraineeService {
             throw new RuntimeException(e);
         }
     }
-
-
 }
