@@ -2,6 +2,8 @@ package com.jsalva.gymsystem;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.Environment;
 
 @SpringBootApplication
 public class Main {
@@ -11,8 +13,13 @@ public class Main {
         System.out.println("GYM - CRM - SYSTEM -------------------------------------------------------");
         System.out.println("--------------------------------------------------------------------------");
 
-        SpringApplication.run(Main.class, args);
+        ConfigurableApplicationContext context = SpringApplication.run(Main.class, args);
+        Environment env = context.getEnvironment();
 
-        System.out.println("GYM - REST - API STARTED ON: http://localhost:8080");
+        String port = env.getProperty("server.port", "8080");
+        String[] profiles = env.getActiveProfiles();
+        String activeProfile = profiles.length > 0 ? String.join(",", profiles) : "default";
+
+        System.out.printf("GYM - REST - API STARTED ON: http://localhost:%s (profile: %s)%n", port, activeProfile);
     }
 }

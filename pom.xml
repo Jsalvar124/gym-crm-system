@@ -93,7 +93,8 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
+<!--            Available for test profile, remove scope test-->
+<!--          <scope>test</scope>-->
         </dependency>
 
         <!-- REST assured dependencies for integration tests -->
