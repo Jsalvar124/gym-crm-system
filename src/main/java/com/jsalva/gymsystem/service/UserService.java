@@ -8,5 +8,6 @@ public interface UserService {
     String generateUniqueUsername(String firstName, String lastName);
     boolean existsByEmail(String email);
     Optional<User> findByUsername(String username);
+    Long countUsers();
 
 }
