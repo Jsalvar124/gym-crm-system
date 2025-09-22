@@ -10,8 +10,10 @@ import com.jsalva.gymsystem.exception.UnauthorizedException;
 import com.jsalva.gymsystem.repository.UserRepository;
 import com.jsalva.gymsystem.service.AuthService;
 import com.jsalva.gymsystem.utils.EncoderUtils;
+import com.jsalva.gymsystem.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,23 +28,11 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
 
-    private final Map<String, SessionInfo> activeSessions = new ConcurrentHashMap<>();
+    private final JwtUtils jwtUtils; // Add this
 
-    public AuthServiceImpl(UserRepository userRepository) {
+    public AuthServiceImpl(UserRepository userRepository, JwtUtils jwtUtils) {
         this.userRepository = userRepository;
-    }
-
-    private static class SessionInfo {
-        private final String username;
-        private final String userType;
-
-        public SessionInfo(String username, String userType) {
-            this.username = username;
-            this.userType = userType;
-        }
-
-        public String getUsername() { return username; }
-        public String getUserType() { return userType; }
+        this.jwtUtils = jwtUtils;
     }
 
     @Override
@@ -61,12 +51,11 @@ public class AuthServiceImpl implements AuthService {
 
             // Validate credentials
             if (validateCredentials(user, password)) {
-                // Generate session ID and store session info
-                String sessionId = UUID.randomUUID().toString();
-                activeSessions.put(sessionId, new SessionInfo(username, userType));
+                // Generate Token
+                String token = jwtUtils.generateJwtToken(username, userType);
 
-                logger.info("Login successful - Session created for user: {} as {}", username, userType);
-                return sessionId;
+                logger.info("Login successful - Token created for user: {} as {}", username, userType);
+                return token;
             } else {
                 throw new InvalidCredentialsException("Invalid credentials for username "+ username);
             }
@@ -77,65 +66,55 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void logout(String sessionId) {
-        SessionInfo removedSession = activeSessions.remove(sessionId);
+    public boolean isValidToken(String token) {
+        return jwtUtils.validateJwtToken(token);
+    }
 
-        if (removedSession != null) {
-            logger.info("Logout successful for user: {}", removedSession.getUsername());
-        } else {
-            logger.warn("Logout attempted with invalid session ID");
+    @Override
+    public String getUsernameFromToken(String token) {
+        return jwtUtils.getUsernameFromJwtToken(token);
+    }
+
+    @Override
+    public String getUserTypeFromToken(String token) {
+        return jwtUtils.getUserTypeFromJwtToken(token);
+    }
+
+    @Override
+    public void validateLogin(String token) {
+        if(!isValidToken(token)){
+            throw new UnauthorizedException("Invalid token - please login");
         }
     }
 
     @Override
-    public boolean isValidSession(String sessionId) {
-        return sessionId != null && activeSessions.containsKey(sessionId);
-    }
-
-    @Override
-    public String getUsernameFromSession(String sessionId) {
-        SessionInfo session = activeSessions.get(sessionId);
-        return session != null ? session.getUsername() : null;
-    }
-
-    @Override
-    public String getUserTypeFromSession(String sessionId) {
-        SessionInfo session = activeSessions.get(sessionId);
-        return session != null ? session.getUserType() : null;
-    }
-
-    @Override
-    public void validateLogin(String sessionId) {
-        if(!isValidSession(sessionId)){
-            throw new UnauthorizedException("Invalid session - please login");
-        }
-    }
-
-    @Override
-    public void validateTrainerAuth(String sessionId) {
-        validateLogin(sessionId);
-        if(!getUserTypeFromSession(sessionId).equals("TRAINER")){
+    public void validateTrainerAuth(Authentication authentication) {
+        String token = (String) authentication.getCredentials();
+        validateLogin(token);
+        if(!getUserTypeFromToken(token).equals("TRAINER")){
             throw new ForbiddenException("Access denied - trainer role required");
         }
     }
 
     @Override
-    public void validateOwnerAuth(String sessionId, String targetUsername) {
-        validateLogin(sessionId);
-        String sessionUsername = getUsernameFromSession(sessionId);
-        if(sessionUsername == null || !sessionUsername.equals(targetUsername)){
+    public void validateOwnerAuth(Authentication authentication, String targetUsername) {
+        String token = (String) authentication.getCredentials();
+        validateLogin(token);
+        String tokenUsername = getUsernameFromToken(token);
+        if(tokenUsername == null || !tokenUsername.equals(targetUsername)){
             throw new ForbiddenException("Access denied - you can only modify your own profile");
         }
     }
 
     @Override
-    public void validateTrainerOrOwnerAuth(String sessionId, String targetUsername) {
-        validateLogin(sessionId);
-        String sessionUsername = getUsernameFromSession(sessionId);
-        String sessionUserType = getUserTypeFromSession(sessionId);
+    public void validateTrainerOrOwnerAuth(Authentication authentication, String targetUsername) {
+        String token = (String) authentication.getCredentials();
+        validateLogin(token);
+        String tokenUsername = getUsernameFromToken(token);
+        String tokenUserType = getUserTypeFromToken(token);
 
-        boolean isOwner = sessionUsername != null && sessionUsername.equals(targetUsername);
-        boolean isTrainer = sessionUserType != null && sessionUserType.equals("TRAINER");
+        boolean isOwner = tokenUsername != null && tokenUsername.equals(targetUsername);
+        boolean isTrainer = tokenUserType != null && tokenUserType.equals("TRAINER");
 
 
         if(!isOwner && !isTrainer){

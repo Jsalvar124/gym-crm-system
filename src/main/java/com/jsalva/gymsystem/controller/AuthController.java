@@ -27,12 +27,12 @@ public class AuthController {
 
     @Operation(
             summary = "Authenticate a user",
-            description = "Logs in a user with username and password and returns a sessionId."
+            description = "Logs in a user with username and password and returns a Json Web token (JWT)."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Login successful",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(example = "{ \"sessionId\": \"bb8f6adf-8e70-484f-8aca-113c99411efc\" }"))),
+                            schema = @Schema(example = "{ \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJKdWFuLlBlcmV6IiwidXNlclR5cGUiOiJUUkFJTkVSIiwiaWF0IjoxNzU4NTEzOTUyLCJleHAiOjE3NTg2MDAzNTJ9.MtxEmM01-tEo5704nVrEiNaxiHB3e3jkgvndbkN73Gg\" }"))),
             @ApiResponse(responseCode = "400", description = "Bad Request",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
@@ -49,8 +49,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@Valid @RequestBody LoginRequestDto loginRequestDto){
-        String sessionId = gymFacade.login(loginRequestDto.username(), loginRequestDto.password());
-        return ResponseEntity.ok(Map.of("sessionId", sessionId));
+        String token = gymFacade.login(loginRequestDto.username(), loginRequestDto.password());
+        return ResponseEntity.ok(Map.of("token", token));
     }
 
 

@@ -3,6 +3,8 @@ package com.jsalva.gymsystem.config;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,17 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfig {
     @Bean
     public OpenAPI gymApi() {
+        // Define the JWT security scheme
+        SecurityScheme bearerAuthScheme = new SecurityScheme()
+                .name("Bearer Authentication")
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT"); // just for documentation
+
+        // Apply the scheme globally as a requirement
+        SecurityRequirement securityRequirement = new SecurityRequirement().addList("Bearer Authentication");
+
+
         return new OpenAPI()
                 .openapi("3.0.1") // Explicitly set OpenAPI version
                 .info(new Info()
@@ -20,6 +33,8 @@ public class OpenApiConfig {
                         .contact(new Contact()
                                 .name("Julián Salvá")
                                 .url("https://github.com/Jsalvar124/")
-                                .email("jsalvar124@gmail.com")));
+                                .email("jsalvar124@gmail.com")))
+                        .addSecurityItem(securityRequirement)
+                        .schemaRequirement("Bearer Authentication", bearerAuthScheme);
     }
 }

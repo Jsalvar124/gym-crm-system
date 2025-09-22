@@ -26,5 +26,4 @@ public class WebConfig implements WebMvcConfigurer {
         configurer.addPathPrefix("/api/v1", c -> c.isAnnotationPresent(RestController.class));
     }
 
-
 }

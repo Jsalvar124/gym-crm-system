@@ -56,8 +56,10 @@ public class LoggingFilter implements Filter {
     }
 
     private void logResponse(ContentCachingResponseWrapper response) throws IOException {
-        String body = new String(response.getContentAsByteArray(), StandardCharsets.UTF_8);
-        logger.info("RESPONSE: status={} | body={}", response.getStatus(), body); // Disable body, only for exercise display
+//        String body = new String(response.getContentAsByteArray(), StandardCharsets.UTF_8);
+//        logger.info("RESPONSE: status={} | body={}", response.getStatus(), body); // Disable body, only for exercise display
+        logger.info("RESPONSE: status={}", response.getStatus()); // Disabled body
+
 
     }
 }

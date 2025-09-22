@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -99,23 +100,26 @@ public class TraineeController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PutMapping("/{username}")
-    public ResponseEntity<TraineeResponseDto> updateTrainee(@PathVariable("username") String username, @Valid @RequestBody UpdateTraineeRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
+    public ResponseEntity<TraineeResponseDto> updateTrainee(@PathVariable("username") String username, @Valid @RequestBody UpdateTraineeRequestDto requestDto, Authentication authentication){
         if(!username.equals(requestDto.username())) {
             throw new BadRequestException("Path username does not match request body username");
         }
-        authService.validateOwnerAuth(sessionId, username);
+        authService.validateOwnerAuth(authentication, username);
         TraineeResponseDto responseDto = gymFacade.updateTrainee(requestDto);
         return ResponseEntity.ok(responseDto);
     }
     @Operation(
             summary = "Get trainee by username",
-            description = "Retrieves a trainee's details by username. Requires a valid session ID from either a trainer or the trainee owner."
+            description = "Retrieves a trainee's details by username. Requires a valid JWT token from either a trainer or the trainee owner."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK - Trainee retrieved successfully",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = TraineeResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing session ID",
+            @ApiResponse(responseCode = "400", description = "Bad Request - missing or invalid Authorization header",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or expired JWT token",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be trainer or owner)",
@@ -132,8 +136,10 @@ public class TraineeController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @GetMapping("/{username}")
-    public ResponseEntity<TraineeResponseDto> getTraineeByUsername(@PathVariable("username") String username, @RequestHeader("X-Session-Id") String sessionId){
-        authService.validateTrainerOrOwnerAuth(sessionId, username);
+    public ResponseEntity<TraineeResponseDto> getTraineeByUsername(@PathVariable("username") String username, Authentication authentication){
+
+        authService.validateTrainerOrOwnerAuth(authentication, username); // Custom validation
+
         TraineeResponseDto responseDto = gymFacade.findTraineeByUsername(username);
         return ResponseEntity.ok(responseDto);
     }
@@ -161,8 +167,8 @@ public class TraineeController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @DeleteMapping("/{username}")
-    public ResponseEntity<Void> deleteTrainee(@PathVariable("username") String username, @RequestHeader("X-Session-Id") String sessionId){
-        authService.validateTrainerAuth(sessionId); // Only a trainer can delete a trainee
+    public ResponseEntity<Void> deleteTrainee(@PathVariable("username") String username, Authentication authentication){
+        authService.validateTrainerAuth(authentication); // Only a trainer can delete a trainee
         gymFacade.deleteTraineeByUsername(username);
         return ResponseEntity.noContent().build();
     }
@@ -176,7 +182,7 @@ public class TraineeController {
             @ApiResponse(responseCode = "400", description = "Bad Request - invalid body or missing field",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing session ID",
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing token",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be trainer or owner)",
@@ -193,8 +199,8 @@ public class TraineeController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PatchMapping("/{username}/state")
-    public ResponseEntity<Map<String, String>> updateTraineeActiveState(@PathVariable("username") String username, @RequestBody ChangeStateRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
-        authService.validateTrainerOrOwnerAuth(sessionId, username); // Only Trainers or the trainee owner can soft delete.
+    public ResponseEntity<Map<String, String>> updateTraineeActiveState(@PathVariable("username") String username, @RequestBody ChangeStateRequestDto requestDto, Authentication authentication){
+        authService.validateTrainerOrOwnerAuth(authentication, username); // Only Trainers or the trainee owner can soft delete.
         Boolean isActive = requestDto.isActive();
         gymFacade.updateTraineeActiveState(username, isActive);
         return ResponseEntity.noContent().build();
@@ -238,9 +244,9 @@ public class TraineeController {
                                                                                                @RequestParam(value="toDate", required = false) LocalDate toDate,
                                                                                                @RequestParam(value="trainerUsername",required = false) String trainerUsername,
                                                                                                @RequestParam(value="trainingType", required = false) TrainingTypeEnum trainingType,
-                                                                                               @RequestHeader("X-Session-Id") String sessionId) {
+                                                                                               Authentication authentication) {
 
-        authService.validateTrainerOrOwnerAuth(sessionId, traineeUsername);
+        authService.validateTrainerOrOwnerAuth(authentication, traineeUsername);
         TraineeTrainingListRequestDto requestDto = new TraineeTrainingListRequestDto(traineeUsername, fromDate, toDate, trainerUsername, trainingType);
         return ResponseEntity.ok(gymFacade.getTraineeTrainings(requestDto));
     }
@@ -275,10 +281,9 @@ public class TraineeController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @GetMapping("{username}/unassigned-trainers")
-    public ResponseEntity<List<TrainerSummaryDto>> getUnassignedTrainers(@PathVariable("username") String username, @RequestHeader("X-Session-Id") String sessionId){
-        authService.validateTrainerOrOwnerAuth(sessionId, username);
+    public ResponseEntity<List<TrainerSummaryDto>> getUnassignedTrainers(@PathVariable("username") String username, Authentication authentication){
+        authService.validateTrainerOrOwnerAuth(authentication, username);
         return ResponseEntity.ok(gymFacade.findUnassignedTrainersByTrainee(username));
     }
-
 
 }
