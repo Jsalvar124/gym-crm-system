@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -58,8 +59,8 @@ public class TrainingController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PostMapping
-    public ResponseEntity<Void> createTraining(@Valid @RequestBody CreateTrainingRequestDto requestDto, @RequestHeader("X-Session-Id") String sessionId){
-        authService.validateTrainerAuth(sessionId);
+    public ResponseEntity<Void> createTraining(@Valid @RequestBody CreateTrainingRequestDto requestDto, Authentication authentication){
+        authService.validateTrainerAuth(authentication);
         gymFacade.createTraining(requestDto);
         return ResponseEntity.ok().build();
     }
@@ -95,8 +96,8 @@ public class TrainingController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PutMapping("/{id}")
-    public ResponseEntity<TrainingResponseDto> updateTraining(@Valid @RequestBody UpdateTrainingRequestDto requestDto, @PathVariable("id") Long id, @RequestHeader("X-Session-Id") String sessionId) {
-        authService.validateTrainerAuth(sessionId);
+    public ResponseEntity<TrainingResponseDto> updateTraining(@Valid @RequestBody UpdateTrainingRequestDto requestDto, @PathVariable("id") Long id, Authentication authentication) {
+        authService.validateTrainerAuth(authentication);
         TrainingResponseDto responseDto = gymFacade.updateTraining(id, requestDto);
         return ResponseEntity.ok(responseDto);
     }
