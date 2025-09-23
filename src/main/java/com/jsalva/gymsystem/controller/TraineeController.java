@@ -18,7 +18,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -100,11 +99,11 @@ public class TraineeController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PutMapping("/{username}")
-    public ResponseEntity<TraineeResponseDto> updateTrainee(@PathVariable("username") String username, @Valid @RequestBody UpdateTraineeRequestDto requestDto, Authentication authentication){
+    public ResponseEntity<TraineeResponseDto> updateTrainee(@PathVariable("username") String username, @Valid @RequestBody UpdateTraineeRequestDto requestDto){
         if(!username.equals(requestDto.username())) {
             throw new BadRequestException("Path username does not match request body username");
         }
-        authService.validateOwnerAuth(authentication, username);
+        authService.validateOwnerAuth(username);
         TraineeResponseDto responseDto = gymFacade.updateTrainee(requestDto);
         return ResponseEntity.ok(responseDto);
     }
@@ -136,9 +135,9 @@ public class TraineeController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @GetMapping("/{username}")
-    public ResponseEntity<TraineeResponseDto> getTraineeByUsername(@PathVariable("username") String username, Authentication authentication){
+    public ResponseEntity<TraineeResponseDto> getTraineeByUsername(@PathVariable("username") String username){
 
-        authService.validateTrainerOrOwnerAuth(authentication, username); // Custom validation
+        authService.validateTrainerOrOwnerAuth(username); // Custom validation
 
         TraineeResponseDto responseDto = gymFacade.findTraineeByUsername(username);
         return ResponseEntity.ok(responseDto);
@@ -167,8 +166,8 @@ public class TraineeController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @DeleteMapping("/{username}")
-    public ResponseEntity<Void> deleteTrainee(@PathVariable("username") String username, Authentication authentication){
-        authService.validateTrainerAuth(authentication); // Only a trainer can delete a trainee
+    public ResponseEntity<Void> deleteTrainee(@PathVariable("username") String username){
+        authService.validateTrainerAuth(); // Only a trainer can delete a trainee
         gymFacade.deleteTraineeByUsername(username);
         return ResponseEntity.noContent().build();
     }
@@ -199,8 +198,8 @@ public class TraineeController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PatchMapping("/{username}/state")
-    public ResponseEntity<Map<String, String>> updateTraineeActiveState(@PathVariable("username") String username, @RequestBody ChangeStateRequestDto requestDto, Authentication authentication){
-        authService.validateTrainerOrOwnerAuth(authentication, username); // Only Trainers or the trainee owner can soft delete.
+    public ResponseEntity<Map<String, String>> updateTraineeActiveState(@PathVariable("username") String username, @RequestBody ChangeStateRequestDto requestDto){
+        authService.validateTrainerOrOwnerAuth(username); // Only Trainers or the trainee owner can soft delete.
         Boolean isActive = requestDto.isActive();
         gymFacade.updateTraineeActiveState(username, isActive);
         return ResponseEntity.noContent().build();
@@ -243,10 +242,9 @@ public class TraineeController {
                                                                                                @RequestParam(value="fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                                                @RequestParam(value="toDate", required = false) LocalDate toDate,
                                                                                                @RequestParam(value="trainerUsername",required = false) String trainerUsername,
-                                                                                               @RequestParam(value="trainingType", required = false) TrainingTypeEnum trainingType,
-                                                                                               Authentication authentication) {
+                                                                                               @RequestParam(value="trainingType", required = false) TrainingTypeEnum trainingType) {
 
-        authService.validateTrainerOrOwnerAuth(authentication, traineeUsername);
+        authService.validateTrainerOrOwnerAuth(traineeUsername);
         TraineeTrainingListRequestDto requestDto = new TraineeTrainingListRequestDto(traineeUsername, fromDate, toDate, trainerUsername, trainingType);
         return ResponseEntity.ok(gymFacade.getTraineeTrainings(requestDto));
     }
@@ -281,8 +279,8 @@ public class TraineeController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @GetMapping("{username}/unassigned-trainers")
-    public ResponseEntity<List<TrainerSummaryDto>> getUnassignedTrainers(@PathVariable("username") String username, Authentication authentication){
-        authService.validateTrainerOrOwnerAuth(authentication, username);
+    public ResponseEntity<List<TrainerSummaryDto>> getUnassignedTrainers(@PathVariable("username") String username){
+        authService.validateTrainerOrOwnerAuth(username);
         return ResponseEntity.ok(gymFacade.findUnassignedTrainersByTrainee(username));
     }
 

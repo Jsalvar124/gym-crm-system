@@ -45,14 +45,16 @@ public class LoggingFilter implements Filter {
     private void logRequest(ContentCachingRequestWrapper request) {
         String body = new String(request.getContentAsByteArray(), StandardCharsets.UTF_8);
 
-        // Collect headers (example: sessionId + all others if you want)
-        String sessionIdHeader = request.getHeader("X-Session-Id");
+        String tokenHeader = request.getHeader("Authorization");
+        String token = tokenHeader != null? tokenHeader.substring(7): "";
 
-        logger.info("REQUEST: {} {} | sessionId={} | body={}",
+
+        logger.info("REQUEST: {} {} | body={} | token={}",
                 request.getMethod(),
                 request.getRequestURI(),
-                sessionIdHeader,
-                body);
+                body,
+                token
+                );
     }
 
     private void logResponse(ContentCachingResponseWrapper response) throws IOException {

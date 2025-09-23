@@ -3,17 +3,16 @@ package com.jsalva.gymsystem.service.impl;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
 import com.jsalva.gymsystem.entity.User;
-import com.jsalva.gymsystem.exception.ForbiddenException;
-import com.jsalva.gymsystem.exception.InvalidCredentialsException;
-import com.jsalva.gymsystem.exception.ResourceNotFoundException;
-import com.jsalva.gymsystem.exception.UnauthorizedException;
+import com.jsalva.gymsystem.exception.*;
 import com.jsalva.gymsystem.repository.UserRepository;
 import com.jsalva.gymsystem.service.AuthService;
+import com.jsalva.gymsystem.service.BruteForceProtectorService;
 import com.jsalva.gymsystem.utils.EncoderUtils;
 import com.jsalva.gymsystem.utils.JwtUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,14 +29,23 @@ public class AuthServiceImpl implements AuthService {
 
     private final JwtUtils jwtUtils; // Add this
 
-    public AuthServiceImpl(UserRepository userRepository, JwtUtils jwtUtils) {
+    private final BruteForceProtectorService bruteForceProtectorService;
+
+    public AuthServiceImpl(UserRepository userRepository, JwtUtils jwtUtils, BruteForceProtectorService bruteForceProtectorService) {
         this.userRepository = userRepository;
         this.jwtUtils = jwtUtils;
+        this.bruteForceProtectorService = bruteForceProtectorService;
     }
 
     @Override
     @Transactional
     public String login(String username, String password) {
+        if(bruteForceProtectorService.isBlocked(username)){
+            Long remainingLockedTime = bruteForceProtectorService.calculateRemainingMinutes(username);
+            logger.warn("Login attempt for blocked user: {}, {} minutes remaining", username, remainingLockedTime);
+            throw new AccountLockedException("Account temporarily locked due to multiple failed login attempts. Try again in "+remainingLockedTime+" minutes.");
+        }
+
         try{
             User user = findByUsername(username);
             String userType;
@@ -55,8 +63,10 @@ public class AuthServiceImpl implements AuthService {
                 String token = jwtUtils.generateJwtToken(username, userType);
 
                 logger.info("Login successful - Token created for user: {} as {}", username, userType);
+                bruteForceProtectorService.registerSuccessfulLogin(username);
                 return token;
             } else {
+                bruteForceProtectorService.registerFailedLogin(username);
                 throw new InvalidCredentialsException("Invalid credentials for username "+ username);
             }
         } catch (ResourceNotFoundException e) {
@@ -88,7 +98,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void validateTrainerAuth(Authentication authentication) {
+    public void validateTrainerAuth() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // use the context
         String token = (String) authentication.getCredentials();
         validateLogin(token);
         if(!getUserTypeFromToken(token).equals("TRAINER")){
@@ -97,7 +108,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void validateOwnerAuth(Authentication authentication, String targetUsername) {
+    public void validateOwnerAuth(String targetUsername) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // use the context
         String token = (String) authentication.getCredentials();
         validateLogin(token);
         String tokenUsername = getUsernameFromToken(token);
@@ -107,7 +119,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void validateTrainerOrOwnerAuth(Authentication authentication, String targetUsername) {
+    public void validateTrainerOrOwnerAuth(String targetUsername) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // use the context
         String token = (String) authentication.getCredentials();
         validateLogin(token);
         String tokenUsername = getUsernameFromToken(token);

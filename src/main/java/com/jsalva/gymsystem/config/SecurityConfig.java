@@ -1,14 +1,18 @@
 package com.jsalva.gymsystem.config;
 
 import com.jsalva.gymsystem.filter.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.time.LocalDateTime;
 
 @Configuration
 @EnableWebSecurity
@@ -18,6 +22,26 @@ public class SecurityConfig {
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+    }
+
+    @Bean
+    public AuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return (request, response, authException) -> {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+            response.setContentType("application/json");
+
+            // Use your ErrorResponseDto format
+            String jsonResponse = """
+            {
+                "error": "Unauthorized",
+                "message": "Authentication required - please provide a valid token",
+                "timestamp": "%s",
+                "status": 401
+            }
+            """.formatted(LocalDateTime.now().toString());
+
+            response.getWriter().write(jsonResponse);
+        };
     }
 
     @Bean
@@ -37,7 +61,10 @@ public class SecurityConfig {
                 )
                 .httpBasic(httpBasic -> httpBasic.disable()) // Disable basic auth
                 .formLogin(form -> form.disable()) // Disable form login
-                // ADD OUR JWT FILTER BEFORE Spring Security's authentication filter
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint()) // Handle error before controller advise
+                )
+                // Add custom JWT filter
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         http

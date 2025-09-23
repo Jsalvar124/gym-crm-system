@@ -62,6 +62,11 @@ public class GlobalExceptionHandler {
         return buildResponseEntity(HttpStatus.UNPROCESSABLE_ENTITY, ex);
     }
 
+    @ExceptionHandler(AccountLockedException.class)
+    public ResponseEntity<ErrorResponseDto> handleAccountLockedException(AccountLockedException ex) {
+        return buildResponseEntity(HttpStatus.TOO_MANY_REQUESTS, ex);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponseDto> handleValidationException(MethodArgumentNotValidException ex) {
         String message = ex.getBindingResult().getAllErrors()

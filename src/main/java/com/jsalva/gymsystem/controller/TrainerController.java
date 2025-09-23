@@ -18,7 +18,6 @@ import jakarta.validation.Valid;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.security.core.Authentication;
 
 import java.net.URI;
 import java.time.LocalDate;
@@ -99,11 +98,11 @@ public class TrainerController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PutMapping("/{username}")
-    public ResponseEntity<TrainerResponseDto> updateTrainer(@PathVariable("username") String username,@Valid @RequestBody UpdateTrainerRequestDto requestDto, Authentication authentication){
+    public ResponseEntity<TrainerResponseDto> updateTrainer(@PathVariable("username") String username,@Valid @RequestBody UpdateTrainerRequestDto requestDto){
         if(!username.equals(requestDto.username())) {
             throw new BadRequestException("Path username does not match request body username");
         }
-        authService.validateOwnerAuth(authentication, username);
+        authService.validateOwnerAuth(username);
         TrainerResponseDto responseDto = gymFacade.updateTrainer(requestDto);
         return ResponseEntity.ok(responseDto);
     }
@@ -133,8 +132,8 @@ public class TrainerController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @GetMapping("/{username}")
-    public ResponseEntity<TrainerResponseDto> getTrainerByUsername(@PathVariable("username") String username, Authentication authentication){
-        authService.validateTrainerAuth(authentication);
+    public ResponseEntity<TrainerResponseDto> getTrainerByUsername(@PathVariable("username") String username){
+        authService.validateTrainerAuth();
         TrainerResponseDto responseDto = gymFacade.findTrainerByUsername(username);
         return ResponseEntity.ok(responseDto);
     }
@@ -165,8 +164,8 @@ public class TrainerController {
                             schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     @PatchMapping("/{username}/state")
-    public ResponseEntity<Map<String, String>> updateTrainerActiveState(@PathVariable("username") String username, @RequestBody ChangeStateRequestDto requestDto, Authentication authentication){
-        authService.validateTrainerAuth(authentication);
+    public ResponseEntity<Map<String, String>> updateTrainerActiveState(@PathVariable("username") String username, @RequestBody ChangeStateRequestDto requestDto){
+        authService.validateTrainerAuth();
         Boolean isActive = requestDto.isActive();
         gymFacade.updateTrainerActiveState(username, isActive);
         return ResponseEntity.noContent().build();
@@ -209,9 +208,8 @@ public class TrainerController {
     public ResponseEntity<List<TrainerTrainingListResponseDto>> getTrainerTrainingsWithFilters(@PathVariable("username") String trainerUsername,
                                                                                                @RequestParam(value="fromDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fromDate,
                                                                                                @RequestParam(value="toDate", required = false) LocalDate toDate,
-                                                                                               @RequestParam(value="traineeUsername",required = false) String traineeUsername,
-                                                                                               Authentication authentication){
-        authService.validateTrainerAuth(authentication);
+                                                                                               @RequestParam(value="traineeUsername",required = false) String traineeUsername){
+        authService.validateTrainerAuth();
         TrainerTrainingListRequestDto requestDto = new TrainerTrainingListRequestDto(trainerUsername, fromDate, toDate, traineeUsername);
         return ResponseEntity.ok(gymFacade.getTrainerTrainings(requestDto));
     }

@@ -13,9 +13,9 @@ public interface AuthService {
 
     // Authorization validations
     void validateLogin(String token);
-    void validateTrainerAuth(Authentication authentication);
-    void validateOwnerAuth(Authentication authentication, String targetUsername);
-    void validateTrainerOrOwnerAuth(Authentication authentication, String targetUsername);
+    void validateTrainerAuth();
+    void validateOwnerAuth(String targetUsername);
+    void validateTrainerOrOwnerAuth(String targetUsername);
 
     void updatePassword(String username, String oldPassword, String newPassword);
     boolean validateCredentials(String username, String password);
