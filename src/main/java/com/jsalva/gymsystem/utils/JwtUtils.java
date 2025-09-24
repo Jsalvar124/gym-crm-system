@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Component
@@ -44,6 +46,18 @@ public class JwtUtils {
                 .parseSignedClaims(token)
                 .getPayload();
         return claims.get("userType", String.class);
+    }
+
+    public LocalDateTime getExpirationDateFromJwtToken(String token){
+        Claims claims = Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+        return claims.getExpiration()
+                .toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
     }
 
     public boolean validateJwtToken(String authToken) {

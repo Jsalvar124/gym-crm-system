@@ -11,6 +11,7 @@ public interface
 GymFacade {
     // Auth
     String login(String username, String password);
+    void logout();
     void updateUserPassword(ChangePasswordRequestDto requestDto);
 
     // Trainer

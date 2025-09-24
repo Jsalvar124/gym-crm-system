@@ -85,4 +85,26 @@ public class AuthController {
         return ResponseEntity.ok().build();
     }
 
+    @Operation(
+            summary = "Logout a user",
+            description = "Blacklists current token disabling future logins."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Logout successful - no content returned"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing token",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "405", description = "Method Not Allowed - only POST is supported",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(){
+        gymFacade.logout();
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -7,6 +7,7 @@ import com.jsalva.gymsystem.exception.*;
 import com.jsalva.gymsystem.repository.UserRepository;
 import com.jsalva.gymsystem.service.AuthService;
 import com.jsalva.gymsystem.service.BruteForceProtectorService;
+import com.jsalva.gymsystem.service.TokenBlackListService;
 import com.jsalva.gymsystem.utils.EncoderUtils;
 import com.jsalva.gymsystem.utils.JwtUtils;
 import org.slf4j.Logger;
@@ -31,10 +32,13 @@ public class AuthServiceImpl implements AuthService {
 
     private final BruteForceProtectorService bruteForceProtectorService;
 
-    public AuthServiceImpl(UserRepository userRepository, JwtUtils jwtUtils, BruteForceProtectorService bruteForceProtectorService) {
+    private final TokenBlackListService tokenBlackListService;
+
+    public AuthServiceImpl(UserRepository userRepository, JwtUtils jwtUtils, BruteForceProtectorService bruteForceProtectorService, TokenBlackListService tokenBlackListService) {
         this.userRepository = userRepository;
         this.jwtUtils = jwtUtils;
         this.bruteForceProtectorService = bruteForceProtectorService;
+        this.tokenBlackListService = tokenBlackListService;
     }
 
     @Override
@@ -76,7 +80,24 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public void logout() {
+        // get the token from the Authentication Object and black list it
+        String token = getTokenFromSecurityContext();
+        tokenBlackListService.blackListToken(token);
+
+        // Clear security context
+        SecurityContextHolder.clearContext();
+
+        String username = getUsernameFromToken(token);
+        logger.info("User {} logged out successfully", username);
+    }
+
+    @Override
     public boolean isValidToken(String token) {
+        if(tokenBlackListService.isBlackListed(token)){
+            logger.warn("Attempt to validate a blacklisted token");
+            return false;
+        }
         return jwtUtils.validateJwtToken(token);
     }
 
@@ -90,6 +111,11 @@ public class AuthServiceImpl implements AuthService {
         return jwtUtils.getUserTypeFromJwtToken(token);
     }
 
+    public String getTokenFromSecurityContext(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // use the context
+        return (String) authentication.getCredentials();
+    }
+
     @Override
     public void validateLogin(String token) {
         if(!isValidToken(token)){
@@ -99,8 +125,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void validateTrainerAuth() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // use the context
-        String token = (String) authentication.getCredentials();
+        String token = getTokenFromSecurityContext();
         validateLogin(token);
         if(!getUserTypeFromToken(token).equals("TRAINER")){
             throw new ForbiddenException("Access denied - trainer role required");
@@ -109,8 +134,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void validateOwnerAuth(String targetUsername) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // use the context
-        String token = (String) authentication.getCredentials();
+        String token = getTokenFromSecurityContext();
         validateLogin(token);
         String tokenUsername = getUsernameFromToken(token);
         if(tokenUsername == null || !tokenUsername.equals(targetUsername)){
@@ -120,8 +144,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void validateTrainerOrOwnerAuth(String targetUsername) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication(); // use the context
-        String token = (String) authentication.getCredentials();
+        String token = getTokenFromSecurityContext();
         validateLogin(token);
         String tokenUsername = getUsernameFromToken(token);
         String tokenUserType = getUserTypeFromToken(token);

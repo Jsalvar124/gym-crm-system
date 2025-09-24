@@ -5,6 +5,7 @@ import org.springframework.security.core.Authentication;
 
 public interface AuthService {
     String login(String username, String password);
+    void logout();
 
     // JWT management
     boolean isValidToken(String token);

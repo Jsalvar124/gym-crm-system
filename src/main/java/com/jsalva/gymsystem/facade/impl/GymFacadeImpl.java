@@ -62,8 +62,13 @@ public class GymFacadeImpl implements GymFacade {
     @Override
     public String login(String username, String password) {
         String result = authService.login(username,password); // This will be a token
-        logger.info("Session Id {}",result);
+        logger.debug("token {}",result);
         return result;
+    }
+
+    @Override
+    public void logout() {
+        authService.logout();
     }
 
     @Override
