@@ -73,7 +73,7 @@ public class TrainerController {
             summary = "Update trainer profile",
             description = """
         Updates the profile information for a given trainer.
-        Requires a valid session ID in the `X-Session-Id` header.
+        Requires a valid jwt token in the `Authorization` header.
         **Access:** Owner of the trainer account.
         """
     )
@@ -81,7 +81,7 @@ public class TrainerController {
             @ApiResponse(responseCode = "200", description = "Trainer updated successfully",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = TrainerResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing session ID",
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing token",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized must be the owner",
@@ -109,13 +109,13 @@ public class TrainerController {
 
     @Operation(
             summary = "Get trainer by username",
-            description = "Retrieves a trainer's details by username. Requires a valid session ID from a trainer."
+            description = "Retrieves a trainer's details by username. Requires a valid token from a trainer."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK - Trainer retrieved successfully",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = TrainerResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing session ID",
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing token",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be trainer or owner)",
@@ -140,14 +140,14 @@ public class TrainerController {
 
     @Operation(
             summary = "Update trainer active state",
-            description = "Allows a trainer or the trainer owner to activate/deactivate a trainer account. Requires a valid session ID."
+            description = "Allows a trainer or the trainer owner to activate/deactivate a trainer account. Requires a valid token."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "No Content - Active state updated successfully", content = @Content), // No body
             @ApiResponse(responseCode = "400", description = "Bad Request - invalid body or missing field",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing session ID",
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing token",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be trainer or owner)",
@@ -177,7 +177,7 @@ public class TrainerController {
             description = """
         Retrieves the list of trainings for a given trainer.
         You can filter results by date range or trainee username
-        Requires a valid session ID in the `X-Session-Id` header.
+        Requires a valid jwt token in the `Authorization` header.
         **Access:** Owner of the trainer or any trainer.
         """
     )

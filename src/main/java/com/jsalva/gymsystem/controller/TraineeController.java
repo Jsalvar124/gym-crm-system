@@ -74,7 +74,7 @@ public class TraineeController {
             summary = "Update trainee profile",
             description = """
         Updates the profile information for a given trainee.
-        Requires a valid session ID in the `X-Session-Id` header.
+        Requires a valid jwt token in the `Authorization` header.
         **Access:** Owner of the trainee account.
         """
     )
@@ -82,7 +82,7 @@ public class TraineeController {
             @ApiResponse(responseCode = "200", description = "Trainee updated successfully",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = TraineeResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing session ID",
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing token",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be the owner)",
@@ -145,11 +145,11 @@ public class TraineeController {
 
     @Operation(
             summary = "Delete trainee account",
-            description = "Allows a trainer to permanently delete a trainee account. Requires a valid trainer session ID."
+            description = "Allows a trainer to permanently delete a trainee account. Requires a valid trainer token."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "No Content - Trainee deleted successfully", content = @Content), // No body
-            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing session ID",
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing token",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be trainer)",
@@ -174,7 +174,7 @@ public class TraineeController {
 
     @Operation(
             summary = "Update trainee active state",
-            description = "Allows a trainer or the trainee owner to activate/deactivate a trainee account. Requires a valid session ID."
+            description = "Allows a trainer or the trainee owner to activate/deactivate a trainee account. Requires a valid jwt token."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "No Content - Active state updated successfully", content = @Content), // No body
@@ -210,7 +210,7 @@ public class TraineeController {
             description = """
         Retrieves the list of trainings for a given trainee.
         You can filter results by date range, trainer username, or training type.
-        Requires a valid session ID in the `X-Session-Id` header.
+        Requires a valid jwt token in the `Authorization` header.
         **Access:** Owner of the trainee or any trainer.
         """
     )
@@ -254,7 +254,7 @@ public class TraineeController {
             summary = "Get unassigned trainers for a trainee",
             description = """
         Retrieves the list of trainers that are **not yet assigned** to the given trainee.
-        Requires a valid session ID in the `X-Session-Id` header.
+        Requires a valid jwt token in the `Authorization` header.
         **Access:** Owner of the trainee or any trainer.
         """
     )

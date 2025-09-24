@@ -26,7 +26,7 @@ public class AuthControllerTest {
         gymFacade = Mockito.mock(GymFacade.class);
         AuthController authController = new AuthController(gymFacade);
         mockMvc = MockMvcBuilders.standaloneSetup(authController)
-                .setControllerAdvice(new GlobalExceptionHandler()) // add this
+                .setControllerAdvice(new GlobalExceptionHandler())
                 .build();
 
     }
@@ -34,7 +34,7 @@ public class AuthControllerTest {
     @Test
     void login_ShouldReturnSessionId_WhenCredentialsValid() throws Exception {
         when(gymFacade.login("Juan.Perez", "DyuQZ7wU1n"))
-                .thenReturn("test-session-id");
+                .thenReturn("test-token");
 
         mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -45,7 +45,7 @@ public class AuthControllerTest {
                             }
                             """))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.sessionId").value("test-session-id"));
+                .andExpect(jsonPath("$.token").value("test-token"));
     }
 
     @Test

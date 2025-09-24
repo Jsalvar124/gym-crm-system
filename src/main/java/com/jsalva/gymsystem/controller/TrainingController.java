@@ -33,14 +33,14 @@ public class TrainingController {
 
     @Operation(
             summary = "Create a new training session",
-            description = "Creates a new training session. Requires a valid trainer session ID and training details in the request body."
+            description = "Creates a new training session. Requires a valid trainer token and training details in the request body."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK - Training session created successfully", content = @Content), // No body
             @ApiResponse(responseCode = "400", description = "Bad Request - invalid body or missing field",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing session ID",
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing token",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be trainer)",
@@ -65,7 +65,7 @@ public class TrainingController {
 
     @Operation(
             summary = "Update training session",
-            description = "Updates an existing training session by ID. Requires a valid trainer session ID and updated training details in the request body."
+            description = "Updates an existing training session by ID. Requires a valid trainer token and updated training details in the request body."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK - Training session updated successfully",
@@ -74,7 +74,7 @@ public class TrainingController {
             @ApiResponse(responseCode = "400", description = "Bad Request - invalid body or missing field",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
-            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing session ID",
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing token",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be trainer)",

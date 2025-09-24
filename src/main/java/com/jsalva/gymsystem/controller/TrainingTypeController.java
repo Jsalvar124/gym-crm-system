@@ -28,7 +28,7 @@ public class TrainingTypeController {
 
     @Operation(
             summary = "Get all training types",
-            description = "Retrieves the list of all available training types."
+            description = "Retrieves the list of all available training types, Requires a valid trainer jwt token in the `Authorization` header."
     )
     @ApiResponses({
             @ApiResponse(
