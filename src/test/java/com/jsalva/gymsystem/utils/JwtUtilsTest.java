@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class JwtUtilsTest {
-    private final JwtUtils jwtUtils = new JwtUtils();
+    private final JwtUtils jwtUtils = new JwtUtils("mySuperSecretKeyAtLeast256bitsLong", 86400L);
 
     @Test
     void generateJwtToken_ShouldReturnValidToken() {

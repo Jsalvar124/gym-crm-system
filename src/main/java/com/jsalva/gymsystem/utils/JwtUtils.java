@@ -16,11 +16,15 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    private final String jwtSecret;
 
-    @Value("${jwt.expirationSeconds}")
-    private Long expirationSeconds;
+    private final Long expirationSeconds;
+
+    public JwtUtils(@Value("${jwt.secret}") String jwtSecret,
+                    @Value("${jwt.expirationSeconds}") Long expirationSeconds) {
+        this.jwtSecret = jwtSecret;
+        this.expirationSeconds = expirationSeconds;
+    }
 
     public String generateJwtToken(String username, String userType) {
         Instant now = Instant.now();
