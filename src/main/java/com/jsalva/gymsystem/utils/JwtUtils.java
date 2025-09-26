@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -15,11 +16,15 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    private final String jwtSecret = "mySecretKey123456789012345678901234567890"; // Must be at least 256 bits
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
+    @Value("${jwt.expirationSeconds}")
+    private Long expirationSeconds;
 
     public String generateJwtToken(String username, String userType) {
         Instant now = Instant.now();
-        Instant expiration = now.plusSeconds(86400); // 24 hours
+        Instant expiration = now.plusSeconds(expirationSeconds);
 
         return Jwts.builder()
                 .subject(username)                      // Who the token is for
