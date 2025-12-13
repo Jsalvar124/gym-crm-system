@@ -1,5 +1,8 @@
 package com.jsalva.gymsystem.service.impl;
 
+import com.jsalva.gymsystem.client.TrainerWorkloadClient;
+import com.jsalva.gymsystem.client.dto.TrainerWorkloadRequestDto;
+import com.jsalva.gymsystem.client.mapper.TrainerWorkloadRequestDtoMapper;
 import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
 import com.jsalva.gymsystem.dto.request.TraineeTrainingListRequestDto;
 import com.jsalva.gymsystem.dto.request.TrainerTrainingListRequestDto;
@@ -37,11 +40,14 @@ public class TrainingServiceImpl implements TrainingService {
 
     private final TrainingMapper trainingMapper;
 
-    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeService traineeService, TrainerService trainerService, TrainingMapper trainingMapper) {
+    private final TrainerWorkloadClient trainerWorkloadClient;
+
+    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeService traineeService, TrainerService trainerService, TrainingMapper trainingMapper, TrainerWorkloadClient trainerWorkloadClient) {
         this.trainingRepository = trainingRepository;
         this.traineeService = traineeService;
         this.trainerService = trainerService;
         this.trainingMapper = trainingMapper;
+        this.trainerWorkloadClient = trainerWorkloadClient;
     }
 
     @Override
@@ -77,7 +83,13 @@ public class TrainingServiceImpl implements TrainingService {
                 .build();
 
         trainingRepository.save(training);
-        logger.debug("Saved Training: {}", training);
+        logger.info("Saved Training: {}", training);
+
+        // Microservice call
+        logger.info("Sending Add Training Workload Request");
+        TrainerWorkloadRequestDto workloadRequestDto = TrainerWorkloadRequestDtoMapper.fromTraining(training, TrainerWorkloadRequestDto.ActionType.ADD);
+        trainerWorkloadClient.updateWorkload(workloadRequestDto);
+
     }
 
     @Override
