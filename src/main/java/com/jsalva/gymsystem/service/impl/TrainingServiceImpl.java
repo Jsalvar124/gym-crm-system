@@ -82,8 +82,9 @@ public class TrainingServiceImpl implements TrainingService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Training> getAllTrainings() {
-        return trainingRepository.findAll();
+    public List<TrainingResponseDto> getAllTrainings() {
+        List<Training> trainings = trainingRepository.findAll();
+        return trainingMapper.toTrainingResponseDtoList(trainings);
     }
 
     @Override

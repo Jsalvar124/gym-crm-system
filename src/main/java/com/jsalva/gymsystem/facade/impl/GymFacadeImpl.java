@@ -140,7 +140,7 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public List<Training> getAllTrainings() {
+    public List<TrainingResponseDto> getAllTrainings() {
         return trainingService.getAllTrainings();
     }
 

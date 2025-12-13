@@ -14,7 +14,7 @@ import java.util.List;
 
 public interface TrainingService {
     void createTraining(CreateTrainingRequestDto requestDto);
-    List<Training> getAllTrainings();
+    List<TrainingResponseDto> getAllTrainings();
     Training getTrainingById(Long id);
     List<TrainerTrainingListResponseDto> getTrainersTrainingListByTraineeUsernameOrDateSpan(TrainerTrainingListRequestDto requestDto);
     List<TraineeTrainingListResponseDto> getTraineesTrainingListByTrainerUsernameOrDateSpan(TraineeTrainingListRequestDto requestDto);

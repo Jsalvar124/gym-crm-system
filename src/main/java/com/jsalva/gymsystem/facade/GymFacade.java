@@ -36,7 +36,7 @@ GymFacade {
 
     // Training
     void createTraining(CreateTrainingRequestDto requestDto);
-    List<Training> getAllTrainings();
+    List<TrainingResponseDto> getAllTrainings();
     Training getTrainingById(Long id);
     List<TrainerTrainingListResponseDto> getTrainerTrainings(TrainerTrainingListRequestDto requestDto);
     List<TraineeTrainingListResponseDto> getTraineeTrainings(TraineeTrainingListRequestDto requestDto);
