@@ -41,6 +41,7 @@ GymFacade {
     List<TrainerTrainingListResponseDto> getTrainerTrainings(TrainerTrainingListRequestDto requestDto);
     List<TraineeTrainingListResponseDto> getTraineeTrainings(TraineeTrainingListRequestDto requestDto);
     TrainingResponseDto updateTraining(Long id, UpdateTrainingRequestDto trainingRequestDto);
+    void deleteTraining(Long id);
 
     // Training Types
     List<TrainingTypeResponseDto> getAllTrainingTypes();

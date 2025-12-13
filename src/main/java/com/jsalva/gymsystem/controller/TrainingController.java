@@ -155,4 +155,10 @@ public class TrainingController {
         List<TrainingResponseDto> responseDto = gymFacade.getAllTrainings();
         return ResponseEntity.ok(responseDto);
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteTraining(Long id){
+        gymFacade.deleteTraining(id);
+        return ResponseEntity.noContent().build();
+    }
 }

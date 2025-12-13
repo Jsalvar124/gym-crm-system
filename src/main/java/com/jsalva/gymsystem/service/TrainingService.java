@@ -19,4 +19,5 @@ public interface TrainingService {
     List<TrainerTrainingListResponseDto> getTrainersTrainingListByTraineeUsernameOrDateSpan(TrainerTrainingListRequestDto requestDto);
     List<TraineeTrainingListResponseDto> getTraineesTrainingListByTrainerUsernameOrDateSpan(TraineeTrainingListRequestDto requestDto);
     TrainingResponseDto updateTraining(Long id, UpdateTrainingRequestDto requestDto);
+    void deleteTraining(Long id);
 }

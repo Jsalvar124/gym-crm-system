@@ -165,6 +165,11 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
+    public void deleteTraining(Long id) {
+        trainingService.deleteTraining(id);
+    }
+
+    @Override
     public List<TrainingTypeResponseDto> getAllTrainingTypes() {
         return trainingTypeService.getAllTrainingTypes();
     }

@@ -166,4 +166,22 @@ public class TrainingServiceImpl implements TrainingService {
         logger.info("Training updated successfully");
         return trainingMapper.toTrainingResponseDto(training);
     }
+
+    @Override
+    @Transactional
+    public void deleteTraining(Long id) {
+        logger.info("Deleting training with id {}", id);
+
+        // Check if training exists, get managed entity
+        Training training = getTrainingById(id);
+
+        // Delete training from database
+        trainingRepository.delete(training);
+
+        // Call Microservice Client with Delete Action
+        logger.debug("Deleted training {}, notifying workload service", training.getId());
+        trainerWorkloadClient.updateWorkload(
+                TrainerWorkloadRequestDtoMapper.fromTraining(training, TrainerWorkloadRequestDto.ActionType.DELETE)
+        );
+    }
 }
