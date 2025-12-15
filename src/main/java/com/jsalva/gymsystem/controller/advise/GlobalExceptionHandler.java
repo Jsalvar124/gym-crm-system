@@ -96,6 +96,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(body);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponseDto> handleIllegalState(IllegalStateException ex){
+        return buildResponseEntity(HttpStatus.CONFLICT, ex);
+    }
+
     // --- Handle missing headers globally ---
     @ExceptionHandler(MissingRequestHeaderException.class)
     public ResponseEntity<ErrorResponseDto> handleMissingHeader(MissingRequestHeaderException ex) {

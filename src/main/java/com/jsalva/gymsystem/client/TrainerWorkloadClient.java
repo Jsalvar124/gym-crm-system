@@ -5,6 +5,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,12 +40,16 @@ public class TrainerWorkloadClient {
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(token);
 
+        // Add MDC transaction ID to header
+        headers.add("X-Transaction-Id", MDC.get("transactionId"));
+
+
         HttpEntity<TrainerWorkloadRequestDto> request =
                 new HttpEntity<>(dto, headers);
 
         restTemplate.postForEntity(
                 "http://TRAINER-WORKLOAD-SERVICE/api/workload",
-                dto,
+                request,
                 Void.class
         );
     }
