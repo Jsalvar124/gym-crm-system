@@ -1,6 +1,7 @@
-package com.jsalva.gymsystem.client.mapper;
+package com.jsalva.gymsystem.messaging.mapper;
 
-import com.jsalva.gymsystem.client.dto.TrainerWorkloadRequestDto;
+import com.jsalva.gymsystem.messaging.enums.ActionType;
+import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadRequestDto;
 import com.jsalva.gymsystem.entity.Training;
 
 public class TrainerWorkloadRequestDtoMapper {
@@ -9,7 +10,7 @@ public class TrainerWorkloadRequestDtoMapper {
         // Private constructor enforces utility intention
     }
 
-    public static TrainerWorkloadRequestDto fromTraining(Training training, TrainerWorkloadRequestDto.ActionType actionType){
+    public static TrainerWorkloadRequestDto fromTraining(Training training, ActionType actionType){
         return new TrainerWorkloadRequestDto(
                 training.getTrainer().getUsername(),
                 training.getTrainer().getFirstName(),

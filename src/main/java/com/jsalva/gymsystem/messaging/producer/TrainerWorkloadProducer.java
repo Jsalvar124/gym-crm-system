@@ -1,6 +1,6 @@
-package com.jsalva.gymsystem.client;
+package com.jsalva.gymsystem.messaging.producer;
 
-import com.jsalva.gymsystem.client.dto.TrainerWorkloadRequestDto;
+import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadRequestDto;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.slf4j.Logger;
@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
-public class TrainerWorkloadClient {
+public class TrainerWorkloadProducer {
 
     private final RestTemplate restTemplate;
 
-    private static final Logger logger = LoggerFactory.getLogger(TrainerWorkloadClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(TrainerWorkloadProducer.class);
 
-    public TrainerWorkloadClient(RestTemplate restTemplate) {
+    public TrainerWorkloadProducer(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 

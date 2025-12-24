@@ -1,8 +1,9 @@
 package com.jsalva.gymsystem.service.impl;
 
-import com.jsalva.gymsystem.client.TrainerWorkloadClient;
-import com.jsalva.gymsystem.client.dto.TrainerWorkloadRequestDto;
-import com.jsalva.gymsystem.client.mapper.TrainerWorkloadRequestDtoMapper;
+import com.jsalva.gymsystem.messaging.enums.ActionType;
+import com.jsalva.gymsystem.messaging.producer.TrainerWorkloadProducer;
+import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadRequestDto;
+import com.jsalva.gymsystem.messaging.mapper.TrainerWorkloadRequestDtoMapper;
 import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
 import com.jsalva.gymsystem.dto.request.TraineeTrainingListRequestDto;
 import com.jsalva.gymsystem.dto.request.TrainerTrainingListRequestDto;
@@ -40,14 +41,14 @@ public class TrainingServiceImpl implements TrainingService {
 
     private final TrainingMapper trainingMapper;
 
-    private final TrainerWorkloadClient trainerWorkloadClient;
+    private final TrainerWorkloadProducer trainerWorkloadProducer;
 
-    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeService traineeService, TrainerService trainerService, TrainingMapper trainingMapper, TrainerWorkloadClient trainerWorkloadClient) {
+    public TrainingServiceImpl(TrainingRepository trainingRepository, TraineeService traineeService, TrainerService trainerService, TrainingMapper trainingMapper, TrainerWorkloadProducer trainerWorkloadProducer) {
         this.trainingRepository = trainingRepository;
         this.traineeService = traineeService;
         this.trainerService = trainerService;
         this.trainingMapper = trainingMapper;
-        this.trainerWorkloadClient = trainerWorkloadClient;
+        this.trainerWorkloadProducer = trainerWorkloadProducer;
     }
 
     @Override
@@ -87,8 +88,8 @@ public class TrainingServiceImpl implements TrainingService {
 
         // Microservice call
         logger.info("Sending Add Training Workload Request");
-        TrainerWorkloadRequestDto workloadRequestDto = TrainerWorkloadRequestDtoMapper.fromTraining(training, TrainerWorkloadRequestDto.ActionType.ADD);
-        trainerWorkloadClient.updateWorkload(workloadRequestDto);
+        TrainerWorkloadRequestDto workloadRequestDto = TrainerWorkloadRequestDtoMapper.fromTraining(training, ActionType.ADD);
+        trainerWorkloadProducer.updateWorkload(workloadRequestDto);
 
     }
 
@@ -180,8 +181,8 @@ public class TrainingServiceImpl implements TrainingService {
 
         // Call Microservice Client with Delete Action
         logger.debug("Deleted training {}, notifying workload service", training.getId());
-        trainerWorkloadClient.updateWorkload(
-                TrainerWorkloadRequestDtoMapper.fromTraining(training, TrainerWorkloadRequestDto.ActionType.DELETE)
+        trainerWorkloadProducer.updateWorkload(
+                TrainerWorkloadRequestDtoMapper.fromTraining(training, ActionType.DELETE)
         );
     }
 }

@@ -1,4 +1,4 @@
-package com.jsalva.gymsystem.client.dto;
+package com.jsalva.gymsystem.messaging.dto;
 
 import java.time.LocalDate;
 
@@ -8,11 +8,7 @@ public record TrainerWorkloadRequestDto(
         String lastName,
         Boolean isActive,
         LocalDate trainingDate,
-        Integer trainingDuration,
-        ActionType actionType
+        Integer trainingDuration
+        // removed Action Type from payload, Using it as Header Action-type instead
 ) {
-    public enum ActionType {
-        ADD,
-        DELETE
-    }
 }
