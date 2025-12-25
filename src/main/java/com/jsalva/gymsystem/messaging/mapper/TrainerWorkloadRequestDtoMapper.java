@@ -10,7 +10,7 @@ public class TrainerWorkloadRequestDtoMapper {
         // Private constructor enforces utility intention
     }
 
-    public static TrainerWorkloadMessageDto fromTraining(Training training, ActionType actionType){
+    public static TrainerWorkloadMessageDto fromTraining(Training training){
         return new TrainerWorkloadMessageDto(
                 training.getTrainer().getUsername(),
                 training.getTrainer().getFirstName(),

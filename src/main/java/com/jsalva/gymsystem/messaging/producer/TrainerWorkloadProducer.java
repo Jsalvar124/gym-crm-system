@@ -40,7 +40,7 @@ public class TrainerWorkloadProducer {
         jmsTemplate.convertAndSend(
                 WORKLOAD_QUEUE,
                 message,
-                jmsMessage -> {
+                jmsMessage -> { // message post processor using lambda expression.
                     jmsMessage.setStringProperty("X-Transaction-Id", transactionId);
                     jmsMessage.setStringProperty("X-Action-Type", actionType.name());
                     return jmsMessage;
