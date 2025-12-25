@@ -2,7 +2,7 @@ package com.jsalva.gymsystem.messaging.dto;
 
 import java.time.LocalDate;
 
-public record TrainerWorkloadMessageDto(
+public record TrainerWorkloadCommandMessageDto(
         String username,
         String firstName,
         String lastName,

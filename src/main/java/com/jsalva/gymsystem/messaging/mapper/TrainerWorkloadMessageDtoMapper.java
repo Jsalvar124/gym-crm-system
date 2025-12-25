@@ -1,17 +1,16 @@
 package com.jsalva.gymsystem.messaging.mapper;
 
-import com.jsalva.gymsystem.messaging.enums.ActionType;
-import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadMessageDto;
+import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadCommandMessageDto;
 import com.jsalva.gymsystem.entity.Training;
 
-public class TrainerWorkloadRequestDtoMapper {
+public class TrainerWorkloadMessageDtoMapper {
 
-    private TrainerWorkloadRequestDtoMapper() {
+    private TrainerWorkloadMessageDtoMapper() {
         // Private constructor enforces utility intention
     }
 
-    public static TrainerWorkloadMessageDto fromTraining(Training training){
-        return new TrainerWorkloadMessageDto(
+    public static TrainerWorkloadCommandMessageDto fromTraining(Training training){
+        return new TrainerWorkloadCommandMessageDto(
                 training.getTrainer().getUsername(),
                 training.getTrainer().getFirstName(),
                 training.getTrainer().getLastName(),

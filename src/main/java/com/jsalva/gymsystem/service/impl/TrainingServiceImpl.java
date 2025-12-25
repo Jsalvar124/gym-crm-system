@@ -2,8 +2,8 @@ package com.jsalva.gymsystem.service.impl;
 
 import com.jsalva.gymsystem.messaging.enums.ActionType;
 import com.jsalva.gymsystem.messaging.producer.TrainerWorkloadProducer;
-import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadMessageDto;
-import com.jsalva.gymsystem.messaging.mapper.TrainerWorkloadRequestDtoMapper;
+import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadCommandMessageDto;
+import com.jsalva.gymsystem.messaging.mapper.TrainerWorkloadMessageDtoMapper;
 import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
 import com.jsalva.gymsystem.dto.request.TraineeTrainingListRequestDto;
 import com.jsalva.gymsystem.dto.request.TrainerTrainingListRequestDto;
@@ -87,8 +87,8 @@ public class TrainingServiceImpl implements TrainingService {
         logger.info("Saved Training: {}", training);
 
         // Microservice call
-        logger.info("Sending Add Training Workload Request");
-        TrainerWorkloadMessageDto workloadRequestDto = TrainerWorkloadRequestDtoMapper.fromTraining(training);
+        logger.info("Sending Add Training Workload Message");
+        TrainerWorkloadCommandMessageDto workloadRequestDto = TrainerWorkloadMessageDtoMapper.fromTraining(training);
         trainerWorkloadProducer.sendTrainerWorkloadMessage(workloadRequestDto, ActionType.ADD);
     }
 
@@ -180,7 +180,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         // Call Microservice Client with Delete Action
         logger.debug("Deleted training {}, notifying workload service", training.getId());
-        TrainerWorkloadMessageDto message = TrainerWorkloadRequestDtoMapper.fromTraining(training);
+        TrainerWorkloadCommandMessageDto message = TrainerWorkloadMessageDtoMapper.fromTraining(training);
         trainerWorkloadProducer.sendTrainerWorkloadMessage(message, ActionType.DELETE);
     }
 }

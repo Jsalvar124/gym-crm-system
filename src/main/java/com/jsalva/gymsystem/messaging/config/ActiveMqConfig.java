@@ -3,12 +3,16 @@ package com.jsalva.gymsystem.messaging.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadCommandMessageDto;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Configuration
 @EnableJms
@@ -20,6 +24,11 @@ public class ActiveMqConfig {
 
         converter.setTargetType(MessageType.TEXT);
         converter.setTypeIdPropertyName("_type");
+
+        // Use simple class name instead of fully qualified name
+        Map<String, Class<?>> typeIdMappings = new HashMap<>();
+        typeIdMappings.put("TrainerWorkloadCommandMessageDto", TrainerWorkloadCommandMessageDto.class);
+        converter.setTypeIdMappings(typeIdMappings);
 
         // Configure ObjectMapper for proper date/time handling
         ObjectMapper objectMapper = new ObjectMapper();
