@@ -1,7 +1,7 @@
 package com.jsalva.gymsystem.messaging.mapper;
 
 import com.jsalva.gymsystem.messaging.enums.ActionType;
-import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadRequestDto;
+import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadMessageDto;
 import com.jsalva.gymsystem.entity.Training;
 
 public class TrainerWorkloadRequestDtoMapper {
@@ -10,15 +10,14 @@ public class TrainerWorkloadRequestDtoMapper {
         // Private constructor enforces utility intention
     }
 
-    public static TrainerWorkloadRequestDto fromTraining(Training training, ActionType actionType){
-        return new TrainerWorkloadRequestDto(
+    public static TrainerWorkloadMessageDto fromTraining(Training training, ActionType actionType){
+        return new TrainerWorkloadMessageDto(
                 training.getTrainer().getUsername(),
                 training.getTrainer().getFirstName(),
                 training.getTrainer().getLastName(),
                 true, // is active default value
                 training.getTrainingDate(),
-                training.getDuration(),
-                actionType
+                training.getDuration()
                 );
     }
 }

@@ -2,7 +2,7 @@ package com.jsalva.gymsystem.service.impl;
 
 import com.jsalva.gymsystem.messaging.enums.ActionType;
 import com.jsalva.gymsystem.messaging.producer.TrainerWorkloadProducer;
-import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadRequestDto;
+import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadMessageDto;
 import com.jsalva.gymsystem.messaging.mapper.TrainerWorkloadRequestDtoMapper;
 import com.jsalva.gymsystem.dto.request.CreateTrainingRequestDto;
 import com.jsalva.gymsystem.dto.request.TraineeTrainingListRequestDto;
@@ -88,7 +88,7 @@ public class TrainingServiceImpl implements TrainingService {
 
         // Microservice call
         logger.info("Sending Add Training Workload Request");
-        TrainerWorkloadRequestDto workloadRequestDto = TrainerWorkloadRequestDtoMapper.fromTraining(training, ActionType.ADD);
+        TrainerWorkloadMessageDto workloadRequestDto = TrainerWorkloadRequestDtoMapper.fromTraining(training, ActionType.ADD);
         trainerWorkloadProducer.updateWorkload(workloadRequestDto);
 
     }

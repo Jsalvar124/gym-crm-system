@@ -1,71 +1,59 @@
 package com.jsalva.gymsystem.messaging.producer;
 
-import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadRequestDto;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
+import com.jsalva.gymsystem.messaging.dto.TrainerWorkloadMessageDto;
+import com.jsalva.gymsystem.messaging.enums.ActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 public class TrainerWorkloadProducer {
 
-    private final RestTemplate restTemplate;
-
     private static final Logger logger = LoggerFactory.getLogger(TrainerWorkloadProducer.class);
 
-    public TrainerWorkloadProducer(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    private final JmsTemplate jmsTemplate;
+
+    private final String WORKLOAD_QUEUE = "trainer.workload.queue";
+
+    public TrainerWorkloadProducer(JmsTemplate jmsTemplate) {
+        this.jmsTemplate = jmsTemplate;
     }
 
-    // method yo call the microservice
-
-    @Retry(name = "trainerWorkloadRetry")
-    @CircuitBreaker(
-            name = "trainerWorkloadService",
-            fallbackMethod = "fallbackUpdateWorkload"
-    )
-    public void updateWorkload(TrainerWorkloadRequestDto dto) {
+    // Message Sending method
+    @Transactional // Jms transactional
+    public void sendTrainerWorkloadMessage(TrainerWorkloadMessageDto message, ActionType actionType) {
         // Add headers with auth token
         String token = (String) SecurityContextHolder
                 .getContext()
                 .getAuthentication()
                 .getCredentials();
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(token);
+        // get MDC transaction ID
+        String transactionId = MDC.get("transactionId");
 
-        // Add MDC transaction ID to header
-        headers.add("X-Transaction-Id", MDC.get("transactionId"));
-
-
-        HttpEntity<TrainerWorkloadRequestDto> request =
-                new HttpEntity<>(dto, headers);
-
-        restTemplate.postForEntity(
-                "http://TRAINER-WORKLOAD-SERVICE/api/workload",
-                request,
-                Void.class
+        jmsTemplate.convertAndSend(
+                WORKLOAD_QUEUE,
+                message,
+                jmsMessage -> {
+                    jmsMessage.setStringProperty("X-Transaction-Id", transactionId);
+                    jmsMessage.setStringProperty("X-Action-Type", actionType.name());
+                    return jmsMessage;
+                }
         );
+
+        logger.info(
+                "Sent workload message. Trainer={}, Action={}, TxId={}",
+                message.username(),
+                actionType.name(),
+                transactionId
+        );
+
     }
 
-
-    // Fallback method signature MUST match
-    private void fallbackUpdateWorkload(
-            TrainerWorkloadRequestDto dto,
-            Throwable ex
-    ) {
-        // Do NOT throw unless you want rollback behavior
-        logger.error(
-                "Trainer workload service unavailable. Action={} Trainer={}",
-                dto.actionType(),
-                dto.username(),
-                ex
-        );
-    }
 }
