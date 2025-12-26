@@ -156,8 +156,31 @@ public class TrainingController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteTraining(Long id){
+    @Operation(
+            summary = "Delete a training session",
+            description = "Deletes an existing training session by ID. Requires a valid trainer token."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "No Content - Training session deleted successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request - invalid training ID format",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - invalid or missing token",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden - caller not authorized (must be trainer)",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found - training session with specified ID not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTraining(@PathVariable("id") Long id){
+        authService.validateTrainerAuth();
         gymFacade.deleteTraining(id);
         return ResponseEntity.noContent().build();
     }
