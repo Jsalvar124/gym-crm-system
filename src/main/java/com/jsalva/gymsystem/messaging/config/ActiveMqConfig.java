@@ -17,6 +17,7 @@ import java.util.Map;
 @Configuration
 @EnableJms
 public class ActiveMqConfig {
+
     @Bean
     public MessageConverter jacksonJmsMessageConverter() {
         MappingJackson2MessageConverter converter =
@@ -39,4 +40,6 @@ public class ActiveMqConfig {
 
         return converter;
     }
+
+
 }

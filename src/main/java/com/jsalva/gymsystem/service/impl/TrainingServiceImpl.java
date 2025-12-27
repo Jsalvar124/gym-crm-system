@@ -89,7 +89,7 @@ public class TrainingServiceImpl implements TrainingService {
         // Microservice call
         logger.info("Sending Add Training Workload Message");
         TrainerWorkloadCommandMessageDto workloadRequestDto = TrainerWorkloadMessageDtoMapper.fromTraining(training);
-        trainerWorkloadProducer.sendTrainerWorkloadMessage(workloadRequestDto, ActionType.ADD);
+        trainerWorkloadProducer.sendTrainerWorkloadCommandMessage(workloadRequestDto, ActionType.ADD);
     }
 
     @Override
@@ -181,6 +181,6 @@ public class TrainingServiceImpl implements TrainingService {
         // Call Microservice Client with Delete Action
         logger.debug("Deleted training {}, notifying workload service", training.getId());
         TrainerWorkloadCommandMessageDto message = TrainerWorkloadMessageDtoMapper.fromTraining(training);
-        trainerWorkloadProducer.sendTrainerWorkloadMessage(message, ActionType.DELETE);
+        trainerWorkloadProducer.sendTrainerWorkloadCommandMessage(message, ActionType.DELETE);
     }
 }
