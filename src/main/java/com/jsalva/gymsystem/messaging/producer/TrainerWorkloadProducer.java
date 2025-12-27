@@ -23,7 +23,6 @@ public class TrainerWorkloadProducer {
     }
 
     // Command Message Sending Method
-    @Transactional
     public void sendTrainerWorkloadCommandMessage(TrainerWorkloadCommandMessageDto messageDto, ActionType actionType) {
         // get MDC transaction ID
         String transactionId = MDC.get("transactionId");
