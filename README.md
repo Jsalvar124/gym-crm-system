@@ -85,6 +85,14 @@ public static boolean verifyPasswordBCrypt(String plainPassword, String hashedPa
 - Retrieve trainings for a trainer with optional date range filters
 - Retrieve trainings for a trainee with optional date range filters
 
+### Microservice Integration
+- **Asynchronous Communication**: Event-driven architecture using ActiveMQ message broker
+- **Trainer Workload Tracking**: Automatic workload updates on training creation/deletion
+- **Message-Driven Commands**: Action-based messaging (ADD/DELETE) with custom headers
+- **Transaction Correlation**: Distributed transaction tracking with MDC-based transaction IDs
+- **Reliable Messaging**: JMS message conversion with JSON serialization
+- **Dead Letter Queue (DLQ)**: Automatic handling of failed message processing
+
 ---
 
 ### Monitoring & Observability
@@ -117,6 +125,9 @@ public static boolean verifyPasswordBCrypt(String plainPassword, String hashedPa
 - **Spring Boot Actuator** – Monitoring endpoints with custom health checks and Prometheus metrics
 - **Micrometer + Prometheus** – Metrics collection and scraping
 - **Swagger (springdoc-openapi)** – API documentation (OpenAPI 3)
+- **Apache ActiveMQ** – Message broker for asynchronous microservice communication
+- **Spring Boot Starter ActiveMQ** – Auto-configured JMS integration with ActiveMQ
+- **Jackson Databind** – JSON serialization/deserialization for message payloads
 
 ### Testing
 - **JUnit 5** – Unit testing framework
@@ -213,6 +224,8 @@ The system uses JPA inheritance strategy with the following entity relationships
 - Maven 3.6+
 - PostgreSQL 12+
 - Git
+- Docker & Docker Compose (for ActiveMQ message broker)
+
 
 ### Database Setup
 
@@ -222,6 +235,44 @@ CREATE DATABASE gymdb;
 ```
 
 2. The application will automatically create tables using Hibernate DDL generation.
+
+### ActiveMQ Docker setup
+
+1. Start Apache ActiveMQ using Docker:
+```bash
+# Create a docker-compose.yml file with the following content:
+version: "3.8"
+services:
+  activemq:
+    image: apache/activemq-classic:6.1.0
+    container_name: activemq
+    ports:
+      - "61616:61616"   # JMS
+      - "8161:8161"     # Web Console
+    volumes:
+      - activemq-data:/opt/activemq/data
+    environment:
+      ACTIVEMQ_ADMIN_LOGIN: admin
+      ACTIVEMQ_ADMIN_PASSWORD: admin
+    restart: unless-stopped
+volumes:
+  activemq-data:
+```
+
+```bash
+# Start ActiveMQ container
+docker-compose up -d
+
+# Verify container is running
+docker ps | grep activemq
+```
+
+2. Verify ActiveMQ is running:
+    - Admin Console: http://localhost:8161/admin
+    - Default credentials: admin/admin
+    - JMS Broker URL: tcp://localhost:61616
+
+---
 
 ### Installation
 
@@ -307,6 +358,16 @@ spring.main.allow-circular-references=true
 # Actuator endpoints
 management.endpoints.web.exposure.include=health,info,prometheus,jvmInfo
 management.endpoint.health.show-details=always
+
+# Active MQ Configuration
+spring.activemq.broker-url=tcp://localhost:61616
+spring.activemq.user=admin
+spring.activemq.password=admin
+
+# JMS Configuration for DLQ
+spring.jms.listener.acknowledge-mode=auto
+spring.jms.listener.auto-startup=true
+
 ```
 
 ## API Authentication
@@ -378,6 +439,45 @@ The system follows a **layered architecture** pattern with clear separation of c
 - **API Documentation**: Swagger/OpenAPI for interactive documentation
 - **CORS Configuration**: Cross-origin resource sharing for frontend integration
 
+### Microservice Architecture
+The system implements an **event-driven microservice architecture** with asynchronous messaging:
+
+#### Message Flow
+1. **Training Operations**: Create/Delete training triggers workload message
+2. **Message Production**: JMS producer sends command to ActiveMQ queue
+3. **Message Headers**: Transaction ID and Action Type added as message properties
+4. **Asynchronous Processing**: Consumer microservice processes workload updates
+5. **Transaction Correlation**: Distributed tracing via MDC transaction IDs
+
+#### Messaging Components
+- **TrainerWorkloadProducer**: Publishes workload command messages to ActiveMQ
+- **TrainerWorkloadCommandMessageDto**: Message payload with trainer and training details
+- **ActionType Enum**: Command semantics (ADD/DELETE) passed as message header
+- **ActiveMqConfig**: JMS message converter with JSON serialization and type mapping
+- **Queue**: `trainer.workload.command.queue` for workload commands
+
+#### Message Contract
+```json
+{
+  "username": "John.Doe",
+  "firstName": "John",
+  "lastName": "Doe",
+  "isActive": true,
+  "trainingDate": "2024-12-28",
+  "trainingDuration": 60
+}
+```
+
+**Message Headers:**
+- `X-Transaction-Id`: Correlation ID for distributed tracing
+- `X-Action-Type`: Command action (ADD/DELETE)
+
+#### Benefits
+- **Decoupling**: Services communicate asynchronously without direct dependencies
+- **Resilience**: Message persistence ensures no data loss during service downtime
+- **Scalability**: Independent scaling of producer and consumer services
+- **Traceability**: Transaction IDs enable end-to-end request tracking
+
 ## Security Features
 
 ### Authentication
@@ -428,7 +528,7 @@ mvn test -Dtest=TrainerServiceTest
 mvn test -Dtest=*Security*
 ```
 
-### Actuators
+## Actuators
 
 Spring Boot Actuator is enabled for application monitoring and management.  
 The application exposes several endpoints:
@@ -457,6 +557,22 @@ The application exposes several endpoints:
   app_users_total 0.0
   ```
 
+## Microservice Integration
+
+This version introduces asynchronous microservice communication for trainer workload management:
+
+### Message-Driven Architecture
+- **Event-Driven Design**: Training operations trigger asynchronous workload updates
+- **Apache ActiveMQ Integration**: Reliable message broker for inter-service communication
+- **Command Pattern**: Action-based messaging (ADD/DELETE) for workload commands
+- **JSON Message Serialization**: Jackson-based message conversion with Java 8 date/time support
+
+### Workload Tracking
+- **Automatic Updates**: Training creation/deletion automatically notifies workload service
+- **Trainer-Specific Messages**: Username-based workload aggregation
+- **Training Details**: Complete training context in message payload
+- **Action Semantics**: Clear ADD/DELETE commands for idempotent processing
+
 ## Migration from Previous Version
 
 This version expands the project with comprehensive security and frontend integration features:
@@ -469,6 +585,10 @@ This version expands the project with comprehensive security and frontend integr
 - **Security Filters**: Custom JWT authentication filter with SecurityContext population
 - **Enhanced Error Handling**: Security-aware exception handling with proper HTTP status codes
 - **Environment Configuration**: Profile-based security and CORS settings
+- 
+- **Microservice Integration**: Asynchronous messaging with ActiveMQ for workload tracking
+- **Event-Driven Architecture**: Message-driven commands for trainer workload updates
+- **Distributed Tracing**: Transaction correlation across service boundaries
 
 ### Enhanced Security
 - **Stateless Authentication**: JWT tokens replace session-based authentication
