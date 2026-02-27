@@ -1,0 +1,98 @@
+services:
+  main-service:
+    image: jsalvar124/gym-main-service:subtask2
+    container_name: main-service
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - DB_HOST=postgres # Container name of PostgreSQL service
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=gymdb
+      - ACTIVEMQ_HOST=activemq # Container name of ActiveMQ service
+      - ACTIVEMQ_USER=admin
+      - ACTIVEMQ_PASSWORD=admin
+      - JWT_SECRET=mySuperSecretKeyAtLeast256bitsLong
+    networks:
+      - main-network
+    depends_on:
+      - postgres
+      - activemq
+
+  trainer-workload-service:
+    image: jsalvar124/trainer-workload-service:subtask2
+    container_name: trainer-workload-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - ACTIVEMQ_HOST=activemq # Container name of ActiveMQ service
+      - ACTIVEMQ_USER=admin
+      - ACTIVEMQ_PASSWORD=admin
+      - MONGODB_HOST=mongodb # Container name of MongoDB service
+      - MONGODB_NAME=trainer_workload
+      - MONGODB_USER=admin
+      - MONGODB_PASSWORD=password
+    networks:
+      - workload-network
+    depends_on:
+      - mongodb
+      - activemq
+
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: gymdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    networks:
+      - main-network
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_config:/data/configdb
+    restart: unless-stopped
+    networks:
+      - workload-network
+
+  activemq:
+    image: apache/activemq-classic:6.1.0
+    container_name: activemq
+    environment:
+      ACTIVEMQ_ADMIN_LOGIN: admin
+      ACTIVEMQ_ADMIN_PASSWORD: admin
+    ports:
+      - "61616:61616"   # JMS
+      - "8161:8161"     # Web Console
+    volumes:
+      - activemq_data:/opt/activemq/data
+    networks:
+      - main-network
+      - workload-network
+
+networks:
+  main-network:
+    driver: bridge
+  workload-network:
+    driver: bridge
+
+volumes:
+  pgdata:
+  mongodb_data:
+  mongodb_config:
+  activemq_data:
