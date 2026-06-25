@@ -6,5 +6,9 @@ public enum TrainingTypeEnum {
     FUNCTIONAL,
     BOXING,
     PILATES,
-    BOULDERING
+    BOULDERING,
+    MATH,
+    SCIENCE,
+    LANGUAGE,
+    PROGRAMMING
 }

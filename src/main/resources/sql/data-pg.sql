@@ -4,3 +4,7 @@ INSERT INTO training_types (id, training_type_name) VALUES (3, 'FUNCTIONAL') ON 
 INSERT INTO training_types (id, training_type_name) VALUES (4, 'BOXING') ON CONFLICT (id) DO NOTHING;
 INSERT INTO training_types (id, training_type_name) VALUES (5, 'PILATES') ON CONFLICT (id) DO NOTHING;
 INSERT INTO training_types (id, training_type_name) VALUES (6, 'BOULDERING') ON CONFLICT (id) DO NOTHING;
+INSERT INTO training_types (id, training_type_name) VALUES (7, 'MATH') ON CONFLICT (id) DO NOTHING;
+INSERT INTO training_types (id, training_type_name) VALUES (8, 'SCIENCE') ON CONFLICT (id) DO NOTHING;
+INSERT INTO training_types (id, training_type_name) VALUES (9, 'LANGUAGE') ON CONFLICT (id) DO NOTHING;
+INSERT INTO training_types (id, training_type_name) VALUES (10, 'PROGRAMMING') ON CONFLICT (id) DO NOTHING;

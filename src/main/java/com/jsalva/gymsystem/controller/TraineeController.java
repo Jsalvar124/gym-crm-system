@@ -167,7 +167,7 @@ public class TraineeController {
     })
     @DeleteMapping("/{username}")
     public ResponseEntity<Void> deleteTrainee(@PathVariable("username") String username){
-        authService.validateTrainerAuth(); // Only a trainer can delete a trainee
+        authService.validateOwnerAuth(username); // Only owner can delet its account.
         gymFacade.deleteTraineeByUsername(username);
         return ResponseEntity.noContent().build();
     }
