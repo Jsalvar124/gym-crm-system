@@ -95,7 +95,7 @@ public class GymFacadeImpl implements GymFacade {
     }
 
     @Override
-    public List<Trainee> getAllTrainees() {
+    public List<TraineeSummaryDto> getAllTrainees() {
         return traineeService.getAllTrainees();
     }
 

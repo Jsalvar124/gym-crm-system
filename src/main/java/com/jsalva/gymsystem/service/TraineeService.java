@@ -4,6 +4,7 @@ import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.request.UpdateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
+import com.jsalva.gymsystem.dto.response.TraineeSummaryDto;
 import com.jsalva.gymsystem.dto.response.TrainerSummaryDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
@@ -14,7 +15,7 @@ import java.util.Set;
 
 public interface TraineeService {
     CreateTraineeResponseDto createTrainee(CreateTraineeRequestDto requestDto);
-    List<Trainee> getAllTrainees();
+    List<TraineeSummaryDto> getAllTrainees();
     Trainee getTraineeById(Long id);
     TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto);
     void updateActiveState(String username, Boolean isActive);

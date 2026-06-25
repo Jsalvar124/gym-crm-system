@@ -25,7 +25,7 @@ GymFacade {
 
     // Trainee
     CreateTraineeResponseDto createTrainee(CreateTraineeRequestDto requestDto);
-    List<Trainee> getAllTrainees();
+    List<TraineeSummaryDto> getAllTrainees();
     Trainee getTraineeById(Long id);
     TraineeResponseDto updateTrainee(UpdateTraineeRequestDto requestDto);
     void updateTraineeActiveState(String username, Boolean isActive);

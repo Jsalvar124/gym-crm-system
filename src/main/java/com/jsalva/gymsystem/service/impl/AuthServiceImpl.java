@@ -75,6 +75,7 @@ public class AuthServiceImpl implements AuthService {
             }
         } catch (ResourceNotFoundException e) {
             logger.warn("Login failed - user {} not found", username);
+            bruteForceProtectorService.registerFailedLogin(username);
             throw new InvalidCredentialsException("Invalid credentials for username "+ username); // mask as 401
         }
     }

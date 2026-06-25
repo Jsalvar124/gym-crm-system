@@ -5,6 +5,7 @@ import com.jsalva.gymsystem.dto.request.CreateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.request.UpdateTraineeRequestDto;
 import com.jsalva.gymsystem.dto.response.CreateTraineeResponseDto;
 import com.jsalva.gymsystem.dto.response.TraineeResponseDto;
+import com.jsalva.gymsystem.dto.response.TraineeSummaryDto;
 import com.jsalva.gymsystem.dto.response.TrainerSummaryDto;
 import com.jsalva.gymsystem.entity.Trainee;
 import com.jsalva.gymsystem.entity.Trainer;
@@ -86,8 +87,9 @@ public class TraineeServiceImpl implements TraineeService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Trainee> getAllTrainees() {
-        return traineeRepository.findAll();
+    public List<TraineeSummaryDto> getAllTrainees() {
+        List<Trainee> trainees = traineeRepository.findAll();
+        return traineeMapper.toSummaryDtoList(trainees);
     }
 
     @Override

@@ -38,6 +38,32 @@ public class TraineeController {
         this.gymFacade = gymFacade;
         this.authService = authService;
     }
+    @Operation(
+            summary = "Get all trainees",
+            description = "Retrieves a summary list of all trainees in the system. "
+                    + "Requires a valid trainer token. Used by trainers to select a trainee "
+                    + "when scheduling a new training session."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "List of trainees retrieved successfully",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = TraineeSummaryDto.class))),
+            @ApiResponse(responseCode = "401", description = "Unauthorized - missing or invalid token",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "403", description = "Forbidden - caller is not a trainer",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    @GetMapping
+    public ResponseEntity<List<TraineeSummaryDto>> getAllTrainees(){
+        authService.validateTrainerAuth();
+        List<TraineeSummaryDto> trainees = gymFacade.getAllTrainees();
+        return ResponseEntity.ok(trainees);
+    }
 
     @Operation(
             summary = "Create a new trainee",
@@ -283,5 +309,8 @@ public class TraineeController {
         authService.validateTrainerOrOwnerAuth(username);
         return ResponseEntity.ok(gymFacade.findUnassignedTrainersByTrainee(username));
     }
+
+
+
 
 }
