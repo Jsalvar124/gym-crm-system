@@ -1,6 +1,6 @@
 services:
   main-service:
-    image: jsalvar124/gym-main-service:subtask2
+    image: jsalvar124/gym-main-service:v1
     container_name: main-service
     ports:
       - "8080:8080"
